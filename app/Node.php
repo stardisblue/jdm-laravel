@@ -1,22 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MELY
- * Date: 9/28/2017
- * Time: 5:48 PM
- */
 
 namespace app;
 
+use Elasticquent\ElasticquentTrait;
+use Illuminate\Database\Eloquent\Model;
 
-class Node extends  NodeJDM
+class Node extends Model
 {
+    use ElasticquentTrait;
+
     public $id;
     public $name;
     public $formatedName;
     public $type;
     public $weight;
-
-
-
 }

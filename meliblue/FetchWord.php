@@ -9,51 +9,30 @@
 namespace Meliblue;
 
 
+use GuzzleHttp\Client;
+
 class FetchWord
 {
 
     private static $baseUrl = "http://www.jeuxdemots.org/rezo-dump.php?gotermsubmit=Chercher";
 
-    public static function createURL(String $word, $relation = ""): String
+    static function fetch(String $name, $relation = '')
     {
-        return self::$baseUrl . "&gotermrel=" . $word . "&rel=" . $relation;
-    }
+        $client = new Client();
 
-    static function getHTML(String $url): array
-    {
-        $request = curl_init($url);
-        curl_setopt($request, CURLOPT_URL, $url);
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        $raw = curl_exec($request);
-        $info = curl_getinfo($request);
-        $http_result = $info['http_code'];
-        curl_close($request);
+        $response = $client->request('GET', self::$baseUrl,
+            ['query' => ['gotermrel' => $name, 'rel' => $relation]]);
+
+        $contents = $response->getBody()->getContents();
+        $code = $response->getStatusCode();
+        $reason = $response->getReasonPhrase();
 
         $domDoc = new \DOMDocument('1.0', 'ISO-8859-1');
-        @$domDoc->loadHTML($raw);
+        @$domDoc->loadHTML($contents);
+
         $output = $domDoc->getElementsByTagName('code')->item(0);
 
-
-        return ['out' => $output, 'raw' => $raw, 'code' => $http_result, 'info' => $info];
+        return ['out' => $output, 'code' => $code, 'reason' => $reason];
     }
 
-    static function getFile(String $url)
-    {
-        return fopen($url, 'r');
-    }
-
-    static function fetchFile(String $name, $relation = null)
-    {
-        return self::getFile(self::createURL($name, $relation));
-    }
-
-    static function fetch(String $name, $relation = null)
-    {
-        return self::getHTML(self::createURL($name, $relation));
-    }
-
-    static function toXML(String $output)
-    {
-        return simplexml_load_string($output);
-    }
 }

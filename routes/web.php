@@ -12,7 +12,7 @@
 */
 
 Route::get("/", function () {
- // homepage
+    // homepage
 });
 
 Route::get('/search/', function () {
@@ -21,10 +21,8 @@ Route::get('/search/', function () {
 
 Route::get('/node/{word}', function ($word) {
     // afficher un mot
-    $out = \Meliblue\FetchWord::fetch($word);
-    $parsed = \Meliblue\WordParser::parse($out['out']);
-    //print_r($out);
-    //print_r($parsed);
+    $response = \Meliblue\FetchWord::fetch(utf8_decode($word));
+    $parsed = \Meliblue\WordParser::parse($response['out']);
 
     return view('welcome', ["parsed" => $parsed]);
 });
@@ -38,6 +36,6 @@ Route::get('/api/node/{word}/card', function () {
 // afficher un card du mot
 });
 
-Route::post('/api/node/{word}', function (){
-   // mettre à jour le cache
+Route::post('/api/node/{word}', function () {
+    // mettre à jour le cache
 });

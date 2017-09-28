@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MELY
- * Date: 9/28/2017
- * Time: 3:45 PM
- */
 
 namespace Meliblue;
 
@@ -13,7 +7,7 @@ class WordParser
 {
     static function parse(\DOMElement $node): \stdClass
     {
-        $string = $node->textContent;
+        $content = $node->textContent;
         $definition = $node->getElementsByTagName("def")->item(0)->textContent;
         $object = new \stdClass();
         $object->definition = $definition;
@@ -23,7 +17,7 @@ class WordParser
         $object->relations = [];
         $separator = "\n";
 
-        $line = strtok($string, $separator);
+        $line = strtok($content, $separator);
         while ($line !== false) {
             if ($line === null) {
                 $line = strtok($separator);
@@ -62,6 +56,7 @@ class WordParser
             }
             $line = strtok($separator);
         }
+        strtok('', '');
 
         return $object;
     }

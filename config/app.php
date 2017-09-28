@@ -177,6 +177,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * ElasticSearch wrapper
+         */
+        Elasticquent\ElasticquentServiceProvider::class,
+
     ],
 
     /*
@@ -226,6 +231,10 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        /*
+         * ElasticSearch alias
+         */
+        'Es' => Elasticquent\ElasticquentElasticsearchFacade::class,
     ],
 
 ];
