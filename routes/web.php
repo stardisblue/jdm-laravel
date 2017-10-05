@@ -12,7 +12,7 @@
 */
 
 Route::get("/", function () {
-    // homepage
+    return view('homepage');
 });
 
 Route::get('/search/', function () {
@@ -21,9 +21,15 @@ Route::get('/search/', function () {
 
 Route::get('/node/{word}', function ($word) {
     // afficher un mot
-    $response = \Meliblue\FetchWord::fetch(utf8_decode($word));
-    $parsed = \Meliblue\WordParser::parse($response['out']);
-
+    $parsed="";
+    if (Cache::get($word)) {
+        $parsed=Cache::get($word);
+        }
+    else {
+        $response = \Meliblue\FetchWord::fetch(utf8_decode($word));
+        $parsed = \Meliblue\WordParser::parse($response['out']);
+        Cache::put($word, $parsed, 60);
+    }
     return view('welcome', ["parsed" => $parsed]);
 });
 
