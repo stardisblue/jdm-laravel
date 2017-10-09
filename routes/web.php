@@ -11,8 +11,11 @@
 |
 */
 
+use Meliblue\FetchWord;
+use Meliblue\WordParser;
+
 Route::get("/", function () {
-    return view('homepage');
+    return view('welcome');
 });
 
 Route::get('/search/', function () {
@@ -21,16 +24,16 @@ Route::get('/search/', function () {
 
 Route::get('/node/{word}', function ($word) {
     // afficher un mot
-    $parsed="";
-    if (Cache::get($word)) {
-        $parsed=Cache::get($word);
-        }
-    else {
-        $response = \Meliblue\FetchWord::fetch(utf8_decode($word));
-        $parsed = \Meliblue\WordParser::parse($response['out']);
-        Cache::put($word, $parsed, 60);
-    }
-    return view('welcome', ["parsed" => $parsed]);
+    //if (Cache::get($word)) {
+    //    $parsed = Cache::get($word);
+    //} else {
+    $response = FetchWord::fetch(utf8_decode($word));
+    $parsed = WordParser::parse($response['out']);
+    $parsed->setName($word);
+    // Cache::put($word, $parsed, 60);
+    //}
+
+    return view('node.single', ["parsed" => $parsed]);
 });
 
 

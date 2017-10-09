@@ -5,16 +5,12 @@ namespace Meliblue;
 
 class WordParser
 {
-    static function parse(\DOMElement $node): \stdClass
+    static function parse(\DOMElement $node): Node
     {
         $content = $node->textContent;
         $definition = $node->getElementsByTagName("def")->item(0)->textContent;
-        $object = new \stdClass();
-        $object->definition = $definition;
-        $object->nodeTypes = [];
-        $object->entities = [];
-        $object->relationTypes = [];
-        $object->relations = [];
+        $node = new Node();
+        $node->setDefinition($definition);
         $separator = "\n";
 
         $line = strtok($content, $separator);
@@ -25,39 +21,40 @@ class WordParser
 
             $array = explode(';', $line);
             $type = $array[0];
+
             if ($type === "nt") {
-                $nodeType = new \stdClass();
+                $nodeType = new NodeType();
                 $nodeType->id = $array[1];
                 $nodeType->name = $array[2];
-                $object->nodeTypes[] = $nodeType;
+                $node->addNodeType($nodeType);
             } elseif ($type === 'e') {
-                $entity = new \stdClass();
+                $entity = new Entity();
                 $entity->id = $array[1];
                 $entity->name = $array[2];
                 $entity->type = $array[3];
                 $entity->weight = $array[4];
                 $entity->formattedName = isset($array[5]) ? $array[5] : null;
-                $object->entities[] = $entity;
+                $node->addEntity($entity);
             } elseif ($type === 'rt') {
-                $relationType = new \stdClass();
+                $relationType = new RelationType();
                 $relationType->id = $array[1];
                 $relationType->code = $array[2];
                 $relationType->name = $array[3];
                 $relationType->description = $array[4];
-                $object->relationTypes[] = $relationType;
+                $node->addRelationType($relationType);
             } elseif ($type === 'r') {
-                $relation = new \stdClass();
+                $relation = new Relation();
                 $relation->id = $array[1];
                 $relation->from = $array[2];
                 $relation->to = $array[3];
                 $relation->type = $array[4];
                 $relation->weight = $array[5];
-                $object->relations[] = $relation;
+                $node->addRelation($relation);
             }
             $line = strtok($separator);
         }
         strtok('', '');
 
-        return $object;
+        return $node;
     }
 }
