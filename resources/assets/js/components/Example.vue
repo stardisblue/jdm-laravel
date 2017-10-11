@@ -3,12 +3,9 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Example Component</div>
+                    <div class="panel-heading">{{node.name}}</div>
 
-                    <div class="panel-body">
-                        I'm an example component!
-                        <p>{{ message }}</p> :D
-                    </div>
+                    <div class="panel-body" v-html="compiledMarkdown"></div>
                 </div>
             </div>
         </div>
@@ -16,10 +13,19 @@
 </template>
 
 <script>
+    import * as marked from "marked";
+
     export default {
         mounted() {
-            console.log('Component mounted.')
+            console.log('Component mounted.');
         },
-        props: ["message"]
+
+        computed: {
+            compiledMarkdown: function () {
+                return marked(this.node.definition, {breaks: true, sanitize: true})
+            }
+        },
+
+        props: ["node"]
     }
 </script>
