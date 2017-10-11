@@ -1,50 +1,70 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: stardisblue
- * Date: 09/10/2017
- * Time: 18:55
- */
 
 namespace Meliblue;
 
 
+use Meliblue\Models\Entity;
+use Meliblue\Models\NodeType;
+use Meliblue\Models\Relation;
+use Meliblue\Models\RelationType;
+
 class Node
 {
+    public $id;
     public $name;
     public $definition;
+    public $type;
+    public $weight;
+    public $formattedName;
     public $relationTypes = [];
+    public $relations = [];
     public $nodeTypes = [];
     public $nodes = [];
 
 
-    public function addNodeType(NodeType $nodeType)
+    public function addNodeType(int $id, NodeType $nodeType)
     {
-        $this->nodeTypes[$nodeType->id] = $nodeType;
+        $this->nodeTypes[$id] = $nodeType;
     }
 
-    public function addEntity(Entity $entity)
+    public function addEntity(int $id, Entity $entity)
     {
-        $this->nodes[$entity->id] = $entity;
+        $this->nodes[$id] = $entity;
     }
 
-    public function addRelationType(RelationType $relationType)
+    public function addRelationType(int $id, RelationType $relationType)
     {
-        $this->relationTypes[$relationType->id] = $relationType;
+        $this->relationTypes[$id] = $relationType;
     }
 
-    public function addRelation(Relation $relation)
+    public function addRelation(int $id, Relation $relation)
     {
-        $this->relationTypes[$relation->type]->relations[$relation->id] = $relation;
+        $this->relations[$id] = $relation;
     }
 
     public function setDefinition(String $definition)
     {
-        $this->definition = $definition;
+        $this->definition = trim($definition);
     }
 
-    public function setName(String $name)
+    public function setNode(int $id, Entity $entity)
     {
-        $this->name = $name;
+        $this->id = $id;
+        $this->name = $entity->name;
+        $this->type = $entity->type;
+        $this->weight = $entity->weight;
+        $this->formattedName = $entity->formattedName;
+    }
+
+    public function prepare()
+    {
+        foreach ($this->relations as $id => $relation) {
+            $relation->from = ($relation->from === $this->id) ? null : $this->nodes[$relation->from];
+            $relation->to = ($relation->to === $this->id) ? null : $this->nodes[$relation->to];
+            $this->relationTypes[$relation->type]->addRelation($id, $relation);
+        }
+
+        unset($this->relations);
+        unset($this->nodes);
     }
 }

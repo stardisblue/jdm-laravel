@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MELY
- * Date: 9/28/2017
- * Time: 2:36 PM
- */
 
 namespace Meliblue;
 
@@ -16,7 +10,7 @@ class FetchWord
 
     private static $baseUrl = "http://www.jeuxdemots.org/rezo-dump.php?gotermsubmit=Chercher";
 
-    static function fetch(String $name, $relation = 0)
+    static function fetch(String $name, $relation = "")
     {
         $client = new Client();
 
