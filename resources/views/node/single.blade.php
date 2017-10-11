@@ -10,7 +10,7 @@
 </head>
 <body>
 @php(dump($parsed))
-<example :node="{{json_encode($parsed)}}"></example>
+<node :node="{{json_encode($parsed)}}"></node>
 </div>
 <script src="/js/app.js"></script>
 </body>

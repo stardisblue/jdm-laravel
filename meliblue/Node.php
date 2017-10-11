@@ -59,9 +59,19 @@ class Node
     public function prepare()
     {
         foreach ($this->relations as $id => $relation) {
-            $relation->from = ($relation->from === $this->id) ? null : $this->nodes[$relation->from];
-            $relation->to = ($relation->to === $this->id) ? null : $this->nodes[$relation->to];
-            $this->relationTypes[$relation->type]->addRelation($id, $relation);
+            if ($relation->from !== $this->id && isset($this->nodes[$relation->from])) {
+                $relation->from = $this->nodes[$relation->from];
+            } else {
+                $relation->from = null;
+            }
+
+            if ($relation->to !== $this->id && isset($this->nodes[$relation->to])) {
+                $relation->to = $this->nodes[$relation->to];
+            } else {
+                $relation->to = null;
+            }
+            $this->relationTypes[$relation->type]->relations[] = $relation;
+            unset($relation->type);
         }
 
         unset($this->relations);

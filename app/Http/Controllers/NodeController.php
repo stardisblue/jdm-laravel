@@ -12,15 +12,15 @@ class NodeController extends Controller
     public function display(string $word)
     {
         // afficher un mot
-        //if (Cache::get($word)) {
-        //    $parsed = Cache::get($word);
-        //} else {
-        $response = FetchWord::fetch(utf8_decode($word));
-        $parsed = WordParser::parse($response['out']);
-        // Cache::put($word, $parsed, 60);
-        //}
+        if (Cache::get($word)) {
+            $parsed = Cache::get($word);
+        } else {
+            $response = FetchWord::fetch(utf8_decode($word));
+            $parsed = WordParser::parse($response['out']);
+            $parsed->prepare();
+            Cache::put($word, $parsed, 60);
+        }
 
-        $parsed->prepare();
 
         return view('node.single', ["parsed" => $parsed]);
     }
@@ -31,7 +31,7 @@ class NodeController extends Controller
         if (Cache::get($word)) {
             $parsed = Cache::get($word);
         } else {
-            $response = FetchWord::fetch(utf8_decode($word));
+            $response = FetchWord::fetch(utf8_decode($word), -1);
             $parsed = WordParser::parse($response['out']);
             $parsed->prepare();
             Cache::put($word, $parsed, 60);
