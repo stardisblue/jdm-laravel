@@ -9,10 +9,13 @@
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-@php(dump($parsed))
-<node :node="{{json_encode($parsed)}}"></node>
-</div>
+@php(dump($node))
+@isset($node)
+    <node :node="{{json_encode($node)}}"></node>
+@endisset
+@isset($reason)
+    {{$reason}}
+@endisset
 <script src="/js/app.js"></script>
-</body>
 </body>
 </html>

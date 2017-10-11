@@ -7,13 +7,47 @@ use Meliblue\Models\Entity;
 use Meliblue\Models\NodeType;
 use Meliblue\Models\Relation;
 use Meliblue\Models\RelationType;
+use Psr\Http\Message\ResponseInterface;
 
 class WordParser
 {
-    static function parse(\DOMElement $node): Node
+
+    static function parse(ResponseInterface $response): WordWrapper
     {
-        $content = $node->textContent;
-        $definition = $node->getElementsByTagName("def")->item(0)->textContent;
+        $wrapper = new WordWrapper();
+
+        $contents = $response->getBody()->getContents();
+
+
+        $domDoc = new \DOMDocument('1.0', 'ISO-8859-1');
+        @$domDoc->loadHTML($contents);
+
+        $content = $domDoc->getElementsByTagName('code')->item(0);
+
+        if ($content === null) {
+            $wrapper->setCode(404);
+            $wrapper->setReason("word does not exist");
+        } elseif ($domDoc->getElementsByTagName("warning")->length > 0) {
+            $wrapper->setCode(413);
+            $wrapper->setReason("TOOBIG_USE_DUMP");
+        } else {
+            $wrapper->setNode(WordParser::extract($content));
+            $wrapper->setCode($response->getStatusCode());
+            $wrapper->setReason($response->getReasonPhrase());
+        }
+
+        return $wrapper;
+    }
+
+    /**
+     * @param \DOMElement $DOMElement
+     * @return Node
+     */
+    static function extract(\DOMElement $DOMElement): Node
+    {
+        $content = $DOMElement->textContent;
+        $definition = $DOMElement->getElementsByTagName("def")->item(0)->textContent;
+
         $node = new Node();
         $node->setDefinition($definition);
         $separator = "\n";
@@ -65,7 +99,7 @@ class WordParser
     }
 
 
-    static function trim(string $word, string $separator = '\'')
+    static function trim(string $word, string $separator = '\''): string
     {
         $len = strlen($word);
         if ($word[0] === $separator) {

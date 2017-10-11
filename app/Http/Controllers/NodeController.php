@@ -11,33 +11,49 @@ class NodeController extends Controller
 {
     public function display(string $word)
     {
+        $node = null;
+
         // afficher un mot
-        if (Cache::get($word)) {
-            $parsed = Cache::get($word);
+        if (Cache::has($word)) {
+            $node = Cache::get($word);
+            $reason = "";
         } else {
             $response = FetchWord::fetch(utf8_decode($word));
-            $parsed = WordParser::parse($response['out']);
-            $parsed->prepare();
-            Cache::put($word, $parsed, 60);
+            $parsed = WordParser::parse($response);
+            $reason = $parsed->getReason();
+
+
+            if($parsed->getCode() === 413){
+                $response = FetchWord::fetch(utf8_decode($word), -1);
+                $parsed = WordParser::parse($response);
+            }
+
+            if ($parsed->getCode() !== 404) {
+                $node = $parsed->getNode();
+                $node->prepare();
+            }
         }
 
+        Cache::put($word, $node, 60);
 
-        return view('node.single', ["parsed" => $parsed]);
+
+        return view('node.single', ["node" => $node, "reason" => $reason]);
     }
 
     public function card(string $word)
     {
         // afficher un mot
-        if (Cache::get($word)) {
-            $parsed = Cache::get($word);
+        if (Cache::has($word.":card")) {
+            $node = Cache::get($word.":card");
         } else {
             $response = FetchWord::fetch(utf8_decode($word), -1);
-            $parsed = WordParser::parse($response['out']);
-            $parsed->prepare();
-            Cache::put($word, $parsed, 60);
+            $parsed = WordParser::parse($response);
+            $node = $parsed->getNode();
+            $node->prepare();
+
+            Cache::put($word.":card", $node, 60);
         }
 
-
-        return json_encode($parsed);
+        return json_encode($node);
     }
 }

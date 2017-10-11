@@ -18,7 +18,6 @@
 
 <script>
     import * as marked from "marked";
-    import _ from "lodash";
     import RelationType from "./RelationType.vue"
 
     export default {

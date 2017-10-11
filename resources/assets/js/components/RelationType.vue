@@ -16,7 +16,7 @@
 </template>
 
 <script>
-    import _ from "lodash"
+    import * as _ from "lodash";
     import Word from "./Word.vue"
 
     export default {
