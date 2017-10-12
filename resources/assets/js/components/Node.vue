@@ -1,5 +1,5 @@
 <template>
-    <div class="container" data-spy="scroll" data-target="#sidebar">
+    <div class="container">
         <div class="row">
             <h2>{{node.name}} :
                 <small v-once="" v-html="getPos"></small>
@@ -18,9 +18,7 @@
             </div>
 
             <div class="col-md-3">
-                <h3>Sidebar</h3>
                 <sidebar :relationTypes="getRelationTypes"></sidebar>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquid amet corporis eos error est ipsam itaque laborum mollitia nemo possimus praesentium quae quasi qui quia, repellat soluta voluptates voluptatibus?
             </div>
         </div>
     </div>

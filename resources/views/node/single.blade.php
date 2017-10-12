@@ -8,8 +8,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="/css/app.css">
 </head>
-<body>
-@php(dump($node))
+<body style="position:relative">
 @isset($node)
     <node :node="{{json_encode($node)}}"></node>
 @endisset
