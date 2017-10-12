@@ -67,6 +67,11 @@ class WordParser
                 $node->addNodeType($array[1], $nodeType);
             } elseif ($type === 'e') {
                 $entity = new Entity();
+
+                if (filter_var($array[3], FILTER_VALIDATE_INT) === false) {
+                    $array[2] = $array[2] . ';' . array_splice($array, 3, 1)[0];
+                }
+
                 $entity->setName($array[2]);
                 $entity->setType($array[3]);
                 $entity->setWeight($array[4]);

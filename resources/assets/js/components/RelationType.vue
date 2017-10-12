@@ -1,17 +1,14 @@
 <template>
-    <div class="panel panel-default">
-        <div class="panel-heading">{{relationType.name}}
-            <small>{{relationType.description}}</small>
-        </div>
-
-        <div class="panel-body">
-            <ul>
-                <li v-for="relation in orderByWeight"
-                    v-if="relation.from === null && relation.to !== null">
-                    <word :word="relation.to"></word>
-                </li>
-            </ul>
-        </div>
+    <div :id="id" class="relation-type">
+        <h3 :title="relationType.description">{{relationType.name}}</h3>
+        <div class="relation-type-header"> recherche, filtres closing button</div>
+        <hr/>
+        <ul>
+            <li v-for="relation in orderByWeight()"
+                v-if="relation.from === null && relation.to !== null">
+                <word :word="relation.to"></word>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -24,23 +21,20 @@
             console.log('RelationType ' + this.relationType.name + ' mounted');
         },
 
-        computed: {
-            orderByWeight() {
-                return _.orderBy(this.relationType.relations, ['weight', 'name'], ['desc', 'asc']);
-            },
-
-        },
-
         components: {
             "word": Word
         },
 
         methods: {
-            name(word) {
-                return word.formattedName !== null ? word.formattedName : word.name;
+            orderByWeight: function (order = "desc") {
+                return _.orderBy(this.relationType.relations, ['weight', 'to.name'], [order, 'asc']);
             },
+
+            orderByName: function (order = "asc") {
+                return _.orderBy(this.relationType.relations, ['to.name'], [order]);
+            }
         },
 
-        props: ["relationType"]
+        props: ["id", "relationType"]
     }
 </script>

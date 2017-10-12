@@ -13,9 +13,9 @@
 @isset($node)
     <node :node="{{json_encode($node)}}"></node>
 @endisset
-@isset($reason)
+@if(isset($reason) && $reason !== "OK")
     {{$reason}}
-@endisset
+@endif
 <script src="/js/app.js"></script>
 </body>
 </html>
