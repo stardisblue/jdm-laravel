@@ -1,13 +1,13 @@
 <template>
     <div class="container">
         <div class="row">
-            <h2>{{node.name}} :
+            <h2>{{getName}} :
                 <small v-once="" v-html="getPos"></small>
             </h2>
 
             <div id="description" v-html="compiledMarkdown"></div>
             <hr/>
-            <div class="col-md-9">
+            <div class="col-sm-9">
 
                 <relation-type v-once="v-once"
                                v-for="(relationType, id) in node.relationTypes"
@@ -17,7 +17,7 @@
 
             </div>
 
-            <div class="col-md-3">
+            <div class="col-sm-3 hidden-xs">
                 <sidebar :relationTypes="getRelationTypes"></sidebar>
             </div>
         </div>
@@ -35,17 +35,26 @@
             console.log('Node ' + this.node.name + ' mounted');
         },
 
+
+        components: {
+            "relation-type": RelationType,
+            "sidebar": Sidebar
+        },
+
+        props: ["node"],
+
         computed: {
+            getName: function () {
+                return this.node.formattedName ? this.node.formattedName : this.node.name;
+            },
+
             compiledMarkdown: function () {
                 return marked(this.node.definition, {breaks: true, sanitize: true})
             },
 
             getPos: function () {
                 if (this.node.relationTypes[4] !== undefined) {
-
-                    let pos = this.node.relationTypes[4];
-                    delete this.node.relationTypes[4];
-                    return pos;
+                    return this.node.relationTypes[4];
                 }
             },
 
@@ -56,10 +65,5 @@
             }
         },
 
-        components: {
-            "relation-type": RelationType,
-            "sidebar": Sidebar
-        },
-        props: ["node"]
     }
 </script>

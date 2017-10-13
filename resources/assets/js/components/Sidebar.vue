@@ -1,8 +1,8 @@
 <template>
-    <nav id="sidebar" class="bs-docs-sidebar" :style="{top : this.top +'px'}">
+    <nav id="sidebar" class="bs-docs-sidebar" :style="{top : this.sidebarTop +'px'}">
         <ul class="nav nav-stacked">
             <li v-for="value in relationTypes" :class="{active : activeId == value.id}">
-                <a :href="'#'+value.id" :click="scrollSpy">{{value.name}}</a>
+                <a :id="'navlink-'+value.id" :href="'#'+value.id" :click="scrollSpy">{{value.name}}</a>
             </li>
         </ul>
     </nav>
@@ -12,62 +12,100 @@
     import * as _ from "lodash";
 
     export default {
-        data() {
+
+        props: ["relationTypes"],
+
+        data: function () {
             return {
-                active: null,
                 activeId: null,
                 sections: [],
-                top: 0,
-                parentOffset: null,
-                sidebar: null,
+                sidebarTop: 0,
+
+                // boolean telling if the events are bound to a eventlistener
+                binded: null,
+
+                // function to add or remove from eventlistener
+                offsetThrottle: null,
+                scrollSpyResizeThrottle: null,
+                scrollSpyScrollThrottle: null,
             }
         },
 
         mounted() {
             console.log('Sidebar mounted');
-            this.sidebar = $("#sidebar");
 
-            window.addEventListener('load', this.updateOffsetTop);
-            window.addEventListener('resize', _.throttle(this.updateOffsetTop, 100));
-            window.addEventListener('load', this.scrollSpy);
-            window.addEventListener('resize', _.throttle(this.scrollSpy, 100));
-            window.addEventListener('scroll', _.throttle(this.scrollSpy, 50));
+            this.offsetThrottle = _.throttle(this.updateOffsetTop, 200);
+            this.scrollSpyResizeThrottle = _.throttle(this.scrollSpy, 200);
+            this.scrollSpyScrollThrottle = _.throttle(this.scrollSpy, 100);
+
+            this.manageBindByClientWidth();
+            window.addEventListener('resize', this.manageBindByClientWidth);
+
+
         },
 
         destroyed() {
-            window.removeEventListener('load', this.updateOffsetTop);
-            window.removeEventListener('resize', _.throttle(this.updateOffsetTop, 100));
-            window.removeEventListener('load', this.scrollSpy);
-            window.removeEventListener('resize', _.throttle(this.scrollSpy, 100));
-            window.removeEventListener('scroll', _.throttle(this.scrollSpy, 50));
+            this.unbind();
+            window.removeEventListener('resize', this.manageBindByClientWidth);
         },
 
+
         methods: {
-            updateOffsetTop() {
+            bind() {
+
+                this.updateOffsetTop();
+                this.scrollSpy();
+
+                window.addEventListener('resize', this.offsetThrottle);
+                window.addEventListener('resize', this.scrollSpyResizeThrottle);
+                window.addEventListener('scroll', this.scrollSpyScrollThrottle);
+            },
+
+            unbind() {
+                window.removeEventListener('resize', this.offsetThrottle);
+                window.removeEventListener('resize', this.scrollSpyResizeThrottle);
+                window.removeEventListener('scroll', this.scrollSpyScrollThrottle);
+            },
+
+            manageBindByClientWidth: function () {
+                if (document.body.clientWidth < 768) {
+                    if (this.binded) {
+                        console.log("unbinding");
+                        this.binded = false;
+                        this.unbind();
+                    }
+                } else if (!this.binded) {
+                    console.log("binding");
+                    this.bind();
+                    this.binded = true;
+                }
+            },
+
+            updateOffsetTop: function () {
                 this.sections = _.map(this.relationTypes, function (value) {
                     let element = document.getElementById(value.id);
-                    let sidebarElements = document.querySelectorAll("a[href='#" + value.id + "']");
+                    let sidebarElement = document.getElementById("navlink-" + value.id);
                     return {
                         offsetTop: element.offsetTop + element.offsetParent.offsetTop,
-                        sidebarOffsetTop: sidebarElements[0].offsetParent.offsetTop,
+                        sidebarOffsetTop: sidebarElement.offsetParent.offsetTop,
                         id: value.id
                     }
                 });
 
-                this.parentOffset = this.sidebar[0].parentElement.offsetTop;
 
+                let sidebar = $("#sidebar");
                 // affix system
                 $(window).off('.affix');
-                this.sidebar.removeData('bs.affix').removeClass('affix affix-top affix-bottom');
-                this.sidebar.affix({
+                sidebar.removeData('bs.affix').removeClass('affix affix-top affix-bottom');
+                sidebar.affix({
                     offset: {
-                        top: this.parentOffset,
+                        top: sidebar[0].parentElement.offsetTop,
                     }
                 });
 
             },
 
-            scrollSpy() {
+            scrollSpy: function () {
                 console.log('salut');
                 let scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
 
@@ -81,22 +119,24 @@
                     }
                 });
 
-                this.active = active;
                 if (active !== null) {
                     this.activeId = active.id;
 
+                    let sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
+
                     let proportion = (active.sidebarOffsetTop - (document.body.clientHeight / 2)) /
-                        (this.sidebar.height() - (document.body.clientHeight / 2));
-                    let top = -((this.sidebar.height() - document.body.clientHeight + 50) * proportion);
+                        (sidebarOffsetHeight - (document.body.clientHeight / 2));
+                    let top = -((sidebarOffsetHeight - document.body.clientHeight + 50) * proportion);
 
-                    this.top = top < 0 ? top : 0;
+                    this.sidebarTop = top < 0 ? top : 0;
 
+                } else {
+                    this.activeId = null;
                 }
 
             }
         },
 
-        props: ["relationTypes"]
     }
 </script>
 <style>
@@ -105,11 +145,6 @@
         padding-left: 20px;
         margin-top: 20px;
         margin-bottom: 20px;
-    }
-
-    .bs-docs-sidebar.affix {
-        position: fixed;
-        top: 0;
     }
 
     /* all links */

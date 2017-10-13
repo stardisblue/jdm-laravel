@@ -42082,17 +42082,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
 
+    components: {
+        "relation-type": __WEBPACK_IMPORTED_MODULE_2__RelationType_vue___default.a,
+        "sidebar": __WEBPACK_IMPORTED_MODULE_3__Sidebar_vue___default.a
+    },
+
+    props: ["node"],
+
     computed: {
+        getName: function getName() {
+            return this.node.formattedName ? this.node.formattedName : this.node.name;
+        },
+
         compiledMarkdown: function compiledMarkdown() {
             return __WEBPACK_IMPORTED_MODULE_0_marked__(this.node.definition, { breaks: true, sanitize: true });
         },
 
         getPos: function getPos() {
             if (this.node.relationTypes[4] !== undefined) {
-
-                var pos = this.node.relationTypes[4];
-                delete this.node.relationTypes[4];
-                return pos;
+                return this.node.relationTypes[4];
             }
         },
 
@@ -42101,13 +42109,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return { id: index, name: value.name };
             });
         }
-    },
+    }
 
-    components: {
-        "relation-type": __WEBPACK_IMPORTED_MODULE_2__RelationType_vue___default.a,
-        "sidebar": __WEBPACK_IMPORTED_MODULE_3__Sidebar_vue___default.a
-    },
-    props: ["node"]
 });
 
 /***/ }),
@@ -43625,6 +43628,7 @@ var render = function() {
     _vm._v(" "),
     _c(
       "ul",
+      { staticClass: "list-inline" },
       _vm._l(_vm.orderByWeight(), function(relation) {
         return relation.from === null && relation.to !== null
           ? _c("li", [_c("word", { attrs: { word: relation.to } })], 1)
@@ -43728,7 +43732,7 @@ exports = module.exports = __webpack_require__(49)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* sidebar */\n.bs-docs-sidebar {\n    padding-left: 20px;\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n.bs-docs-sidebar.affix {\n    position: fixed;\n    top: 0;\n}\n\n/* all links */\n.bs-docs-sidebar .nav > li > a {\n    color: #999;\n    border-left: 2px solid transparent;\n    padding: 4px 20px;\n    font-size: 13px;\n    font-weight: 400;\n}\n\n/* nested links */\n.bs-docs-sidebar .nav .nav > li > a {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 30px;\n    font-size: 12px;\n}\n\n/* active & hover links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > li > a:hover,\n.bs-docs-sidebar .nav > li > a:focus {\n    color: #563d7c;\n    text-decoration: none;\n    background-color: transparent;\n    border-left-color: #563d7c;\n}\n\n/* all active links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > .active:hover > a,\n.bs-docs-sidebar .nav > .active:focus > a {\n    font-weight: 700;\n}\n\n/* nested active links */\n.bs-docs-sidebar .nav .nav > .active > a,\n.bs-docs-sidebar .nav .nav > .active:hover > a,\n.bs-docs-sidebar .nav .nav > .active:focus > a {\n    font-weight: 500;\n}\n\n/* hide inactive nested list */\n.bs-docs-sidebar .nav ul.nav {\n    display: none;\n}\n\n/* show active nested list */\n.bs-docs-sidebar .nav > .active > ul.nav {\n    display: block;\n}\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* sidebar */\n.bs-docs-sidebar {\n    padding-left: 20px;\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n\n/* all links */\n.bs-docs-sidebar .nav > li > a {\n    color: #999;\n    border-left: 2px solid transparent;\n    padding: 4px 20px;\n    font-size: 13px;\n    font-weight: 400;\n}\n\n/* nested links */\n.bs-docs-sidebar .nav .nav > li > a {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 30px;\n    font-size: 12px;\n}\n\n/* active & hover links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > li > a:hover,\n.bs-docs-sidebar .nav > li > a:focus {\n    color: #563d7c;\n    text-decoration: none;\n    background-color: transparent;\n    border-left-color: #563d7c;\n}\n\n/* all active links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > .active:hover > a,\n.bs-docs-sidebar .nav > .active:focus > a {\n    font-weight: 700;\n}\n\n/* nested active links */\n.bs-docs-sidebar .nav .nav > .active > a,\n.bs-docs-sidebar .nav .nav > .active:hover > a,\n.bs-docs-sidebar .nav .nav > .active:focus > a {\n    font-weight: 500;\n}\n\n/* hide inactive nested list */\n.bs-docs-sidebar .nav ul.nav {\n    display: none;\n}\n\n/* show active nested list */\n.bs-docs-sidebar .nav > .active > ul.nav {\n    display: block;\n}\n\n", ""]);
 
 // exports
 
@@ -44091,58 +44095,94 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+
+    props: ["relationTypes"],
+
     data: function data() {
         return {
-            active: null,
             activeId: null,
             sections: [],
-            top: 0,
-            parentOffset: null,
-            sidebar: null
+            sidebarTop: 0,
+
+            // boolean telling if the events are bound to a eventlistener
+            binded: null,
+
+            // function to add or remove from eventlistener
+            offsetThrottle: null,
+            scrollSpyResizeThrottle: null,
+            scrollSpyScrollThrottle: null
         };
     },
+
     mounted: function mounted() {
         console.log('Sidebar mounted');
-        this.sidebar = $("#sidebar");
 
-        window.addEventListener('load', this.updateOffsetTop);
-        window.addEventListener('resize', __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.updateOffsetTop, 100));
-        window.addEventListener('load', this.scrollSpy);
-        window.addEventListener('resize', __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 100));
-        window.addEventListener('scroll', __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 50));
+        this.offsetThrottle = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.updateOffsetTop, 200);
+        this.scrollSpyResizeThrottle = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 200);
+        this.scrollSpyScrollThrottle = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 100);
+
+        this.manageBindByClientWidth();
+        window.addEventListener('resize', this.manageBindByClientWidth);
     },
     destroyed: function destroyed() {
-        window.removeEventListener('load', this.updateOffsetTop);
-        window.removeEventListener('resize', __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.updateOffsetTop, 100));
-        window.removeEventListener('load', this.scrollSpy);
-        window.removeEventListener('resize', __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 100));
-        window.removeEventListener('scroll', __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 50));
+        this.unbind();
+        window.removeEventListener('resize', this.manageBindByClientWidth);
     },
 
 
     methods: {
+        bind: function bind() {
+
+            this.updateOffsetTop();
+            this.scrollSpy();
+
+            window.addEventListener('resize', this.offsetThrottle);
+            window.addEventListener('resize', this.scrollSpyResizeThrottle);
+            window.addEventListener('scroll', this.scrollSpyScrollThrottle);
+        },
+        unbind: function unbind() {
+            window.removeEventListener('resize', this.offsetThrottle);
+            window.removeEventListener('resize', this.scrollSpyResizeThrottle);
+            window.removeEventListener('scroll', this.scrollSpyScrollThrottle);
+        },
+
+
+        manageBindByClientWidth: function manageBindByClientWidth() {
+            if (document.body.clientWidth < 768) {
+                if (this.binded) {
+                    console.log("unbinding");
+                    this.binded = false;
+                    this.unbind();
+                }
+            } else if (!this.binded) {
+                console.log("binding");
+                this.bind();
+                this.binded = true;
+            }
+        },
+
         updateOffsetTop: function updateOffsetTop() {
             this.sections = __WEBPACK_IMPORTED_MODULE_0_lodash__["map"](this.relationTypes, function (value) {
                 var element = document.getElementById(value.id);
-                var sidebarElements = document.querySelectorAll("a[href='#" + value.id + "']");
+                var sidebarElement = document.getElementById("navlink-" + value.id);
                 return {
                     offsetTop: element.offsetTop + element.offsetParent.offsetTop,
-                    sidebarOffsetTop: sidebarElements[0].offsetParent.offsetTop,
+                    sidebarOffsetTop: sidebarElement.offsetParent.offsetTop,
                     id: value.id
                 };
             });
 
-            this.parentOffset = this.sidebar[0].parentElement.offsetTop;
-
+            var sidebar = $("#sidebar");
             // affix system
             $(window).off('.affix');
-            this.sidebar.removeData('bs.affix').removeClass('affix affix-top affix-bottom');
-            this.sidebar.affix({
+            sidebar.removeData('bs.affix').removeClass('affix affix-top affix-bottom');
+            sidebar.affix({
                 offset: {
-                    top: this.parentOffset
+                    top: sidebar[0].parentElement.offsetTop
                 }
             });
         },
+
         scrollSpy: function scrollSpy() {
             console.log('salut');
             var scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
@@ -44157,19 +44197,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             });
 
-            this.active = active;
             if (active !== null) {
                 this.activeId = active.id;
 
-                var proportion = (active.sidebarOffsetTop - document.body.clientHeight / 2) / (this.sidebar.height() - document.body.clientHeight / 2);
-                var top = -((this.sidebar.height() - document.body.clientHeight + 50) * proportion);
+                var sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
 
-                this.top = top < 0 ? top : 0;
+                var proportion = (active.sidebarOffsetTop - document.body.clientHeight / 2) / (sidebarOffsetHeight - document.body.clientHeight / 2);
+                var top = -((sidebarOffsetHeight - document.body.clientHeight + 50) * proportion);
+
+                this.sidebarTop = top < 0 ? top : 0;
+            } else {
+                this.activeId = null;
             }
         }
-    },
+    }
 
-    props: ["relationTypes"]
 });
 
 /***/ }),
@@ -44184,7 +44226,7 @@ var render = function() {
     "nav",
     {
       staticClass: "bs-docs-sidebar",
-      style: { top: this.top + "px" },
+      style: { top: this.sidebarTop + "px" },
       attrs: { id: "sidebar" }
     },
     [
@@ -44193,9 +44235,17 @@ var render = function() {
         { staticClass: "nav nav-stacked" },
         _vm._l(_vm.relationTypes, function(value) {
           return _c("li", { class: { active: _vm.activeId == value.id } }, [
-            _c("a", { attrs: { href: "#" + value.id, click: _vm.scrollSpy } }, [
-              _vm._v(_vm._s(value.name))
-            ])
+            _c(
+              "a",
+              {
+                attrs: {
+                  id: "navlink-" + value.id,
+                  href: "#" + value.id,
+                  click: _vm.scrollSpy
+                }
+              },
+              [_vm._v(_vm._s(value.name))]
+            )
           ])
         })
       )
@@ -44222,7 +44272,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row" }, [
-      _c("h2", [_vm._v(_vm._s(_vm.node.name) + " :\n            "), _vm._m(0)]),
+      _c("h2", [_vm._v(_vm._s(_vm.getName) + " :\n            "), _vm._m(0)]),
       _vm._v(" "),
       _c("div", {
         attrs: { id: "description" },
@@ -44231,11 +44281,11 @@ var render = function() {
       _vm._v(" "),
       _c("hr"),
       _vm._v(" "),
-      _c("div", { staticClass: "col-md-9" }, _vm._m(1)),
+      _c("div", { staticClass: "col-sm-9" }, _vm._m(1)),
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "col-md-3" },
+        { staticClass: "col-sm-3 hidden-xs" },
         [_c("sidebar", { attrs: { relationTypes: _vm.getRelationTypes } })],
         1
       )

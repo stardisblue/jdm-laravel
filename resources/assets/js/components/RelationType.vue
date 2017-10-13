@@ -3,7 +3,7 @@
         <h3 :title="relationType.description">{{relationType.name}}</h3>
         <div class="relation-type-header"> recherche, filtres closing button</div>
         <hr/>
-        <ul>
+        <ul class="list-inline">
             <li v-for="relation in orderByWeight()"
                 v-if="relation.from === null && relation.to !== null">
                 <word :word="relation.to"></word>
