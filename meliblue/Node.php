@@ -1,80 +1,61 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: stardisblue
+ * Date: 13/10/2017
+ * Time: 17:02
+ */
 
 namespace Meliblue;
 
-
-use Meliblue\Models\Entity;
-use Meliblue\Models\NodeType;
-use Meliblue\Models\Relation;
-use Meliblue\Models\RelationType;
 
 class Node
 {
     public $id;
     public $name;
-    public $definition;
-    public $type;
-    public $weight;
     public $formattedName;
+    public $description;
+    public $nodeType;
+    public $weight;
     public $relationTypes = [];
-    public $relations = [];
-    public $nodeTypes = [];
-    public $nodes = [];
 
 
-    public function addNodeType(int $id, NodeType $nodeType)
+    public function __construct(RawNode $rawNode)
     {
-        $this->nodeTypes[$id] = $nodeType;
-    }
+        foreach ($rawNode->relations as $id => $rawRelation) {
+            $relation = new \stdClass();
+            $relation->id = $id;
+            $relation->weight = $rawRelation->weight;
 
-    public function addEntity(int $id, Entity $entity)
-    {
-        $this->nodes[$id] = $entity;
-    }
-
-    public function addRelationType(int $id, RelationType $relationType)
-    {
-        $this->relationTypes[$id] = $relationType;
-    }
-
-    public function addRelation(int $id, Relation $relation)
-    {
-        $this->relations[$id] = $relation;
-    }
-
-    public function setDefinition(String $definition)
-    {
-        $this->definition = trim($definition);
-    }
-
-    public function setNode(int $id, Entity $entity)
-    {
-        $this->id = $id;
-        $this->name = $entity->name;
-        $this->type = $entity->type;
-        $this->weight = $entity->weight;
-        $this->formattedName = $entity->formattedName;
-    }
-
-    public function prepare()
-    {
-        foreach ($this->relations as $id => $relation) {
-            if ($relation->from !== $this->id && isset($this->nodes[$relation->from])) {
-                $relation->from = $this->nodes[$relation->from];
+            // TODO
+            if ($rawRelation->from !== $rawNode->id && isset($rawNode->nodes[$rawRelation->from])) {
+                $relation->node = $rawNode->nodes[$rawRelation->from];
+            } elseif ($rawRelation->to !== $rawNode->id && isset($rawNode->nodes[$rawRelation->to])) {
+                $relation->node = $rawNode->nodes[$rawRelation->to];
             } else {
-                $relation->from = null;
+                $relation->node = null;
             }
 
-            if ($relation->to !== $this->id && isset($this->nodes[$relation->to])) {
-                $relation->to = $this->nodes[$relation->to];
-            } else {
-                $relation->to = null;
-            }
-            $this->relationTypes[$relation->type]->relations[] = $relation;
-            unset($relation->type);
+            $this->relationTypes[] = $relation;
         }
 
-        unset($this->relations);
-        unset($this->nodes);
+        foreach ($rawNode->relations as $id => $rawRelation) {
+            if ($rawRelation->from !== $rawNode->id && isset($rawNode->nodes[$rawRelation->from])) {
+                $rawRelation->from = $rawNode->nodes[$rawRelation->from];
+            } else {
+                $rawRelation->from = null;
+            }
+
+            if ($rawRelation->to !== $rawNode->id && isset($rawNode->nodes[$rawRelation->to])) {
+                $rawRelation->to = $rawNode->nodes[$rawRelation->to];
+            } else {
+                $rawRelation->to = null;
+            }
+            $rawNode->relationTypes[$rawRelation->type]->relations[] = $rawRelation;
+            unset($rawRelation->type);
+        }
+
+        unset($rawNode->relations);
+        unset($rawNode->nodes);
     }
 }

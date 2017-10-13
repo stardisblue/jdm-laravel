@@ -30,6 +30,8 @@ class NodeController extends Controller
 
             if ($parsed->getCode() !== 404) {
                 $node = $parsed->getNode();
+
+                dd($node);
                 $node->prepare();
             }
 

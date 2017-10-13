@@ -41,14 +41,14 @@ class WordParser
 
     /**
      * @param \DOMElement $DOMElement
-     * @return Node
+     * @return RawNode
      */
-    static function extract(\DOMElement $DOMElement): Node
+    static function extract(\DOMElement $DOMElement): RawNode
     {
         $content = $DOMElement->textContent;
         $definition = $DOMElement->getElementsByTagName("def")->item(0)->textContent;
 
-        $node = new Node();
+        $node = new RawNode();
         $node->setDefinition($definition);
         $separator = "\n";
 

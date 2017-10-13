@@ -16,17 +16,17 @@ class WordWrapper
     private $reason;
 
     /**
-     * @return Node
+     * @return RawNode
      */
-    public function getNode(): Node
+    public function getNode(): RawNode
     {
         return $this->node;
     }
 
     /**
-     * @param Node $node
+     * @param RawNode $node
      */
-    public function setNode(Node $node)
+    public function setNode(RawNode $node)
     {
         $this->node = $node;
     }

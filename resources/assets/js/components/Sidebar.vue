@@ -5,6 +5,7 @@
                 <a :id="'navlink-'+value.id" :href="'#'+value.id" :click="scrollSpy">{{value.name}}</a>
             </li>
         </ul>
+        <a href="#" class="back-to-top">Back to top</a>
     </nav>
 </template>
 
@@ -23,7 +24,7 @@
                 sidebarSideScroll: false,
 
                 // boolean telling if the events are bound to a eventlistener
-                binded: null,
+                binded: false,
 
                 // function to add or remove from eventlistener
                 events: {
@@ -47,8 +48,6 @@
 
             this.manageBindByClientWidth();
             window.addEventListener('resize', this.manageBindByClientWidth);
-
-
         },
 
         destroyed() {
@@ -110,7 +109,6 @@
                 });
 
                 this.sidebarSideScroll = sidebar.height() > document.body.clientHeight
-
             },
 
             scrollSpy: function () {
@@ -135,9 +133,9 @@
                     if (this.sidebarSideScroll) {
                         let proportion = (active.sidebarOffsetTop - (document.body.clientHeight / 2)) /
                             (sidebarOffsetHeight - (document.body.clientHeight / 2));
-                        let top = -100 + (document.body.clientHeight - sidebarOffsetHeight ) * proportion;
+                        let top = (document.body.clientHeight - sidebarOffsetHeight ) * proportion;
 
-                        this.sidebarTop = top < 0 ? top : 0;
+                        this.sidebarTop = top < 0 ? top - (100 * proportion) : 0;
                     } else {
                         this.sidebarTop = 0;
                     }
@@ -148,7 +146,6 @@
 
             }
         },
-
     }
 </script>
 <style>
@@ -210,4 +207,14 @@
         display: block;
     }
 
+    /* back to top*/
+    .back-to-top {
+        display: block;
+        padding: 4px 10px;
+        margin-top: 10px;
+        margin-left: 10px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #999;
+    }
 </style>

@@ -10,7 +10,6 @@ class RelationType
     public $code;
     public $name;
     public $description;
-    public $relations = [];
 
     /**
      * @param string $code
@@ -34,14 +33,5 @@ class RelationType
     public function setDescription(string $description)
     {
         $this->description = $description;
-    }
-
-    /**
-     * @param int $id
-     * @param Relation $relation
-     */
-    public function addRelation(int $id, Relation $relation)
-    {
-        $this->relations[$id] = $relation;
     }
 }
