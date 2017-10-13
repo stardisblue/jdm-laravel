@@ -43476,6 +43476,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -43616,12 +43617,11 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "relation-type", attrs: { id: _vm.id } }, [
-    _c("h3", { attrs: { title: _vm.relationType.description } }, [
-      _vm._v(_vm._s(_vm.relationType.name))
-    ]),
-    _vm._v(" "),
     _c("div", { staticClass: "relation-type-header" }, [
-      _vm._v(" recherche, filtres closing button")
+      _c("h3", { attrs: { title: _vm.relationType.description } }, [
+        _vm._v(_vm._s(_vm.relationType.name))
+      ]),
+      _vm._v("\n        recherche, filtres closing button\n    ")
     ]),
     _vm._v(" "),
     _c("hr"),
@@ -43732,7 +43732,7 @@ exports = module.exports = __webpack_require__(49)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* sidebar */\n.bs-docs-sidebar {\n    padding-left: 20px;\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n\n/* all links */\n.bs-docs-sidebar .nav > li > a {\n    color: #999;\n    border-left: 2px solid transparent;\n    padding: 4px 20px;\n    font-size: 13px;\n    font-weight: 400;\n}\n\n/* nested links */\n.bs-docs-sidebar .nav .nav > li > a {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 30px;\n    font-size: 12px;\n}\n\n/* active & hover links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > li > a:hover,\n.bs-docs-sidebar .nav > li > a:focus {\n    color: #563d7c;\n    text-decoration: none;\n    background-color: transparent;\n    border-left-color: #563d7c;\n}\n\n/* all active links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > .active:hover > a,\n.bs-docs-sidebar .nav > .active:focus > a {\n    font-weight: 700;\n}\n\n/* nested active links */\n.bs-docs-sidebar .nav .nav > .active > a,\n.bs-docs-sidebar .nav .nav > .active:hover > a,\n.bs-docs-sidebar .nav .nav > .active:focus > a {\n    font-weight: 500;\n}\n\n/* hide inactive nested list */\n.bs-docs-sidebar .nav ul.nav {\n    display: none;\n}\n\n/* show active nested list */\n.bs-docs-sidebar .nav > .active > ul.nav {\n    display: block;\n}\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* sidebar */\n.bs-docs-sidebar {\n    padding-left: 20px;\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n\n/* all links */\n.bs-docs-sidebar .nav > li > a {\n    color: #999;\n    border-left: 2px solid transparent;\n    padding: 4px 20px;\n    font-size: 13px;\n    font-weight: 400;\n}\n\n/* nested links */\n.bs-docs-sidebar .nav .nav > li > a {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 30px;\n    font-size: 12px;\n}\n\n/* active & hover links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > li > a:hover,\n.bs-docs-sidebar .nav > li > a:focus {\n    color: #563d7c;\n    text-decoration: none;\n    background-color: transparent;\n    border-left-color: #563d7c;\n}\n\n/* all active links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > .active:hover > a,\n.bs-docs-sidebar .nav > .active:focus > a {\n    font-weight: 700;\n}\n\n/* nested active links */\n.bs-docs-sidebar .nav .nav > .active > a,\n.bs-docs-sidebar .nav .nav > .active:hover > a,\n.bs-docs-sidebar .nav .nav > .active:focus > a {\n    font-weight: 500;\n}\n\n/* hide inactive nested list */\n.bs-docs-sidebar .nav ul.nav {\n    display: none;\n}\n\n/* show active nested list */\n.bs-docs-sidebar .nav > .active > ul.nav {\n    display: block;\n}\n\n", ""]);
 
 // exports
 
@@ -44103,23 +44103,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             activeId: null,
             sections: [],
             sidebarTop: 0,
+            sidebarSideScroll: false,
 
             // boolean telling if the events are bound to a eventlistener
             binded: null,
 
             // function to add or remove from eventlistener
-            offsetThrottle: null,
-            scrollSpyResizeThrottle: null,
-            scrollSpyScrollThrottle: null
+            events: {
+                resize: {
+                    offsetTop: null,
+                    scrollSpy: null
+                },
+                scroll: {
+                    scrollSpy: null
+                }
+            }
         };
     },
 
     mounted: function mounted() {
         console.log('Sidebar mounted');
 
-        this.offsetThrottle = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.updateOffsetTop, 200);
-        this.scrollSpyResizeThrottle = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 200);
-        this.scrollSpyScrollThrottle = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 100);
+        this.events.resize.offsetTop = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.updateOffsetTop, 200);
+        this.events.resize.scrollSpy = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 200);
+        this.events.scroll.scrollSpy = __WEBPACK_IMPORTED_MODULE_0_lodash__["throttle"](this.scrollSpy, 100);
 
         this.manageBindByClientWidth();
         window.addEventListener('resize', this.manageBindByClientWidth);
@@ -44132,18 +44139,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         bind: function bind() {
-
             this.updateOffsetTop();
             this.scrollSpy();
 
-            window.addEventListener('resize', this.offsetThrottle);
-            window.addEventListener('resize', this.scrollSpyResizeThrottle);
-            window.addEventListener('scroll', this.scrollSpyScrollThrottle);
+            window.addEventListener('resize', this.events.resize.offsetTop);
+            window.addEventListener('resize', this.events.resize.scrollSpy);
+            window.addEventListener('scroll', this.events.scroll.scrollSpy);
         },
         unbind: function unbind() {
-            window.removeEventListener('resize', this.offsetThrottle);
-            window.removeEventListener('resize', this.scrollSpyResizeThrottle);
-            window.removeEventListener('scroll', this.scrollSpyScrollThrottle);
+            window.removeEventListener('resize', this.events.resize.offsetTop);
+            window.removeEventListener('resize', this.events.resize.scrollSpy);
+            window.removeEventListener('scroll', this.events.scroll.scrollSpy);
         },
 
 
@@ -44181,6 +44187,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     top: sidebar[0].parentElement.offsetTop
                 }
             });
+
+            this.sidebarSideScroll = sidebar.height() > document.body.clientHeight;
         },
 
         scrollSpy: function scrollSpy() {
@@ -44202,10 +44210,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                 var sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
 
-                var proportion = (active.sidebarOffsetTop - document.body.clientHeight / 2) / (sidebarOffsetHeight - document.body.clientHeight / 2);
-                var top = -((sidebarOffsetHeight - document.body.clientHeight + 50) * proportion);
+                if (this.sidebarSideScroll) {
+                    var proportion = (active.sidebarOffsetTop - document.body.clientHeight / 2) / (sidebarOffsetHeight - document.body.clientHeight / 2);
+                    var top = -100 + (document.body.clientHeight - sidebarOffsetHeight) * proportion;
 
-                this.sidebarTop = top < 0 ? top : 0;
+                    this.sidebarTop = top < 0 ? top : 0;
+                } else {
+                    this.sidebarTop = 0;
+                }
             } else {
                 this.activeId = null;
             }

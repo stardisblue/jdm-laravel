@@ -1,7 +1,8 @@
 <template>
     <div :id="id" class="relation-type">
-        <h3 :title="relationType.description">{{relationType.name}}</h3>
-        <div class="relation-type-header"> recherche, filtres closing button</div>
+        <div class="relation-type-header"><h3 :title="relationType.description">{{relationType.name}}</h3>
+            recherche, filtres closing button
+        </div>
         <hr/>
         <ul class="list-inline">
             <li v-for="relation in orderByWeight()"

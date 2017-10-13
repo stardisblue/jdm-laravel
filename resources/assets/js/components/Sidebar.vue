@@ -20,23 +20,30 @@
                 activeId: null,
                 sections: [],
                 sidebarTop: 0,
+                sidebarSideScroll: false,
 
                 // boolean telling if the events are bound to a eventlistener
                 binded: null,
 
                 // function to add or remove from eventlistener
-                offsetThrottle: null,
-                scrollSpyResizeThrottle: null,
-                scrollSpyScrollThrottle: null,
+                events: {
+                    resize: {
+                        offsetTop: null,
+                        scrollSpy: null,
+                    },
+                    scroll: {
+                        scrollSpy: null,
+                    }
+                }
             }
         },
 
         mounted() {
             console.log('Sidebar mounted');
 
-            this.offsetThrottle = _.throttle(this.updateOffsetTop, 200);
-            this.scrollSpyResizeThrottle = _.throttle(this.scrollSpy, 200);
-            this.scrollSpyScrollThrottle = _.throttle(this.scrollSpy, 100);
+            this.events.resize.offsetTop = _.throttle(this.updateOffsetTop, 200);
+            this.events.resize.scrollSpy = _.throttle(this.scrollSpy, 200);
+            this.events.scroll.scrollSpy = _.throttle(this.scrollSpy, 100);
 
             this.manageBindByClientWidth();
             window.addEventListener('resize', this.manageBindByClientWidth);
@@ -52,19 +59,18 @@
 
         methods: {
             bind() {
-
                 this.updateOffsetTop();
                 this.scrollSpy();
 
-                window.addEventListener('resize', this.offsetThrottle);
-                window.addEventListener('resize', this.scrollSpyResizeThrottle);
-                window.addEventListener('scroll', this.scrollSpyScrollThrottle);
+                window.addEventListener('resize', this.events.resize.offsetTop);
+                window.addEventListener('resize', this.events.resize.scrollSpy);
+                window.addEventListener('scroll', this.events.scroll.scrollSpy);
             },
 
             unbind() {
-                window.removeEventListener('resize', this.offsetThrottle);
-                window.removeEventListener('resize', this.scrollSpyResizeThrottle);
-                window.removeEventListener('scroll', this.scrollSpyScrollThrottle);
+                window.removeEventListener('resize', this.events.resize.offsetTop);
+                window.removeEventListener('resize', this.events.resize.scrollSpy);
+                window.removeEventListener('scroll', this.events.scroll.scrollSpy);
             },
 
             manageBindByClientWidth: function () {
@@ -103,6 +109,8 @@
                     }
                 });
 
+                this.sidebarSideScroll = sidebar.height() > document.body.clientHeight
+
             },
 
             scrollSpy: function () {
@@ -124,11 +132,15 @@
 
                     let sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
 
-                    let proportion = (active.sidebarOffsetTop - (document.body.clientHeight / 2)) /
-                        (sidebarOffsetHeight - (document.body.clientHeight / 2));
-                    let top = -((sidebarOffsetHeight - document.body.clientHeight + 50) * proportion);
+                    if (this.sidebarSideScroll) {
+                        let proportion = (active.sidebarOffsetTop - (document.body.clientHeight / 2)) /
+                            (sidebarOffsetHeight - (document.body.clientHeight / 2));
+                        let top = -100 + (document.body.clientHeight - sidebarOffsetHeight ) * proportion;
 
-                    this.sidebarTop = top < 0 ? top : 0;
+                        this.sidebarTop = top < 0 ? top : 0;
+                    } else {
+                        this.sidebarTop = 0;
+                    }
 
                 } else {
                     this.activeId = null;
