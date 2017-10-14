@@ -2,8 +2,6 @@
 
 namespace Meliblue;
 
-use Meliblue\Models\NodeType;
-use Meliblue\Models\Relation;
 use Meliblue\Models\RelationType;
 use Meliblue\Models\SimpleNode;
 
@@ -15,9 +13,9 @@ class RawNode extends SimpleNode
     private $nodeTypes = [];
     private $nodes = [];
 
-    public function addNodeType(NodeType $nodeType)
+    public function addNodeType(array $nodeType)
     {
-        $this->nodeTypes[$nodeType->id] = $nodeType;
+        $this->nodeTypes[$nodeType['id']] = $nodeType;
     }
 
     public function addSimpleNode(SimpleNode $simpleNode)
@@ -30,9 +28,9 @@ class RawNode extends SimpleNode
         $this->relationTypes[$relationType->id] = $relationType;
     }
 
-    public function addRelation(Relation $relation)
+    public function addRelation(array $relation)
     {
-        $this->relations[$relation->id] = $relation;
+        $this->relations[$relation['id']] = $relation;
 
     }
 
@@ -56,25 +54,16 @@ class RawNode extends SimpleNode
 
 
     /**
-     * @return Relation[]
+     * @return array
      */
     public function getRelations(): array
     {
         return $this->relations;
     }
 
-    public function setDescription(string $description)
+    public function setDescription(string $description): void
     {
         $this->description = trim($description);
-    }
-
-    public function setNode(SimpleNode $node)
-    {
-        $this->setId($node->id)
-            ->setName($node->name)
-            ->setFormattedName($node->formattedName)
-            ->setNodeType($node->nodeType)
-            ->setWeight($node->weight);
     }
 
     /**
@@ -96,7 +85,7 @@ class RawNode extends SimpleNode
     }
 
     /**
-     * @return NodeType[]
+     * @return array
      */
     public function getNodeTypes(): array
     {

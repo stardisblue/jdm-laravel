@@ -57,13 +57,13 @@ class RelationType
         return $this;
     }
 
-    public function addRelationIn(JsonRelation $jsonRelation)
+    public function addRelationIn(Relation $relation)
     {
-        $this->relations['in'][] = $jsonRelation;
+        $this->relations['in'][] = $relation;
     }
 
-    public function addRelationOut(JsonRelation $jsonRelation)
+    public function addRelationOut(Relation $relation)
     {
-        $this->relations['out'][] = $jsonRelation;
+        $this->relations['out'][] = $relation;
     }
 }

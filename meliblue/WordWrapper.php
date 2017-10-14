@@ -18,7 +18,7 @@ class WordWrapper
     /**
      * @return RawNode
      */
-    public function getNode(): ?RawNode
+    public function getNode(): RawNode
     {
         return $this->node;
     }

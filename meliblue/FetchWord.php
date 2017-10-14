@@ -4,6 +4,7 @@ namespace Meliblue;
 
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class FetchWord
@@ -27,12 +28,13 @@ class FetchWord
     /**
      * @param string $name
      * @param string $relation
+     * @return PromiseInterface
      */
-    static function fetchAsync(string $name, $relation = '')
+    static function fetchAsync(string $name, $relation = ''): PromiseInterface
     {
         $client = new Client();
 
-        $response = $client->requestAsync('GET', self::$baseUrl,
-            ['query' => ['gotermrel' => $name, 'rel' => $relation]])->then();
+        return $client->requestAsync('GET', self::$baseUrl,
+            ['query' => ['gotermrel' => $name, 'rel' => $relation, 'output' => 0]]);
     }
 }

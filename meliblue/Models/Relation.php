@@ -1,58 +1,26 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: stardisblue
+ * Date: 13/10/2017
+ * Time: 21:41
+ */
 
 namespace Meliblue\Models;
 
 
 class Relation
 {
+
     public $id;
-    public $from;
-    public $to;
-    public $type;
     public $weight;
+    public $node;
 
-    /**
-     * @param int $id
-     * @return Relation
-     */
-    public function setId(int $id): Relation
+
+    public function __construct(array $relation)
     {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @param int|SimpleNode|null $from
-     * @return Relation
-     */
-    public function setFrom(int $from): Relation
-    {
-        $this->from = $from;
-
-        return $this;
-    }
-
-    /**
-     * @param int|SimpleNode|null $to
-     * @return Relation
-     */
-    public function setTo(int $to): Relation
-    {
-        $this->to = $to;
-
-        return $this;
-    }
-
-    /**
-     * @param int $type
-     * @return Relation
-     */
-    public function setType(int $type): Relation
-    {
-        $this->type = $type;
-
-        return $this;
+        $this->setId($relation['id'])
+            ->setWeight($relation['weight']);
     }
 
     /**
@@ -66,5 +34,22 @@ class Relation
         return $this;
     }
 
+    /**
+     * @param int $id
+     * @return Relation
+     */
+    public function setId(int $id): Relation
+    {
+        $this->id = $id;
 
+        return $this;
+    }
+
+    /**
+     * @param SimpleNode $node
+     */
+    public function setNode(SimpleNode $node)
+    {
+        $this->node = $node;
+    }
 }

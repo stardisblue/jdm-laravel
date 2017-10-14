@@ -13,13 +13,22 @@ class SimpleNode
     public $nodeType;
     public $weight;
 
+    public function setNode(SimpleNode $node): void
+    {
+        $this->setId($node->id)
+            ->setName($node->name)
+            ->setFormattedName($node->formattedName)
+            ->setNodeType($node->nodeType)
+            ->setWeight($node->weight);
+    }
+
     /**
-     * @param string $name
+     * @param int $weight
      * @return SimpleNode
      */
-    public function setName(string $name): SimpleNode
+    public function setWeight(int $weight): SimpleNode
     {
-        $this->name = WordParser::trim($name);
+        $this->weight = $weight;
 
         return $this;
     }
@@ -36,17 +45,6 @@ class SimpleNode
     }
 
     /**
-     * @param int $weight
-     * @return SimpleNode
-     */
-    public function setWeight(int $weight): SimpleNode
-    {
-        $this->weight = $weight;
-
-        return $this;
-    }
-
-    /**
      * @param string|null $formattedName
      * @return SimpleNode
      */
@@ -57,6 +55,17 @@ class SimpleNode
         } else {
             $this->formattedName = null;
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return SimpleNode
+     */
+    public function setName(string $name): SimpleNode
+    {
+        $this->name = WordParser::trim($name);
 
         return $this;
     }

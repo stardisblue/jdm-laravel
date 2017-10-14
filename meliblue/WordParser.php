@@ -3,8 +3,6 @@
 namespace Meliblue;
 
 
-use Meliblue\Models\NodeType;
-use Meliblue\Models\Relation;
 use Meliblue\Models\RelationType;
 use Meliblue\Models\SimpleNode;
 use Psr\Http\Message\ResponseInterface;
@@ -28,11 +26,11 @@ class WordParser
             $wrapper->setCode(404);
             $wrapper->setReason("word does not exist");
         } elseif ($domDoc->getElementsByTagName("warning")->length > 0) {
-            $wrapper->setNode(WordParser::extract($content));
+            $wrapper->setNode(self::extract($content));
             $wrapper->setCode(413);
             $wrapper->setReason("TOOBIG_USE_DUMP");
         } else {
-            $wrapper->setNode(WordParser::extract($content));
+            $wrapper->setNode(self::extract($content));
             $wrapper->setCode($response->getStatusCode());
             $wrapper->setReason($response->getReasonPhrase());
         }
@@ -57,17 +55,17 @@ class WordParser
         while ($line !== false) {
             if ($line === null) {
                 $line = strtok($separator);
+                continue;
             }
 
             $array = explode(';', $line);
             $type = $array[0];
 
             if ($type === 'nt') {
-                $nodeType = new NodeType();
-                $nodeType->setId($array[1])
-                    ->setName($array[2]);
-
-                $node->addNodeType($nodeType);
+                $node->addNodeType([
+                    'id' => (int)$array[1],
+                    'name' => WordParser::trim($array[2]),
+                ]);
             } elseif ($type === 'e') {
                 if (filter_var($array[3], FILTER_VALIDATE_INT) === false) {
                     $array[2] = $array[2].';'.array_splice($array, 3, 1)[0];
@@ -90,14 +88,13 @@ class WordParser
 
                 $node->addRelationType($relationType);
             } elseif ($type === 'r') {
-                $relation = new Relation();
-                $relation->setId($array[1])
-                    ->setFrom($array[2])
-                    ->setTo($array[3])
-                    ->setType($array[4])
-                    ->setWeight($array[5]);
-
-                $node->addRelation($relation);
+                $node->addRelation([
+                    'id' => (int)$array[1],
+                    'from' => (int)$array[2],
+                    'to' => (int)$array[3],
+                    'type' => (int)$array[4],
+                    'weight' => (int)$array[5],
+                ]);
             }
             $line = strtok($separator);
         }

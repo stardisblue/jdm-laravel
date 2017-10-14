@@ -12,11 +12,11 @@ class NodeController extends Controller
 {
     public function display(string $word)
     {
-        $newnode = null;
+        $node = null;
 
         // afficher un mot
         if (Cache::has($word)) {
-            $newnode = Cache::get($word);
+            $node = Cache::get($word);
             $reason = "";
         } else {
             $response = FetchWord::fetch(utf8_decode($word));
@@ -30,14 +30,14 @@ class NodeController extends Controller
             }
 
             if ($parsed->getCode() !== 404) {
-                $node = $parsed->getNode();
-                $newnode = new Node($node);
+                $rawNode = $parsed->getNode();
+                $node = new Node($rawNode);
             }
 
-            Cache::put($word, $newnode, 60);
+            Cache::put($word, $node, 60);
         }
 
-        return view('node.single', ["node" => $newnode, "reason" => $reason]);
+        return view('node.single', ["node" => $node, "reason" => $reason]);
     }
 
     public function card(string $word)
