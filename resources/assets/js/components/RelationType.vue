@@ -4,11 +4,13 @@
             recherche, filtres closing button
         </div>
         <hr/>
-        <ul class="list-inline">
-            <li v-for="relation in orderByWeight()"
-                v-if="relation.from === null && relation.to !== null">
-                <word :word="relation.to"></word>
+        <ul class="list-inline relations-in">
+            <li v-for="relation in relationType.relations.in">
+                <word :word="relation.node"></word>
             </li>
+        </ul>
+        <ul class="list-inline relation-out">
+            <li v-for="relation in relationType.relations.out"><word :word="relation.node"></word></li>
         </ul>
     </div>
 </template>
@@ -27,12 +29,21 @@
         },
 
         methods: {
-            orderByWeight: function (order = "desc") {
-                return _.orderBy(this.relationType.relations, ['weight', 'to.name'], [order, 'asc']);
+            inOrderByWeight: function (order = "desc") {
+                this.relationType.relations['in'] = _.orderBy(this.relationType.relations.in, ['weight', 'node.name'],
+                    [order, 'asc']);
             },
 
-            orderByName: function (order = "asc") {
-                return _.orderBy(this.relationType.relations, ['to.name'], [order]);
+            inOrderByName: function (order = "asc") {
+                this.relationType.relations['in'] = _.orderBy(this.relationType.relations.in, ['node.name'], [order]);
+            },
+            outOrderByWeight: function (order = "desc") {
+                this.relationType.relations.out = _.orderBy(this.relationType.relations.out, ['weight', 'node.name'],
+                    [order, 'asc']);
+            },
+
+            outOrderByName: function (order = "asc") {
+                this.relationType.relations.out = _.orderBy(this.relationType.relations.out, ['node.name'], [order]);
             }
         },
 

@@ -10,9 +10,9 @@
             <div class="col-sm-9">
 
                 <relation-type v-once="v-once"
-                               v-for="(relationType, id) in node.relationTypes"
-                               :key="id"
-                               :id="id"
+                               v-for="relationType in node.relationTypes"
+                               :key="relationType.id"
+                               :id="relationType.id"
                                :relationType="relationType"></relation-type>
 
             </div>
@@ -49,18 +49,18 @@
             },
 
             compiledMarkdown: function () {
-                return marked(this.node.definition, {breaks: true, sanitize: true})
+                return marked(this.node.description, {breaks: true, sanitize: true})
             },
 
             getPos: function () {
-                if (this.node.relationTypes[4] !== undefined) {
-                    return this.node.relationTypes[4];
-                }
+                return _.find(this.node.relationTypes, function (value) {
+                    return value.id === 4
+                })
             },
 
             getRelationTypes: function () {
-                return _.map(this.node.relationTypes, function (value, index) {
-                    return {id: index, name: value.name};
+                return _.map(this.node.relationTypes, function (value) {
+                    return {id: value.id, name: value.name};
                 });
             }
         },

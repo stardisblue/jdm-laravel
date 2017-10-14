@@ -17471,14 +17471,12 @@ module.exports = {
 
 /* globals __VUE_SSR_CONTEXT__ */
 
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
 
 module.exports = function normalizeComponent (
   rawScriptExports,
   compiledTemplate,
-  functionalTemplate,
   injectStyles,
   scopeId,
   moduleIdentifier /* server only */
@@ -17502,12 +17500,6 @@ module.exports = function normalizeComponent (
   if (compiledTemplate) {
     options.render = compiledTemplate.render
     options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
   }
 
   // scopedId
@@ -17548,16 +17540,12 @@ module.exports = function normalizeComponent (
     var existing = functional
       ? options.render
       : options.beforeCreate
-
     if (!functional) {
       // inject component registration as beforeCreate hook
       options.beforeCreate = existing
         ? [].concat(existing, hook)
         : [hook]
     } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
       // register for functioal component in vue file
       options.render = function renderWithStyleInjection (h, context) {
         hook.call(context)
@@ -42006,8 +41994,6 @@ var normalizeComponent = __webpack_require__(2)
 var __vue_script__ = __webpack_require__(38)
 /* template */
 var __vue_template__ = __webpack_require__(54)
-/* template functional */
-  var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = null
 /* scopeId */
@@ -42017,13 +42003,13 @@ var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __vue_script__,
   __vue_template__,
-  __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
   __vue_module_identifier__
 )
 Component.options.__file = "resources\\assets\\js\\components\\Node.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Node.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -42035,7 +42021,7 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-110ad209", Component.options)
   } else {
     hotAPI.reload("data-v-110ad209", Component.options)
-' + '  }
+  }
   module.hot.dispose(function (data) {
     disposed = true
   })
@@ -42109,18 +42095,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         compiledMarkdown: function compiledMarkdown() {
-            return __WEBPACK_IMPORTED_MODULE_0_marked__(this.node.definition, { breaks: true, sanitize: true });
+            return __WEBPACK_IMPORTED_MODULE_0_marked__(this.node.description, { breaks: true, sanitize: true });
         },
 
         getPos: function getPos() {
-            if (this.node.relationTypes[4] !== undefined) {
-                return this.node.relationTypes[4];
-            }
+            return __WEBPACK_IMPORTED_MODULE_1_lodash___default.a.find(this.node.relationTypes, function (value) {
+                return value.id === 4;
+            });
         },
 
         getRelationTypes: function getRelationTypes() {
-            return __WEBPACK_IMPORTED_MODULE_1_lodash___default.a.map(this.node.relationTypes, function (value, index) {
-                return { id: index, name: value.name };
+            return __WEBPACK_IMPORTED_MODULE_1_lodash___default.a.map(this.node.relationTypes, function (value) {
+                return { id: value.id, name: value.name };
             });
         }
     }
@@ -43430,8 +43416,6 @@ var normalizeComponent = __webpack_require__(2)
 var __vue_script__ = __webpack_require__(41)
 /* template */
 var __vue_template__ = __webpack_require__(45)
-/* template functional */
-  var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = null
 /* scopeId */
@@ -43441,13 +43425,13 @@ var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __vue_script__,
   __vue_template__,
-  __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
   __vue_module_identifier__
 )
 Component.options.__file = "resources\\assets\\js\\components\\RelationType.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] RelationType.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -43459,7 +43443,7 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-0791cb46", Component.options)
   } else {
     hotAPI.reload("data-v-0791cb46", Component.options)
-' + '  }
+  }
   module.hot.dispose(function (data) {
     disposed = true
   })
@@ -43493,6 +43477,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -43508,16 +43494,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
-        orderByWeight: function orderByWeight() {
+        inOrderByWeight: function inOrderByWeight() {
             var order = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "desc";
 
-            return __WEBPACK_IMPORTED_MODULE_0_lodash__["orderBy"](this.relationType.relations, ['weight', 'to.name'], [order, 'asc']);
+            this.relationType.relations['in'] = __WEBPACK_IMPORTED_MODULE_0_lodash__["orderBy"](this.relationType.relations.in, ['weight', 'node.name'], [order, 'asc']);
         },
 
-        orderByName: function orderByName() {
+        inOrderByName: function inOrderByName() {
             var order = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "asc";
 
-            return __WEBPACK_IMPORTED_MODULE_0_lodash__["orderBy"](this.relationType.relations, ['to.name'], [order]);
+            this.relationType.relations['in'] = __WEBPACK_IMPORTED_MODULE_0_lodash__["orderBy"](this.relationType.relations.in, ['node.name'], [order]);
+        },
+        outOrderByWeight: function outOrderByWeight() {
+            var order = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "desc";
+
+            this.relationType.relations.out = __WEBPACK_IMPORTED_MODULE_0_lodash__["orderBy"](this.relationType.relations.out, ['weight', 'node.name'], [order, 'asc']);
+        },
+
+        outOrderByName: function outOrderByName() {
+            var order = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "asc";
+
+            this.relationType.relations.out = __WEBPACK_IMPORTED_MODULE_0_lodash__["orderBy"](this.relationType.relations.out, ['node.name'], [order]);
         }
     },
 
@@ -43534,8 +43531,6 @@ var normalizeComponent = __webpack_require__(2)
 var __vue_script__ = __webpack_require__(43)
 /* template */
 var __vue_template__ = __webpack_require__(44)
-/* template functional */
-  var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = null
 /* scopeId */
@@ -43545,13 +43540,13 @@ var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __vue_script__,
   __vue_template__,
-  __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
   __vue_module_identifier__
 )
 Component.options.__file = "resources\\assets\\js\\components\\Word.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Word.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -43563,7 +43558,7 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-6069b1de", Component.options)
   } else {
     hotAPI.reload("data-v-6069b1de", Component.options)
-' + '  }
+  }
   module.hot.dispose(function (data) {
     disposed = true
   })
@@ -43622,7 +43617,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-6069b1de", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-6069b1de", module.exports)
   }
 }
 
@@ -43646,11 +43641,17 @@ var render = function() {
     _vm._v(" "),
     _c(
       "ul",
-      { staticClass: "list-inline" },
-      _vm._l(_vm.orderByWeight(), function(relation) {
-        return relation.from === null && relation.to !== null
-          ? _c("li", [_c("word", { attrs: { word: relation.to } })], 1)
-          : _vm._e()
+      { staticClass: "list-inline relations-in" },
+      _vm._l(_vm.relationType.relations.in, function(relation) {
+        return _c("li", [_c("word", { attrs: { word: relation.node } })], 1)
+      })
+    ),
+    _vm._v(" "),
+    _c(
+      "ul",
+      { staticClass: "list-inline relation-out" },
+      _vm._l(_vm.relationType.relations.out, function(relation) {
+        return _c("li", [_c("word", { attrs: { word: relation.node } })], 1)
       })
     )
   ])
@@ -43661,7 +43662,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-0791cb46", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-0791cb46", module.exports)
   }
 }
 
@@ -43679,8 +43680,6 @@ var normalizeComponent = __webpack_require__(2)
 var __vue_script__ = __webpack_require__(52)
 /* template */
 var __vue_template__ = __webpack_require__(53)
-/* template functional */
-  var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
@@ -43690,13 +43689,13 @@ var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __vue_script__,
   __vue_template__,
-  __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
   __vue_module_identifier__
 )
 Component.options.__file = "resources\\assets\\js\\components\\Sidebar.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Sidebar.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -43708,7 +43707,7 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-039ba325", Component.options)
   } else {
     hotAPI.reload("data-v-039ba325", Component.options)
-' + '  }
+  }
   module.hot.dispose(function (data) {
     disposed = true
   })
@@ -43728,13 +43727,13 @@ var content = __webpack_require__(48);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(50)("8942ea1e", content, false);
+var update = __webpack_require__(50)("7904f88e", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-039ba325\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./Sidebar.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-039ba325\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./Sidebar.vue");
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-039ba325\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Sidebar.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-039ba325\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Sidebar.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -43752,7 +43751,7 @@ exports = module.exports = __webpack_require__(49)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* sidebar */\n.bs-docs-sidebar {\n    padding-left: 20px;\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n\n/* all links */\n.bs-docs-sidebar .nav > li > a {\n    color: #999;\n    border-left: 2px solid transparent;\n    padding: 4px 20px;\n    font-size: 13px;\n    font-weight: 400;\n}\n\n/* nested links */\n.bs-docs-sidebar .nav .nav > li > a {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 30px;\n    font-size: 12px;\n}\n\n/* active & hover links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > li > a:hover,\n.bs-docs-sidebar .nav > li > a:focus {\n    color: #563d7c;\n    text-decoration: none;\n    background-color: transparent;\n    border-left-color: #563d7c;\n}\n\n/* all active links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > .active:hover > a,\n.bs-docs-sidebar .nav > .active:focus > a {\n    font-weight: 700;\n}\n\n/* nested active links */\n.bs-docs-sidebar .nav .nav > .active > a,\n.bs-docs-sidebar .nav .nav > .active:hover > a,\n.bs-docs-sidebar .nav .nav > .active:focus > a {\n    font-weight: 500;\n}\n\n/* hide inactive nested list */\n.bs-docs-sidebar .nav ul.nav {\n    display: none;\n}\n\n/* show active nested list */\n.bs-docs-sidebar .nav > .active > ul.nav {\n    display: block;\n}\n\n/* back to top*/\n.back-to-top {\n    display: block;\n    padding: 4px 10px;\n    margin-top: 10px;\n    margin-left: 10px;\n    font-size: 12px;\n    font-weight: 500;\n    color: #999;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* sidebar */\n.bs-docs-sidebar {\n    padding-left: 20px;\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n\n/* all links */\n.bs-docs-sidebar .nav > li > a {\n    color: #999;\n    border-left: 2px solid transparent;\n    padding: 4px 20px;\n    font-size: 13px;\n    font-weight: 400;\n}\n\n/* nested links */\n.bs-docs-sidebar .nav .nav > li > a {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 30px;\n    font-size: 12px;\n}\n\n/* active & hover links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > li > a:hover,\n.bs-docs-sidebar .nav > li > a:focus {\n    color: #563d7c;\n    text-decoration: none;\n    background-color: transparent;\n    border-left-color: #563d7c;\n}\n\n/* all active links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > .active:hover > a,\n.bs-docs-sidebar .nav > .active:focus > a {\n    font-weight: 700;\n}\n\n/* nested active links */\n.bs-docs-sidebar .nav .nav > .active > a,\n.bs-docs-sidebar .nav .nav > .active:hover > a,\n.bs-docs-sidebar .nav .nav > .active:focus > a {\n    font-weight: 500;\n}\n\n/* hide inactive nested list */\n.bs-docs-sidebar .nav ul.nav {\n    display: none;\n}\n\n/* show active nested list */\n.bs-docs-sidebar .nav > .active > ul.nav {\n    display: block;\n}\n\n/* back to top*/\n.back-to-top {\n    display: block;\n    padding: 4px 10px;\n    margin-top: 10px;\n    margin-left: 10px;\n    font-size: 12px;\n    font-weight: 500;\n    color: #999;\n}\n", ""]);
 
 // exports
 
@@ -44213,20 +44212,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         scrollSpy: function scrollSpy() {
-            console.log('salut');
             var scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
 
-            var active = null;
-
-            __WEBPACK_IMPORTED_MODULE_0_lodash__["forEach"](this.sections, function (element) {
-                if (element.offsetTop <= scrollPosition) {
-                    active = element;
-                } else {
-                    return false;
-                }
+            var active = __WEBPACK_IMPORTED_MODULE_0_lodash__["findLast"](this.sections, function (element) {
+                return element.offsetTop <= scrollPosition;
             });
 
-            if (active !== null) {
+            if (active !== undefined) {
                 this.activeId = active.id;
 
                 var sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
@@ -44294,7 +44286,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-039ba325", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-039ba325", module.exports)
   }
 }
 
@@ -44339,10 +44331,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _vm._l(_vm.node.relationTypes, function(relationType, id) {
+    return _vm._l(_vm.node.relationTypes, function(relationType) {
       return _c("relation-type", {
-        key: id,
-        attrs: { id: id, relationType: relationType }
+        key: relationType.id,
+        attrs: { id: relationType.id, relationType: relationType }
       })
     })
   }
@@ -44352,7 +44344,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-110ad209", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-110ad209", module.exports)
   }
 }
 

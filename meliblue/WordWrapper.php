@@ -11,14 +11,14 @@ namespace Meliblue;
 
 class WordWrapper
 {
-    private $node = null;
+    private $node;
     private $code;
     private $reason;
 
     /**
      * @return RawNode
      */
-    public function getNode(): RawNode
+    public function getNode(): ?RawNode
     {
         return $this->node;
     }

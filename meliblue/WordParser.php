@@ -3,10 +3,10 @@
 namespace Meliblue;
 
 
-use Meliblue\Models\Entity;
 use Meliblue\Models\NodeType;
 use Meliblue\Models\Relation;
 use Meliblue\Models\RelationType;
+use Meliblue\Models\SimpleNode;
 use Psr\Http\Message\ResponseInterface;
 
 class WordParser
@@ -28,6 +28,7 @@ class WordParser
             $wrapper->setCode(404);
             $wrapper->setReason("word does not exist");
         } elseif ($domDoc->getElementsByTagName("warning")->length > 0) {
+            $wrapper->setNode(WordParser::extract($content));
             $wrapper->setCode(413);
             $wrapper->setReason("TOOBIG_USE_DUMP");
         } else {
@@ -46,10 +47,10 @@ class WordParser
     static function extract(\DOMElement $DOMElement): RawNode
     {
         $content = $DOMElement->textContent;
-        $definition = $DOMElement->getElementsByTagName("def")->item(0)->textContent;
+        $description = $DOMElement->getElementsByTagName("def")->item(0)->textContent;
 
         $node = new RawNode();
-        $node->setDefinition($definition);
+        $node->setDescription($description);
         $separator = "\n";
 
         $line = strtok($content, $separator);
@@ -61,42 +62,50 @@ class WordParser
             $array = explode(';', $line);
             $type = $array[0];
 
-            if ($type === "nt") {
+            if ($type === 'nt') {
                 $nodeType = new NodeType();
-                $nodeType->setName($array[2]);
-                $node->addNodeType($array[1], $nodeType);
-            } elseif ($type === 'e') {
-                $entity = new Entity();
+                $nodeType->setId($array[1])
+                    ->setName($array[2]);
 
+                $node->addNodeType($nodeType);
+            } elseif ($type === 'e') {
                 if (filter_var($array[3], FILTER_VALIDATE_INT) === false) {
-                    $array[2] = $array[2] . ';' . array_splice($array, 3, 1)[0];
+                    $array[2] = $array[2].';'.array_splice($array, 3, 1)[0];
                 }
 
-                $entity->setName($array[2]);
-                $entity->setType($array[3]);
-                $entity->setWeight($array[4]);
-                isset($array[5]) ? $entity->setFormattedName($array[5]) : null;
-                $node->addEntity($array[1], $entity);
+                $entity = new SimpleNode();
+                $entity->setId($array[1])
+                    ->setName($array[2])
+                    ->setNodeType($array[3])
+                    ->setWeight($array[4])
+                    ->setFormattedName(isset($array[5]) ? $array[5] : null);
+
+                $node->addSimpleNode($entity);
             } elseif ($type === 'rt') {
                 $relationType = new RelationType();
-                $relationType->setCode($array[2]);
-                $relationType->setName($array[3]);
-                $relationType->setDescription($array[4]);
-                $node->addRelationType($array[1], $relationType);
+                $relationType->setId($array[1])
+                    ->setCode($array[2])
+                    ->setName($array[3])
+                    ->setDescription($array[4]);
+
+                $node->addRelationType($relationType);
             } elseif ($type === 'r') {
                 $relation = new Relation();
-                $relation->setFrom($array[2]);
-                $relation->setTo($array[3]);
-                $relation->setType($array[4]);
-                $relation->setWeight($array[5]);
-                $node->addRelation($array[1], $relation);
+                $relation->setId($array[1])
+                    ->setFrom($array[2])
+                    ->setTo($array[3])
+                    ->setType($array[4])
+                    ->setWeight($array[5]);
+
+                $node->addRelation($relation);
             }
             $line = strtok($separator);
         }
+
         strtok('', '');
 
-        foreach ($node->nodes as $id => $entity) {
-            $node->setNode($id, $entity);
+        foreach ($node->getNodes() as $id => $entity) {
+            $node->setNode($entity);
             break;
         }
 

@@ -112,20 +112,11 @@
             },
 
             scrollSpy: function () {
-                console.log('salut');
                 let scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
 
-                let active = null;
+                let active = _.findLast(this.sections, element => element.offsetTop <= scrollPosition);
 
-                _.forEach(this.sections, (element) => {
-                    if (element.offsetTop <= scrollPosition) {
-                        active = element;
-                    } else {
-                        return false;
-                    }
-                });
-
-                if (active !== null) {
+                if (active !== undefined) {
                     this.activeId = active.id;
 
                     let sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;

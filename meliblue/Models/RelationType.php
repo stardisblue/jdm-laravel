@@ -7,31 +7,63 @@ use Meliblue\WordParser;
 
 class RelationType
 {
+    public $id;
     public $code;
     public $name;
     public $description;
+    public $relations = ['in' => [], 'out' => []];
+
+    /**
+     * @param int $id
+     * @return RelationType
+     */
+    public function setId(int $id): RelationType
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * @param string $code
+     * @return RelationType
      */
-    public function setCode(string $code)
+    public function setCode(string $code): RelationType
     {
         $this->code = WordParser::trim($code);
+
+        return $this;
     }
 
     /**
      * @param string $name
+     * @return RelationType
      */
-    public function setName(string $name)
+    public function setName(string $name): RelationType
     {
         $this->name = WordParser::trim($name);
+
+        return $this;
     }
 
     /**
      * @param string $description
+     * @return RelationType
      */
-    public function setDescription(string $description)
+    public function setDescription(string $description): RelationType
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function addRelationIn(JsonRelation $jsonRelation)
+    {
+        $this->relations['in'][] = $jsonRelation;
+    }
+
+    public function addRelationOut(JsonRelation $jsonRelation)
+    {
+        $this->relations['out'][] = $jsonRelation;
     }
 }

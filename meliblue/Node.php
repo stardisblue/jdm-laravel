@@ -9,53 +9,69 @@
 namespace Meliblue;
 
 
-class Node
-{
-    public $id;
-    public $name;
-    public $formattedName;
-    public $description;
-    public $nodeType;
-    public $weight;
-    public $relationTypes = [];
+use Meliblue\Models\JsonRelation;
+use Meliblue\Models\SimpleNode;
 
+class Node extends SimpleNode
+{
+    public $description;
+    public $relationTypes = [];
+    public $nodeTypes = [];
 
     public function __construct(RawNode $rawNode)
     {
-        foreach ($rawNode->relations as $id => $rawRelation) {
-            $relation = new \stdClass();
-            $relation->id = $id;
-            $relation->weight = $rawRelation->weight;
+        $this->setId($rawNode->id)
+            ->setName($rawNode->name)
+            ->setFormattedName($rawNode->formattedName)
+            ->setWeight($rawNode->weight)
+            ->setNodeType($rawNode->nodeType);
 
-            // TODO
-            if ($rawRelation->from !== $rawNode->id && isset($rawNode->nodes[$rawRelation->from])) {
-                $relation->node = $rawNode->nodes[$rawRelation->from];
-            } elseif ($rawRelation->to !== $rawNode->id && isset($rawNode->nodes[$rawRelation->to])) {
-                $relation->node = $rawNode->nodes[$rawRelation->to];
-            } else {
-                $relation->node = null;
+        $this->setDescription($rawNode->description);
+
+        foreach ($rawNode->getRelations() as $relation) {
+            $relationType = $rawNode->getRelationType($relation->type);
+            $newRelation = new JsonRelation($relation);
+
+            if ($this->id === $relation->from && $relation->to === $this->id) {// the relation is pointing himself
+                $newRelation->setNode($rawNode->getNode($this->id));
+
+                $relationType->addRelationIn($newRelation);
+                $relationType->addRelationOut($newRelation);
+            } elseif ($this->id === $relation->to) {// the node is pointed at from another node
+                $newRelation->setNode($rawNode->getNode($relation->from));
+
+                $relationType->addRelationIn($newRelation);
+            } elseif ($this->id === $relation->from) {// the node is pointing to another node
+                $newRelation->setNode($rawNode->getNode($relation->to));
+
+                $relationType->addRelationOut($newRelation);
             }
-
-            $this->relationTypes[] = $relation;
         }
 
-        foreach ($rawNode->relations as $id => $rawRelation) {
-            if ($rawRelation->from !== $rawNode->id && isset($rawNode->nodes[$rawRelation->from])) {
-                $rawRelation->from = $rawNode->nodes[$rawRelation->from];
-            } else {
-                $rawRelation->from = null;
-            }
+        $this->setRelationTypes($rawNode->getRelationTypes());
+        $this->setNodeTypes($rawNode->getNodeTypes());
 
-            if ($rawRelation->to !== $rawNode->id && isset($rawNode->nodes[$rawRelation->to])) {
-                $rawRelation->to = $rawNode->nodes[$rawRelation->to];
-            } else {
-                $rawRelation->to = null;
-            }
-            $rawNode->relationTypes[$rawRelation->type]->relations[] = $rawRelation;
-            unset($rawRelation->type);
-        }
+    }
 
-        unset($rawNode->relations);
-        unset($rawNode->nodes);
+    /**
+     * @param string $description
+     * @return Node
+     */
+    public function setDescription(string $description): Node
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+
+    private function setRelationTypes(array $relationTypes)
+    {
+        $this->relationTypes = array_values($relationTypes);
+    }
+
+    private function setNodeTypes(array $nodeTypes)
+    {
+        $this->nodeTypes = array_values($nodeTypes);
     }
 }

@@ -2,80 +2,104 @@
 
 namespace Meliblue;
 
-use Meliblue\Models\Entity;
 use Meliblue\Models\NodeType;
 use Meliblue\Models\Relation;
 use Meliblue\Models\RelationType;
+use Meliblue\Models\SimpleNode;
 
-class RawNode
+class RawNode extends SimpleNode
 {
-    public $id;
-    public $name;
-    public $definition;
-    public $type;
-    public $weight;
-    public $formattedName;
-    public $relationTypes = [];
-    public $relations = [];
-    public $nodeTypes = [];
-    public $nodes = [];
+    public $description;
+    private $relationTypes = [];
+    private $relations = [];
+    private $nodeTypes = [];
+    private $nodes = [];
 
-    public function addNodeType(int $id, NodeType $nodeType)
+    public function addNodeType(NodeType $nodeType)
     {
-        $this->nodeTypes[$id] = $nodeType;
+        $this->nodeTypes[$nodeType->id] = $nodeType;
     }
 
-    public function addEntity(int $id, Entity $entity)
+    public function addSimpleNode(SimpleNode $simpleNode)
     {
-        $this->nodes[$id] = $entity;
+        $this->nodes[$simpleNode->id] = $simpleNode;
     }
 
-    public function addRelationType(int $id, RelationType $relationType)
+    public function addRelationType(RelationType $relationType)
     {
-        $this->relationTypes[$id] = $relationType;
+        $this->relationTypes[$relationType->id] = $relationType;
     }
 
-    public function addRelation(int $id, Relation $relation)
+    public function addRelation(Relation $relation)
     {
-        $this->relations[$id] = $relation;
+        $this->relations[$relation->id] = $relation;
+
     }
 
-    public function setDefinition(String $definition)
-    {
-        $this->definition = trim($definition);
-    }
 
-    public function setNode(int $id, Entity $entity)
+    /**
+     * @return RelationType[]
+     */
+    public function getRelationTypes(): array
     {
-        $this->id = $id;
-        $this->name = $entity->name;
-        $this->type = $entity->type;
-        $this->weight = $entity->weight;
-        $this->formattedName = $entity->formattedName;
+        return $this->relationTypes;
     }
 
     /**
-     * @deprecated
+     * @param int $id
+     * @return RelationType
      */
-    public function prepare()
+    public function getRelationType(int $id): RelationType
     {
-        foreach ($this->relations as $id => $relation) {
-            if ($relation->from !== $this->id && isset($this->nodes[$relation->from])) {
-                $relation->from = $this->nodes[$relation->from];
-            } else {
-                $relation->from = null;
-            }
+        return $this->relationTypes[$id];
+    }
 
-            if ($relation->to !== $this->id && isset($this->nodes[$relation->to])) {
-                $relation->to = $this->nodes[$relation->to];
-            } else {
-                $relation->to = null;
-            }
-            $this->relationTypes[$relation->type]->relations[] = $relation;
-            unset($relation->type);
-        }
 
-        unset($this->relations);
-        unset($this->nodes);
+    /**
+     * @return Relation[]
+     */
+    public function getRelations(): array
+    {
+        return $this->relations;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = trim($description);
+    }
+
+    public function setNode(SimpleNode $node)
+    {
+        $this->setId($node->id)
+            ->setName($node->name)
+            ->setFormattedName($node->formattedName)
+            ->setNodeType($node->nodeType)
+            ->setWeight($node->weight);
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return SimpleNode
+     */
+    public function getNode(int $id): SimpleNode
+    {
+        return $this->nodes[$id];
+    }
+
+    /**
+     * @return SimpleNode[]
+     */
+    public function getNodes(): array
+    {
+        return $this->nodes;
+    }
+
+    /**
+     * @return NodeType[]
+     */
+    public function getNodeTypes(): array
+    {
+        return $this->nodeTypes;
     }
 }
