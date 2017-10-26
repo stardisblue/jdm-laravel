@@ -177,11 +177,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        /*
-         * ElasticSearch wrapper
-         */
-        Elasticquent\ElasticquentServiceProvider::class,
-
     ],
 
     /*
@@ -230,11 +225,6 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
-        /*
-         * ElasticSearch alias
-         */
-        'Es' => Elasticquent\ElasticquentElasticsearchFacade::class,
     ],
 
 ];

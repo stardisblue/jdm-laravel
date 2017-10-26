@@ -12,3 +12,11 @@
 */
 
 Route::get('/node/{word}/card', "NodeController@card");
+
+Route::get('/node/{word}/{relationType}/{page}', function () {
+// récuperer les relations
+});
+
+Route::post('/node/{word}', function () {
+    // mettre à jour le cache
+});

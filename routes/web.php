@@ -23,11 +23,3 @@ Route::get('/search/', function () {
 });
 
 Route::get('/node/{word}', 'NodeController@display');
-
-Route::get('/api/node/{word}/{relationType}/{page}', function () {
-// récuperer les relations
-});
-
-Route::post('/api/node/{word}', function () {
-    // mettre à jour le cache
-});
