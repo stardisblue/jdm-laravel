@@ -1,15 +1,8 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: stardisblue
- * Date: 13/10/2017
- * Time: 17:02
- */
-
-namespace Meliblue;
+<?php namespace Meliblue;
 
 
 use Meliblue\Models\Relation;
+use Meliblue\Models\RelationType;
 use Meliblue\Models\SimpleNode;
 
 class Node extends SimpleNode
@@ -61,8 +54,15 @@ class Node extends SimpleNode
     }
 
 
+    /**
+     * @param RelationType[] $relationTypes
+     */
     private function setRelationTypes(array $relationTypes)
     {
+        foreach($relationTypes as $relationType){
+            $relationType->sortRelationsByWeight();
+        }
+
         $this->relationTypes = array_values($relationTypes);
     }
 

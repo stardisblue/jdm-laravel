@@ -1,12 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: stardisblue
- * Date: 11/10/2017
- * Time: 22:13
- */
-
-namespace Meliblue;
+<?php namespace Meliblue;
 
 
 class WordWrapper

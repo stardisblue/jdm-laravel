@@ -1,12 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: stardisblue
- * Date: 13/10/2017
- * Time: 21:41
- */
-
-namespace Meliblue\Models;
+<?php namespace Meliblue\Models;
 
 
 class Relation

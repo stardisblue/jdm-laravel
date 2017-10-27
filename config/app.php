@@ -177,6 +177,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * ElasticBlue
+         */
+        Meliblue\ElasticBlue\ElasticBlueServiceProvider::class,
     ],
 
     /*
@@ -225,6 +229,11 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        /*
+         * ElasticSearch Facade
+         */
+        'Es' => \Meliblue\ElasticBlue\Facade\Es::class,
     ],
 
 ];

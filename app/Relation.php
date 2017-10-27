@@ -2,12 +2,11 @@
 
 namespace App;
 
-use Elasticquent\ElasticquentTrait;
-use Illuminate\Database\Eloquent\Model;
+use Meliblue\ElasticBlue\ElasticBlueModel;
 
-class Relation extends Model
+class Relation extends ElasticBlueModel
 {
-    use ElasticquentTrait;
+    protected static $index = 'relations';
 
     public $id;
     public $idRelationType;

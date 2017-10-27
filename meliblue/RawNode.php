@@ -1,6 +1,4 @@
-<?php
-
-namespace Meliblue;
+<?php namespace Meliblue;
 
 use Meliblue\Models\RelationType;
 use Meliblue\Models\SimpleNode;

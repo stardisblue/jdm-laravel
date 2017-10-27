@@ -1,6 +1,4 @@
-<?php
-
-namespace Meliblue\Models;
+<?php namespace Meliblue\Models;
 
 
 use Meliblue\WordParser;

@@ -13,13 +13,11 @@ class NodeController extends Controller
 {
     public function display(string $word)
     {
-        $node = NodeCache::searchByQuery(["match" => ['title' => $word]], null, null, 1);
-        $reason = "";
-        var_dump($node);
-        die;
+        $nodeCache = NodeCache::search(["match" => ['name' => $word]], 1)->getResults();
+        $reason = '';
 
         // afficher un mot
-        if ($node === null) {
+        if ($nodeCache === null) {
             $response = FetchWord::fetch(utf8_decode($word));
             $parsed = WordParser::parse($response);
             $reason = $parsed->getReason();
@@ -32,27 +30,34 @@ class NodeController extends Controller
 
             if ($parsed->getCode() !== 404) {
                 $rawNode = $parsed->getNode();
-                $node = new Node($rawNode);
+                $fileNode = new Node($rawNode);
+
+                $elasticNode = new \App\Node();
+                $elasticNode->setNode($fileNode);
+                $elasticNode->save();
+
+                $nodeCache = new NodeCache();
+                $nodeCache->setNode($fileNode);
+                $nodeCache->save();
             }
 
-            Cache::put($word, $node, 60);
         }
 
-        return view('node.single', ["node" => $node, "reason" => $reason]);
+        return view('node.single', ["node" => $nodeCache, "reason" => $reason]);
     }
 
     public function card(string $word)
     {
         // afficher un mot
-        if (Cache::has($word . ":card")) {
-            $node = Cache::get($word . ":card");
+        if (Cache::has($word.":card")) {
+            $node = Cache::get($word.":card");
         } else {
             $response = FetchWord::fetch(utf8_decode($word), -1);
             $parsed = WordParser::parse($response);
             $node = $parsed->getNode();
             $node->prepare();
 
-            Cache::put($word . ":card", $node, 60);
+            Cache::put($word.":card", $node, 60);
         }
 
         return json_encode($node);

@@ -1,6 +1,4 @@
-<?php
-
-namespace Meliblue\Models;
+<?php namespace Meliblue\Models;
 
 
 use Meliblue\WordParser;
@@ -65,5 +63,16 @@ class RelationType
     public function addRelationOut(Relation $relation)
     {
         $this->relations['out'][] = $relation;
+    }
+
+    public function sortRelationsByWeight()
+    {
+        usort($this->relations['in'], function ($first, $second) {
+            return $second->weight - $first->weight;
+        });
+
+        usort($this->relations['out'], function ($first, $second) {
+            return $second->weight - $first->weight;
+        });
     }
 }
