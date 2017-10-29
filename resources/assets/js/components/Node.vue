@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <div class="row">
+        <div class="row" style="margin-top:100px">
             <h2>{{getName}} :
-                <small v-once="" v-html="getPos"></small>
+                <!--<small v-once="" v-html="getPos"></small> -->
             </h2>
 
             <div id="description" v-html="compiledMarkdown"></div>
