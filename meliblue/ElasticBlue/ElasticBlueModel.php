@@ -1,11 +1,13 @@
-<?php namespace Meliblue\ElasticBlue;
+<?php
+
+namespace Meliblue\ElasticBlue;
 
 use Meliblue\ElasticBlue\Facade\Es;
 
 class ElasticBlueModel
 {
 
-    protected static $index = 'jdm';
+    protected static $index = '';
     protected static $type = '';
     protected static $primaryKey = 'id';
 

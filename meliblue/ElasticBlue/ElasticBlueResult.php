@@ -1,5 +1,6 @@
-<?php namespace Meliblue\ElasticBlue;
+<?php
 
+namespace Meliblue\ElasticBlue;
 
 class ElasticBlueResult
 {

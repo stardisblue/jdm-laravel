@@ -3,41 +3,56 @@
 namespace App\Http\Controllers;
 
 
-use App\NodeCache;
-use Illuminate\Support\Facades\Cache;
+use Meliblue\ElasticBlue\Models\ElasticNode;
+use Meliblue\ElasticBlue\Models\ElasticNodeCache;
+use Meliblue\ElasticBlue\Models\ElasticRelationIn;
+use Meliblue\ElasticBlue\Models\ElasticRelationOut;
 use Meliblue\FetchWord;
-use Meliblue\Node;
+use Meliblue\Models\CleanNode;
 use Meliblue\WordParser;
 
 class NodeController extends Controller
 {
     public function display(string $word)
     {
-        $nodeCache = NodeCache::search(["match" => ['name' => $word]], 1)->getResults();
+        $nodeCache = ElasticNodeCache::search(["match" => ['name' => $word]], 1)->getResults();
         $reason = '';
 
-        // afficher un mot
+        // si le mot n'est pas encore enregistré
         if ($nodeCache === null) {
+            // on recupere le contenu
             $response = FetchWord::fetch(utf8_decode($word));
+            // on en extrait le noeud
             $parsed = WordParser::parse($response);
             $reason = $parsed->getReason();
 
-
+            // if the file is too big
             if ($parsed->getCode() === 413) {
-                $response = FetchWord::fetch(utf8_decode($word), -1);
+                $response = FetchWord::fetch(utf8_decode($word), FetchWord::RELATION_NONE);
                 $parsed = WordParser::parse($response);
             }
 
+            // if the word exists
             if ($parsed->getCode() !== 404) {
+                // we get the raw node
                 $rawNode = $parsed->getNode();
-                $fileNode = new Node($rawNode);
 
-                $elasticNode = new \App\Node();
-                $elasticNode->setNode($fileNode);
+                $cleanNode = new CleanNode($rawNode);
+                // we extract the node information from it
+                $elasticNode = new ElasticNode();
+                $elasticNode->setNode($cleanNode);
                 $elasticNode->save();
 
-                $nodeCache = new NodeCache();
-                $nodeCache->setNode($fileNode);
+                // we extract the relations from it
+                foreach ($cleanNode->relationTypes as $relationType) {
+                    ElasticRelationIn::bulkCreate($cleanNode->id, $relationType->id, $relationType->relations['in']);
+                    ElasticRelationOut::bulkCreate($cleanNode->id, $relationType->id, $relationType->relations['out']);
+                }
+
+                // then we trim the relation list down
+                // danger, don't reverse this with the bulkcreate because it will only create the trimmed relations.
+                $nodeCache = new ElasticNodeCache();
+                $nodeCache->setNode($cleanNode);
                 $nodeCache->save();
             }
 
@@ -49,17 +64,20 @@ class NodeController extends Controller
     public function card(string $word)
     {
         // afficher un mot
-        if (Cache::has($word.":card")) {
-            $node = Cache::get($word.":card");
-        } else {
+        $elasticNode = ElasticNode::search(["match" => ['name' => $word]], 1)->getResults();
+        if ($elasticNode === null) {
             $response = FetchWord::fetch(utf8_decode($word), -1);
             $parsed = WordParser::parse($response);
-            $node = $parsed->getNode();
-            $node->prepare();
 
-            Cache::put($word.":card", $node, 60);
+            if ($parsed->getCode() !== 404) {
+                $rawNode = $parsed->getNode();
+
+                $elasticNode = new ElasticNode();
+                $elasticNode->setNode($rawNode);
+                $elasticNode->save();
+            }
         }
 
-        return json_encode($node);
+        return $elasticNode;
     }
 }

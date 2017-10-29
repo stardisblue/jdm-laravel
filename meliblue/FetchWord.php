@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class FetchWord
 {
+    const RELATION_NONE = -1;
 
     private static $baseUrl = "http://www.jeuxdemots.org/rezo-dump.php";
 
@@ -17,9 +18,7 @@ class FetchWord
      */
     static function fetch(string $name, $relation = ''): ResponseInterface
     {
-        $client = new Client();
-
-        return $response = $client->request('GET', self::$baseUrl,
+        return (new Client())->request('GET', self::$baseUrl,
             ['query' => ['gotermrel' => $name, 'rel' => $relation, 'output' => 0]]);
     }
 
@@ -30,9 +29,7 @@ class FetchWord
      */
     static function fetchAsync(string $name, $relation = ''): PromiseInterface
     {
-        $client = new Client();
-
-        return $client->requestAsync('GET', self::$baseUrl,
+        return (new Client())->requestAsync('GET', self::$baseUrl,
             ['query' => ['gotermrel' => $name, 'rel' => $relation, 'output' => 0]]);
     }
 }

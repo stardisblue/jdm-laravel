@@ -1,8 +1,9 @@
-<?php namespace App;
+<?php namespace Meliblue\ElasticBlue\Models;
 
 use Meliblue\ElasticBlue\ElasticBlueModel;
+use Meliblue\Models\CleanNode;
 
-class Node extends ElasticBlueModel
+class ElasticNode extends ElasticBlueModel
 {
     protected static $index = 'nodes';
     protected static $type = 'node';
@@ -14,7 +15,7 @@ class Node extends ElasticBlueModel
     public $weight;
     public $nodeType;
 
-    public function setNode(\Meliblue\Node $node)
+    public function setNode(CleanNode $node)
     {
         $this->id = $node->id;
         $this->name = $node->name;

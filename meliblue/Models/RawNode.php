@@ -1,7 +1,6 @@
-<?php namespace Meliblue;
+<?php
 
-use Meliblue\Models\RelationType;
-use Meliblue\Models\SimpleNode;
+namespace Meliblue\Models;
 
 class RawNode extends SimpleNode
 {

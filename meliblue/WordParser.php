@@ -1,6 +1,7 @@
 <?php namespace Meliblue;
 
 
+use Meliblue\Models\RawNode;
 use Meliblue\Models\RelationType;
 use Meliblue\Models\SimpleNode;
 use Psr\Http\Message\ResponseInterface;

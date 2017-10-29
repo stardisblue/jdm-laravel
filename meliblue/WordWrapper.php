@@ -1,6 +1,8 @@
 <?php namespace Meliblue;
 
 
+use Meliblue\Models\RawNode;
+
 class WordWrapper
 {
     private $node;

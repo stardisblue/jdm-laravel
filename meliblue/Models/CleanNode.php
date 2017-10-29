@@ -1,11 +1,7 @@
-<?php namespace Meliblue;
+<?php namespace Meliblue\Models;
 
 
-use Meliblue\Models\Relation;
-use Meliblue\Models\RelationType;
-use Meliblue\Models\SimpleNode;
-
-class Node extends SimpleNode
+class CleanNode extends SimpleNode
 {
     public $description;
     public $relationTypes = [];
@@ -39,27 +35,25 @@ class Node extends SimpleNode
 
         $this->setRelationTypes($rawNode->getRelationTypes());
         $this->setNodeTypes($rawNode->getNodeTypes());
-
     }
 
     /**
      * @param string $description
-     * @return Node
+     * @return CleanNode
      */
-    public function setDescription(string $description): Node
+    public function setDescription(string $description): CleanNode
     {
         $this->description = $description;
 
         return $this;
     }
 
-
     /**
      * @param RelationType[] $relationTypes
      */
     private function setRelationTypes(array $relationTypes)
     {
-        foreach($relationTypes as $relationType){
+        foreach ($relationTypes as $relationType) {
             $relationType->sortRelationsByWeight();
         }
 
