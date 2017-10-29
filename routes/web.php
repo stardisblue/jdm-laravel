@@ -18,9 +18,7 @@ Route::get("/", function () {
     return view('welcome');
 });
 
-Route::get('/search/', function () {
-// rechercher un mot
-});
+Route::get('/search/', 'SearchController@search' );
 
 Route::get('/node/{word}', 'NodeController@display');
 
