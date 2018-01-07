@@ -11,12 +11,10 @@
 |
 */
 
-Route::get('/node/{word}/card', "NodeController@card");
+Route::get('/node/{word}/card', "AjaxController@card");
 
 Route::get('/node/{word}/{relationType}/{page}', function () {
-// récuperer les relations
+    // récuperer les relations paginées
 });
 
-Route::post('/node/{word}', function () {
-    // mettre à jour le cache
-});
+Route::post('/node/{word}',"AjaxController@ajaxUpdateAndGet");

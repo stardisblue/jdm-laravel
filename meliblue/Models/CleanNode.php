@@ -1,7 +1,7 @@
 <?php namespace Meliblue\Models;
 
 
-class CleanNode extends SimpleNode
+class CleanNode extends CardNode
 {
     public $description;
     public $relationTypes = [];
@@ -41,7 +41,7 @@ class CleanNode extends SimpleNode
      * @param string $description
      * @return CleanNode
      */
-    public function setDescription(string $description): CleanNode
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 

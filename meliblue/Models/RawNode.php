@@ -2,9 +2,8 @@
 
 namespace Meliblue\Models;
 
-class RawNode extends SimpleNode
+class RawNode extends CardNode
 {
-    public $description;
     private $relationTypes = [];
     private $relations = [];
     private $nodeTypes = [];
@@ -58,9 +57,11 @@ class RawNode extends SimpleNode
         return $this->relations;
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(string $description): self
     {
-        $this->description = trim($description);
+        $this->description = strip_tags(trim($description));
+
+        return $this;
     }
 
     /**

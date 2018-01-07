@@ -1,9 +1,10 @@
 <?php namespace Meliblue\ElasticBlue\Models;
 
+use Illuminate\Contracts\Support\Jsonable;
 use Meliblue\ElasticBlue\ElasticBlueModel;
-use Meliblue\Models\CleanNode;
+use Meliblue\Models\CardNode;
 
-class ElasticNode extends ElasticBlueModel
+class ElasticNode extends ElasticBlueModel implements Jsonable
 {
     protected static $index = 'nodes';
     protected static $type = 'node';
@@ -15,7 +16,10 @@ class ElasticNode extends ElasticBlueModel
     public $weight;
     public $nodeType;
 
-    public function setNode(CleanNode $node)
+    /**
+     * @param CardNode $node
+     */
+    public function setNode($node)
     {
         $this->id = $node->id;
         $this->name = $node->name;
@@ -23,5 +27,16 @@ class ElasticNode extends ElasticBlueModel
         $this->formattedName = $node->formattedName;
         $this->weight = $node->weight;
         $this->nodeType = $node->nodeType;
+    }
+
+    /**
+     * Convert the object to its JSON representation.
+     *
+     * @param  int $options
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this);
     }
 }

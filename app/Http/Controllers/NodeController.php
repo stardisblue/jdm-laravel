@@ -18,11 +18,11 @@ class NodeController extends Controller
         $nodeCache = ElasticNodeCache::search(["match" => ['name' => $word]], 1)->getResults();
         $reason = '';
 
-        // si le mot n'est pas encore enregistré
+        // if the word isn't in our database
         if ($nodeCache === null) {
-            // on recupere le contenu
+            // we fetch it from jeuxdemot
             $response = FetchWord::fetch(utf8_decode($word));
-            // on en extrait le noeud
+            // we extract the content
             $parsed = WordParser::parse($response);
             $reason = $parsed->getReason();
 
@@ -38,6 +38,7 @@ class NodeController extends Controller
                 $rawNode = $parsed->getNode();
 
                 $cleanNode = new CleanNode($rawNode);
+
                 // we extract the node information from it
                 $elasticNode = new ElasticNode();
                 $elasticNode->setNode($cleanNode);
@@ -59,25 +60,5 @@ class NodeController extends Controller
         }
 
         return view('node.single', ["node" => $nodeCache, "reason" => $reason]);
-    }
-
-    public function card(string $word)
-    {
-        // afficher un mot
-        $elasticNode = ElasticNode::search(["match" => ['name' => $word]], 1)->getResults();
-        if ($elasticNode === null) {
-            $response = FetchWord::fetch(utf8_decode($word), -1);
-            $parsed = WordParser::parse($response);
-
-            if ($parsed->getCode() !== 404) {
-                $rawNode = $parsed->getNode();
-
-                $elasticNode = new ElasticNode();
-                $elasticNode->setNode($rawNode);
-                $elasticNode->save();
-            }
-        }
-
-        return $elasticNode;
     }
 }
