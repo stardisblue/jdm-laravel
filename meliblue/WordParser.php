@@ -12,45 +12,53 @@ class WordParser
     static function parse(ResponseInterface $response): WordWrapper
     {
         $wrapper = new WordWrapper();
+        $content = utf8_encode($response->getBody()->getContents());
 
-        $contents = $response->getBody()->getContents();
+        $separator = "\n";
+        $line = strtok($content, $separator);
 
-
-        $domDoc = new \DOMDocument('1.0', 'ISO-8859-1');
-        @$domDoc->loadHTML($contents);
-
-        $content = $domDoc->getElementsByTagName('code')->item(0);
-
-        if ($content === null) {
-            $wrapper->setCode(404);
-            $wrapper->setReason("word does not exist");
-        } elseif ($domDoc->getElementsByTagName("warning")->length > 0) {
-            $wrapper->setNode(self::extract($content));
-            $wrapper->setCode(413);
-            $wrapper->setReason("TOOBIG_USE_DUMP");
-        } else {
-            $wrapper->setNode(self::extract($content));
-            $wrapper->setCode($response->getStatusCode());
-            $wrapper->setReason($response->getReasonPhrase());
+        // getting to the code tag
+        // are we in code yet ?
+        while ($line !== false && $line !== "<CODE>") {// fail safe check
+            $line = strtok($separator);
         }
 
-        return $wrapper;
-    }
+        if ($line === false) { // no content
+            return $wrapper->setCode(404)
+                ->setReason("word does not exist");
+        }
 
-    /**
-     * @param \DOMElement $DOMElement
-     * @return RawNode
-     */
-    static function extract(\DOMElement $DOMElement): RawNode
-    {
-        $content = $DOMElement->textContent;
-        $description = $DOMElement->getElementsByTagName("def")->item(0)->textContent;
+        // YES !! we are in code
+        // getting the description and the error if has some
+        $error = null;
+        $description = "";
+        $areWeInDefYet = false;
+        $isDefDoneYet = false; // ??
+        while ($line !== false && !$isDefDoneYet) {
+            if (!$areWeInDefYet) {
+                if ("<WARNING>" === substr($line, 0, 9)) {
+                    $error = "TOOBIG_USE_DUMP";
+                } elseif ("<def>" === $line) {
+                    $areWeInDefYet = true;
+                }
 
+                $line = strtok($separator);
+                continue;
+            }
+
+            if ($line === "</def>") {
+                $isDefDoneYet = true;
+            } else {
+                $description .= trim($line)."\n";
+            }
+
+            $line = strtok($separator);
+        }
+
+        // yes def is done
         $node = new RawNode();
         $node->setDescription($description);
-        $separator = "\n";
 
-        $line = strtok($content, $separator);
         while ($line !== false) {
             if ($line === null) {
                 $line = strtok($separator);
@@ -97,7 +105,6 @@ class WordParser
             }
             $line = strtok($separator);
         }
-
         strtok('', '');
 
         foreach ($node->getNodes() as $id => $entity) {
@@ -105,9 +112,18 @@ class WordParser
             break;
         }
 
-        return $node;
-    }
+        $wrapper->setNode($node);
 
+        if ($error !== null) {
+            $wrapper->setCode(413)
+                ->setReason("TOOBIG_USE_DUMP");
+        } else {
+            $wrapper->setCode($response->getStatusCode())
+                ->setReason($response->getReasonPhrase());
+        }
+
+        return $wrapper;
+    }
 
     static function trim(string $word, string $separator = '\''): string
     {

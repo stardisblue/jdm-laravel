@@ -19,10 +19,13 @@ class WordWrapper
 
     /**
      * @param RawNode $node
+     * @return $this
      */
-    public function setNode(RawNode $node)
+    public function setNode(RawNode $node): self
     {
         $this->node = $node;
+
+        return $this;
     }
 
     /**
@@ -35,10 +38,14 @@ class WordWrapper
 
     /**
      * @param int $code
+     *
+     * @return $this
      */
-    public function setCode(int $code)
+    public function setCode(int $code): self
     {
         $this->code = $code;
+
+        return $this;
     }
 
     /**
@@ -51,10 +58,13 @@ class WordWrapper
 
     /**
      * @param string $reason
+     * @return $this
      */
-    public function setReason(string $reason)
+    public function setReason(string $reason): self
     {
         $this->reason = $reason;
+
+        return $this;
     }
 
 
