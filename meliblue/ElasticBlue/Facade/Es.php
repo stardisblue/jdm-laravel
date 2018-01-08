@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Facade as Facade;
  * @method static index($params)
  * @method static get($params)
  * @method static delete($params)
+ * @method static deleteByQuery($params = array())
  * @method static create($params);
  * @method static search($params = array())
  */

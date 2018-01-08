@@ -49,7 +49,7 @@ class WordParser
             if ($line === "</def>") {
                 $isDefDoneYet = true;
             } else {
-                $description .= trim($line)."\n";
+                $description .= trim(strip_tags($line))."\n";
             }
 
             $line = strtok($separator);

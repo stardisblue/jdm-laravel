@@ -52,6 +52,18 @@ class ElasticRelation extends ElasticBlueModel
 
     }
 
+    public static function deleteAll(int $idNode)
+    {
+        $params = [
+            'index' => static::$index,
+            'type' => static::$type,
+            'body' => ["query" => ["term" => ["idNode" => $idNode]]],
+        ];
+
+        Es::deleteByQuery($params);
+
+    }
+
     public function addRelation($idNode, array $relation)
     {
         $this->id = $relation['id'];

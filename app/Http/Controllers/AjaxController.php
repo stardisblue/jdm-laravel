@@ -46,16 +46,16 @@ class AjaxController extends Controller
     }
 
 
-    public function ajaxUpdateAndGet(string $word)
+    public function ajaxUpdateAndGet(int $wordId)
     {
-        $nodeCache = ElasticNodeCache::search(["term" => ['name' => $word]], 1)->getResults();
+        $nodeCache = ElasticNodeCache::get($wordId, ['name']);
         // mettre à jour le cache
         // recuperer la version mise à jour
         if ($nodeCache === null) {
             return $nodeCache;
         }
         // we fetch it from jeuxdemot
-        $response = FetchWord::fetch(utf8_decode($word));
+        $response = FetchWord::fetch(utf8_decode($nodeCache['name']));
         // we extract the content
         $parsed = WordParser::parse($response);
         $reason = $parsed->getReason();
@@ -70,6 +70,9 @@ class AjaxController extends Controller
             $elasticNode->setNode($cleanNode);
             $elasticNode->save();
 
+            ElasticRelationIn::deleteAll($cleanNode->id);
+            ElasticRelationOut::deleteAll($cleanNode->id);
+
             // we extract the relations from it
             foreach ($cleanNode->relationTypes as $relationType) {
                 ElasticRelationIn::bulkCreate($cleanNode->id, $relationType->id, $relationType->relations['in']);
@@ -81,6 +84,8 @@ class AjaxController extends Controller
             $nodeCache = new ElasticNodeCache();
             $nodeCache->setNode($cleanNode);
             $nodeCache->save();
+
+            return $nodeCache;
         }
 
         return null;

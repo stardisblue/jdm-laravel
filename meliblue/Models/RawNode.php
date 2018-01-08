@@ -59,7 +59,7 @@ class RawNode extends CardNode
 
     public function setDescription(string $description): self
     {
-        $this->description = strip_tags(trim($description));
+        $this->description = trim(strip_tags($description));
 
         return $this;
     }

@@ -17,4 +17,4 @@ Route::get('/node/{word}/{relationType}/{page}', function () {
     // récuperer les relations paginées
 });
 
-Route::post('/node/{word}',"AjaxController@ajaxUpdateAndGet");
+Route::get('/node/{word}',"AjaxController@ajaxUpdateAndGet");
