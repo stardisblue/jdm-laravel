@@ -2,7 +2,6 @@
 
 
 use Meliblue\Models\CleanNode;
-use PhpParser\Node;
 
 class ElasticNodeCache extends ElasticNode
 {
@@ -10,9 +9,9 @@ class ElasticNodeCache extends ElasticNode
     protected static $index = 'nodes-cache';
     protected static $type = "node-cache";
     private static $maxRelations = 30;
+    public $timestamp;
     public $relationTypes = [];
     public $nodeTypes = [];
-
 
     /**
      * Sets and trims the relations
@@ -30,6 +29,8 @@ class ElasticNodeCache extends ElasticNode
         }
         $this->relationTypes = $node->relationTypes;
         $this->nodeTypes = $node->nodeTypes;
+
+        $this->timestamp = now()->toIso8601String();
 
         return $this;
     }

@@ -21,14 +21,15 @@ class NodeController extends Controller
         // if the word isn't in our database
         if ($nodeCache === null) {
             // we fetch it from jeuxdemot
-            $response = FetchWord::fetch(utf8_decode($word));
+            $response = FetchWord::fetch($word);
+
             // we extract the content
             $parsed = WordParser::parse($response);
             $reason = $parsed->getReason();
 
             // if the file is too big
             if ($parsed->getCode() === 413) {
-                $response = FetchWord::fetch(utf8_decode($word), FetchWord::RELATION_NONE);
+                $response = FetchWord::fetch($word, FetchWord::RELATION_NONE);
                 $parsed = WordParser::parse($response);
             }
 
@@ -56,7 +57,6 @@ class NodeController extends Controller
                 $nodeCache->setNode($cleanNode);
                 $nodeCache->save();
             }
-
         }
 
         return view('node.single', ["node" => $nodeCache, "reason" => $reason]);

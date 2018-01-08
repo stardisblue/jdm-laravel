@@ -22,13 +22,13 @@ class AjaxController extends Controller
     public function card(string $word)
     {
         // afficher un mot
-        //$elasticNode = ElasticNode::search(["term" => ['name' => $word]], 1)->getResults();
-        $elasticNode = null;
+        $elasticNode = ElasticNode::search(["term" => ['name' => $word]], 1)->getResults();
+
         if ($elasticNode !== null) { // it's an array so it will be gladly converted to json
             return $elasticNode;
         }
 
-        $response = FetchWord::fetch(utf8_decode($word), -1);
+        $response = FetchWord::fetch($word, FetchWord::RELATION_NONE);
         $parsed = WordParser::parse($response);
 
         if ($parsed->getCode() !== 404) {
@@ -42,7 +42,7 @@ class AjaxController extends Controller
 
         }
 
-        return $elasticNode; // yes :/
+        return null; // yes :/
     }
 
 
@@ -55,10 +55,14 @@ class AjaxController extends Controller
             return $nodeCache;
         }
         // we fetch it from jeuxdemot
-        $response = FetchWord::fetch(utf8_decode($nodeCache['name']));
-        // we extract the content
+        $response = FetchWord::fetch($nodeCache['name']);
         $parsed = WordParser::parse($response);
-        $reason = $parsed->getReason();
+
+        // if the file is too big
+        if ($parsed->getCode() === 413) {
+            $response = FetchWord::fetch($nodeCache['name'], FetchWord::RELATION_NONE);
+            $parsed = WordParser::parse($response);
+        }
 
         if ($parsed->getCode() !== 404) {
             // we get the raw node

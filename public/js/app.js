@@ -792,7 +792,7 @@ module.exports = {
   var freeParseFloat = parseFloat,
       freeParseInt = parseInt;
 
-  /** Detect free variable `global` from CleanNode.js. */
+  /** Detect free variable `global` from Node.js. */
   var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
 
   /** Detect free variable `self`. */
@@ -810,17 +810,17 @@ module.exports = {
   /** Detect the popular CommonJS extension `module.exports`. */
   var moduleExports = freeModule && freeModule.exports === freeExports;
 
-  /** Detect free variable `process` from CleanNode.js. */
+  /** Detect free variable `process` from Node.js. */
   var freeProcess = moduleExports && freeGlobal.process;
 
-  /** Used to access faster CleanNode.js helpers. */
+  /** Used to access faster Node.js helpers. */
   var nodeUtil = (function() {
     try {
       return freeProcess && freeProcess.binding && freeProcess.binding('util');
     } catch (e) {}
   }());
 
-  /* CleanNode.js helper references. */
+  /* Node.js helper references. */
   var nodeIsArrayBuffer = nodeUtil && nodeUtil.isArrayBuffer,
       nodeIsDate = nodeUtil && nodeUtil.isDate,
       nodeIsMap = nodeUtil && nodeUtil.isMap,
@@ -1800,7 +1800,7 @@ module.exports = {
    * lodash.isFunction(lodash.bar);
    * // => true
    *
-   * // Create a suped-up `defer` in CleanNode.js.
+   * // Create a suped-up `defer` in Node.js.
    * var defer = _.runInContext({ 'setTimeout': setImmediate }).defer;
    */
   var runInContext = (function runInContext(context) {
@@ -2794,7 +2794,7 @@ module.exports = {
             !(skipIndexes && (
                // Safari 9 has enumerable `arguments.length` in strict mode.
                key == 'length' ||
-               // CleanNode.js 0.10 has enumerable non-index properties on buffers.
+               // Node.js 0.10 has enumerable non-index properties on buffers.
                (isBuff && (key == 'offset' || key == 'parent')) ||
                // PhantomJS 2 has enumerable non-index properties on typed arrays.
                (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
@@ -3619,7 +3619,7 @@ module.exports = {
     }
 
     /**
-     * The base implementation of `_.isArrayBuffer` without CleanNode.js optimizations.
+     * The base implementation of `_.isArrayBuffer` without Node.js optimizations.
      *
      * @private
      * @param {*} value The value to check.
@@ -3630,7 +3630,7 @@ module.exports = {
     }
 
     /**
-     * The base implementation of `_.isDate` without CleanNode.js optimizations.
+     * The base implementation of `_.isDate` without Node.js optimizations.
      *
      * @private
      * @param {*} value The value to check.
@@ -3724,7 +3724,7 @@ module.exports = {
     }
 
     /**
-     * The base implementation of `_.isMap` without CleanNode.js optimizations.
+     * The base implementation of `_.isMap` without Node.js optimizations.
      *
      * @private
      * @param {*} value The value to check.
@@ -3805,7 +3805,7 @@ module.exports = {
     }
 
     /**
-     * The base implementation of `_.isRegExp` without CleanNode.js optimizations.
+     * The base implementation of `_.isRegExp` without Node.js optimizations.
      *
      * @private
      * @param {*} value The value to check.
@@ -3816,7 +3816,7 @@ module.exports = {
     }
 
     /**
-     * The base implementation of `_.isSet` without CleanNode.js optimizations.
+     * The base implementation of `_.isSet` without Node.js optimizations.
      *
      * @private
      * @param {*} value The value to check.
@@ -3827,7 +3827,7 @@ module.exports = {
     }
 
     /**
-     * The base implementation of `_.isTypedArray` without CleanNode.js optimizations.
+     * The base implementation of `_.isTypedArray` without Node.js optimizations.
      *
      * @private
      * @param {*} value The value to check.
@@ -6461,7 +6461,7 @@ module.exports = {
      */
     var getTag = baseGetTag;
 
-    // Fallback for data views, maps, sets, and weak maps in IE 11 and promises in CleanNode.js < 6.
+    // Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
     if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
         (Map && getTag(new Map) != mapTag) ||
         (Promise && getTag(Promise.resolve()) != promiseTag) ||
@@ -17452,7 +17452,7 @@ module.exports = {
   }
   // Check for `exports` after `define` in case a build optimizer adds it.
   else if (freeModule) {
-    // Export for CleanNode.js.
+    // Export for Node.js.
     (freeModule.exports = _)._ = _;
     // Export for CommonJS support.
     freeExports._ = _;
@@ -18115,7 +18115,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 		// For CommonJS and CommonJS-like environments where a proper `window`
 		// is present, execute the factory and get jQuery.
 		// For environments that do not have a `window` with a `document`
-		// (such as CleanNode.js), expose a factory as module.exports.
+		// (such as Node.js), expose a factory as module.exports.
 		// This accentuates the need for the creation of a real `window`.
 		// e.g. var jQuery = require("jquery")(window);
 		// See ticket #14549 for more info.
@@ -22110,9 +22110,9 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 var acceptData = function( owner ) {
 
 	// Accepts only:
-	//  - CleanNode
-	//    - CleanNode.ELEMENT_NODE
-	//    - CleanNode.DOCUMENT_NODE
+	//  - Node
+	//    - Node.ELEMENT_NODE
+	//    - Node.DOCUMENT_NODE
 	//  - Object
 	//    - Any
 	return owner.nodeType === 1 || owner.nodeType === 9 || !( +owner.nodeType );
@@ -24514,7 +24514,7 @@ jQuery.extend( {
 		"float": "cssFloat"
 	},
 
-	// Get and set the style property on a DOM CleanNode
+	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
 
 		// Don't set styles on text and comment nodes
@@ -30818,7 +30818,7 @@ function isBuffer (obj) {
   return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
-// For CleanNode v0.10 support. Remove this eventually.
+// For Node v0.10 support. Remove this eventually.
 function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
@@ -42022,7 +42022,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\CleanNode.vue"
+Component.options.__file = "resources\\assets\\js\\components\\Node.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */

@@ -19,7 +19,7 @@ class FetchWord
     static function fetch(string $name, $relation = ''): ResponseInterface
     {
         return (new Client())->request('GET', self::$baseUrl,
-            ['query' => ['gotermrel' => $name, 'rel' => $relation, 'output' => 0]]);
+            ['query' => ['gotermrel' => utf8_decode($name), 'rel' => $relation, 'output' => 0]]);
     }
 
     /**
@@ -30,6 +30,6 @@ class FetchWord
     static function fetchAsync(string $name, $relation = ''): PromiseInterface
     {
         return (new Client())->requestAsync('GET', self::$baseUrl,
-            ['query' => ['gotermrel' => $name, 'rel' => $relation, 'output' => 0]]);
+            ['query' => ['gotermrel' => utf8_decode($name), 'rel' => $relation, 'output' => 0]]);
     }
 }
