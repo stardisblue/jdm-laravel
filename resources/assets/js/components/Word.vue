@@ -1,5 +1,5 @@
 <template>
-    <a class="word" :href="'./' +word.name">{{name()}}</a>
+    <a class="word" :href="'./' +word.name.replace(/\//,'%252F')">{{name()}}</a>
 </template>
 
 <script>
@@ -7,7 +7,7 @@
 
     export default {
         mounted() {
-           // console.log('Word mounted : ' + this.word.name);
+            // console.log('Word mounted : ' + this.word.name);
         },
 
         methods: {

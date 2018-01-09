@@ -15,6 +15,7 @@ class NodeController extends Controller
 {
     public function display(string $word)
     {
+        $word = urldecode($word);
         $nodeCache = ElasticNodeCache::search(["match" => ['name' => $word]], 1)->getResults();
         $reason = '';
 

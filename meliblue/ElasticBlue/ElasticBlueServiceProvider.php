@@ -25,7 +25,7 @@ class ElasticBlueServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton('elasticblue', function () {
-            return ClientBuilder::fromConfig(config('elasticblue'));
+            return ClientBuilder::fromConfig(config('elasticblue.connection'));
         });
     }
 

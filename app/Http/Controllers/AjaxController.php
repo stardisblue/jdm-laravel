@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use Illuminate\Http\Request;
 use Meliblue\ElasticBlue\Models\ElasticNode;
 use Meliblue\ElasticBlue\Models\ElasticNodeCache;
 use Meliblue\ElasticBlue\Models\ElasticRelationIn;
@@ -19,8 +20,30 @@ use Meliblue\WordParser;
 
 class AjaxController extends Controller
 {
+    public static function searchNodeRelation(
+        Request $request,
+        int $idNode,
+        int $idRelationType,
+        string $way,
+        string $word,
+        int $page
+    ) {
+        $sortOrder = $request->input('sort', 'desc');
+
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            return null;
+        }
+
+        if ($way === "in") {
+            return ElasticRelationIn::nodeSearch($idNode, $idRelationType, $word, $page, $sortOrder);
+        } elseif ($way === "out") {
+            return ElasticRelationOut::nodeSearch($idNode, $idRelationType, $word, $page, $sortOrder);
+        }
+    }
+
     public function card(string $word)
     {
+        $word = urldecode($word);
         // afficher un mot
         $elasticNode = ElasticNode::search(["term" => ['name' => $word]], 1)->getResults();
 
@@ -45,6 +68,26 @@ class AjaxController extends Controller
         return null; // yes :/
     }
 
+    public function getNodeRelation(Request $request, int $idNode, int $idRelationType, string $way, int $page)
+    {
+        $orderBy = $request->input('orderBy', 'weight');
+        $sortOrder = $request->input('sort', 'desc');
+
+        if (!in_array($orderBy, ["weight", "name"]) || !in_array($sortOrder, ['asc', 'desc'])) {
+            return null;
+        }
+
+        if ($orderBy === "name") {
+            $orderBy = "node.name";
+        }
+
+        if ($way === "in") {
+
+            return ElasticRelationIn::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
+        } elseif ($way === "out") {
+            ElasticRelationOut::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
+        }
+    }
 
     public function ajaxUpdateAndGet(int $wordId)
     {

@@ -17,6 +17,55 @@ class ElasticRelation extends ElasticBlueModel
     public $weight;
     public $node;
 
+
+    public static function nodeSearch(
+        int $idNode,
+        int $idRelationType,
+        string $word,
+        int $page,
+        string $sort
+    ) {
+        $paginationSize = config('elasticblue.pagination', 30);
+
+        $params = [
+            'index' => static::$index,
+            'type' => static::$type,
+            'body' => [
+                'from' => $page * $paginationSize,
+                'size' => $paginationSize,
+                'sort' => [
+                    ['_score' => ['order' => $sort]],
+                    ['weight' => ['order' => 'desc']],  // fallback value
+                    ['node.name' => ['order' => 'asc']],// fallback value 2
+                    'id',                               // fallback value 3
+                ],
+                "query" => [
+
+                    "bool" => [
+                        'must' => [
+                            "match" => [
+                                'node.name.autocomplete' => $word,
+                            ],
+                        ],
+                        'filter' => [
+                            ['term' => ['idNode' => $idNode]],
+                            ['term' => ["idRelationType" => $idRelationType]],
+                        ],
+                    ],
+                ],
+
+            ],
+        ];
+
+        $result = Es::search($params);
+
+        if ($result['hits']['total'] <= $page * $paginationSize) { // intrusion check
+            return null;
+        }
+
+        return ["count" => $result['hits']['total'], 'results' => $result['hits']['hits']];
+    }
+
     /**
      * @param int $idNode
      * @param int $idRelationType
@@ -49,7 +98,43 @@ class ElasticRelation extends ElasticBlueModel
 
             Es::bulk($params);
         }
+    }
 
+    public static function pagination(int $idNode, int $idRelationType, int $page, string $orderBy, string $sort)
+    {
+        $paginationSize = config('elasticblue.pagination', 30);
+
+        $params = [
+            'index' => static::$index,
+            'type' => static::$type,
+            'body' => [
+                'from' => $page * $paginationSize,
+                'size' => $paginationSize,
+                'sort' => [
+                    [$orderBy => ['order' => $sort]],
+                    ['weight' => ['order' => 'desc']],  // fallback value
+                    ['node.name' => ['order' => 'asc']],// fallback value 2
+                    'id',                               // fallback value 3
+                ],
+                "query" => [
+                    "bool" => [
+                        'filter' => [
+                            ['term' => ['idNode' => $idNode]],
+                            ['term' => ["idRelationType" => $idRelationType]],
+                        ],
+                    ],
+                ],
+
+            ],
+        ];
+
+        $result = Es::search($params);
+
+        if ($result['hits']['total'] <= $page * $paginationSize) { // intrusion check
+            return null;
+        }
+
+        return ["count" => $result['hits']['total'], 'results' => $result['hits']['hits']];
     }
 
     public static function deleteAll(int $idNode)

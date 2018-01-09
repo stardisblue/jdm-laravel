@@ -25,7 +25,12 @@ class ElasticBlueModel
         return new ElasticBlueResult(Es::search($search));
     }
 
-    public static function get($id, array $fields = [])
+    /**
+     * @param $id
+     * @param array $fields
+     * @return array|null
+     */
+    public static function get($id, array $fields = []): ?array
     {
         $params = [
             'index' => static::$index,
