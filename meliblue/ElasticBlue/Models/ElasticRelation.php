@@ -33,18 +33,12 @@ class ElasticRelation extends ElasticBlueModel
             'body' => [
                 'from' => $page * $paginationSize,
                 'size' => $paginationSize,
-                'sort' => [
-                    ['_score' => ['order' => $sort]],
-                    ['weight' => ['order' => 'desc']],  // fallback value
-                    ['node.name' => ['order' => 'asc']],// fallback value 2
-                    'id',                               // fallback value 3
-                ],
                 "query" => [
-
                     "bool" => [
                         'must' => [
-                            "match" => [
-                                'node.name.autocomplete' => $word,
+                            "multi_match" => [
+                                'query' => $word,
+                                'fields' => ['node.name.autocomplete', 'node.formattedName.autocomplete']
                             ],
                         ],
                         'filter' => [
