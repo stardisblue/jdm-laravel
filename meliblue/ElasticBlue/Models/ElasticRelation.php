@@ -47,13 +47,15 @@ class ElasticRelation extends ElasticBlueModel
                 ],
             ],
             "filter_path" => ['hits.total', 'hits.hits._source', 'hits.hits.inner_hits'],
-
         ];
 
         $result = Es::search($params);
 
+        if ($result['hits']['total'] === 0) {
+            return null;
+        }
 
-        return ["count" => $result['hits']['total'], 'results' => $result['hits']['hits']];
+        return ["total" => $result['hits']['total'], 'results' => $result['hits']['hits']];
     }
 
     public static function nodeRelationTypeSearch(int $idNode, int $idRelationType, string $word, int $page): ?array

@@ -15,6 +15,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('node', require('./components/Node.vue'));
+Vue.component('node', require('./components/Search.vue'));
 
 const app = new Vue({
     el: 'node',

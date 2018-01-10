@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Meliblue\ElasticBlue\Models\ElasticNode;
@@ -56,7 +57,7 @@ class AjaxController extends Controller
 
         }
 
-        return null; // yes :/
+        return response("", Response::HTTP_NO_CONTENT); // yes :/
     }
 
     public function autocompleteNode(Request $request)
@@ -93,6 +94,10 @@ class AjaxController extends Controller
 
         $relIn = ElasticRelationIn::nodeSearch($idNode, $word);
         $relOut = ElasticRelationOut::nodeSearch($idNode, $word);
+
+        if ($relOut === null && $relIn === null) {
+            return response('', Response::HTTP_NO_CONTENT);
+        }
 
         $collection = collect($relIn['results']);
         $collectOut = collect($relOut['results']);
@@ -142,8 +147,8 @@ class AjaxController extends Controller
         $word = $request->input('q');
 
         $relIn = collect(ElasticRelationIn::nodeRelationTypeSearch($idNode, $idRelationType, $word, $page)['results']);
-        $relOut = collect(ElasticRelationOut::nodeRelationTypeSearch($idNode, $idRelationType, $word,
-            $page)['results']);
+        $relOut =
+            collect(ElasticRelationOut::nodeRelationTypeSearch($idNode, $idRelationType, $word, $page)['results']);
 
         $relIn->transform(function ($value) {
             $out = $value['_source'];
@@ -182,9 +187,13 @@ class AjaxController extends Controller
         }
 
         if ($way === "in") {
-            return ElasticRelationIn::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
+            $relIn = ElasticRelationIn::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
+
+            return $relIn === null ? response('', Response::HTTP_NO_CONTENT) : $relIn;
         } elseif ($way === "out") {
-            return ElasticRelationOut::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
+            $relOut = ElasticRelationOut::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
+
+            return $relOut === null ? response('', Response::HTTP_NO_CONTENT) : $relOut;
         }
     }
 
@@ -194,7 +203,7 @@ class AjaxController extends Controller
         // mettre à jour le cache
         // recuperer la version mise à jour
         if ($nodeCache === null) {
-            return $nodeCache;
+            return response('', Response::HTTP_NO_CONTENT);
         }
         // we fetch it from jeuxdemot
         $response = FetchWord::fetch($nodeCache['name']);
@@ -234,7 +243,7 @@ class AjaxController extends Controller
             return $nodeCache;
         }
 
-        return null;
+        return response('', Response::HTTP_NO_CONTENT);
 
     }
 }

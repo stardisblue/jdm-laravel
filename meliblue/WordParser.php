@@ -116,7 +116,7 @@ class WordParser
 
         if ($error !== null) {
             $wrapper->setCode(413)
-                ->setReason("TOOBIG_USE_DUMP");
+                ->setReason($error);
         } else {
             $wrapper->setCode($response->getStatusCode())
                 ->setReason($response->getReasonPhrase());
