@@ -10,23 +10,21 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// idNode and page are autochecked in RouteServiceProvider
 
 Route::get('/card', "AjaxController@card");
 
-Route::get('/node/{idNode}/relation-type/{idRelationType}/{way}/{page}', 'AjaxController@getNodeRelation')
+Route::get('/node/{idNode}/relation-type/{idRelationType}/{way}/{page?}', 'AjaxController@getNodeRelation')
     ->where([
         'idRelationType' => "[0-9]+",
         'way' => "in|out",
-        'page' => '[0-9]+',
     ]);
 
 
-Route::get('/node/{idNode}/relation-type/{idRelationType}/{way}/search/{word}/{page}',
-    'AjaxController@searchNodeRelation')
-    ->where([
-        'idRelationType' => "[0-9]+",
-        'way' => "in|out",
-        'page' => '[0-9]+',
-    ]);
+Route::get('/node/{idNode}/relation-type/{idRelationType}/search/{page?}',
+    'AjaxController@searchRelationInRelationType')
+    ->where('idRelationType', '[0-9]+');
+
+Route::get('/node/{idNode}/search', 'AjaxController@searchRelationInNode');
 
 Route::get('/node/{idNode}', "AjaxController@ajaxUpdateAndGet");

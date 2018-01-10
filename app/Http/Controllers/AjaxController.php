@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Meliblue\ElasticBlue\Models\ElasticNode;
 use Meliblue\ElasticBlue\Models\ElasticNodeCache;
 use Meliblue\ElasticBlue\Models\ElasticRelationIn;
@@ -47,28 +48,72 @@ class AjaxController extends Controller
         return null; // yes :/
     }
 
-    public function searchNodeRelation(
-        Request $request,
-        int $idNode,
-        int $idRelationType,
-        string $way,
-        string $word,
-        int $page
-    ) {
-        $sortOrder = $request->input('sort', 'desc');
+    public function searchRelationInNode(Request $request, int $idNode)
+    {
+        $word = $request->input('q');
 
-        if (!in_array($sortOrder, ['asc', 'desc'])) {
-            return null;
+        $relIn = ElasticRelationIn::nodeSearch($idNode, $word);
+        $relOut = ElasticRelationOut::nodeSearch($idNode, $word);
+
+        $collection = collect($relIn['results']);
+        $collectOut = collect($relOut['results']);
+
+        $collection = $this->tranformSearchRelations($collection, 'in')->toArray();
+        $collectOut = $this->tranformSearchRelations($collectOut, 'out')->toArray();
+
+
+        foreach ($collectOut as $key => $value) {
+            $collection[$key]['out'] = $value['out'];
         }
 
-        if ($way === "in") {
-            return ElasticRelationIn::nodeSearch($idNode, $idRelationType, $word, $page, $sortOrder);
-        } elseif ($way === "out") {
-            return ElasticRelationOut::nodeSearch($idNode, $idRelationType, $word, $page, $sortOrder);
-        }
+        return $collection;
     }
 
-    public function getNodeRelation(Request $request, int $idNode, int $idRelationType, string $way, int $page)
+    /**
+     * @param Collection $collection
+     * @param string $prefix
+     * @return Collection
+     */
+    private function tranformSearchRelations(Collection $collection, string $prefix): Collection
+    {
+        return $collection->transform(function ($value) {
+            return collect($value['inner_hits']['relationType']['hits']['hits'])
+                ->transform(function ($type) {
+                    return $type['_source'];
+                })->toArray();
+        })->keyBy(function ($item) {
+            return $item['0']['idRelationType'];
+        })->transform(function ($value) use ($prefix) {
+            return [$prefix => $value];
+        });
+    }
+
+    public function searchRelationInRelationType(Request $request, int $idNode, int $idRelationType, int $page = 0)
+    {
+
+        $word = $request->input('q');
+
+        $relIn = collect(ElasticRelationIn::nodeRelationTypeSearch($idNode, $idRelationType, $word, $page)['results']);
+        $relOut = collect(ElasticRelationOut::nodeRelationTypeSearch($idNode, $idRelationType, $word,
+            $page)['results']);
+
+        $relIn->transform(function ($value) {
+            $out = $value['_source'];
+            $out['_score'] = $value['_score'];
+
+            return $out;
+        });
+        $relOut->transform(function ($value) {
+            $out = $value['_source'];
+            $out['_score'] = $value['_score'];
+
+            return $out;
+        });
+
+        return ['in' => $relIn, 'out' => $relOut];
+    }
+
+    public function getNodeRelation(Request $request, int $idNode, int $idRelationType, string $way, int $page = 0)
     {
         $orderBy = $request->input('orderBy', 'weight');
         $sortOrder = $request->input('sort', 'desc');
@@ -82,10 +127,9 @@ class AjaxController extends Controller
         }
 
         if ($way === "in") {
-
             return ElasticRelationIn::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
         } elseif ($way === "out") {
-            ElasticRelationOut::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
+            return ElasticRelationOut::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
         }
     }
 

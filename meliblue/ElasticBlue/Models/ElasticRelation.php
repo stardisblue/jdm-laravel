@@ -17,14 +17,45 @@ class ElasticRelation extends ElasticBlueModel
     public $weight;
     public $node;
 
+    public static function nodeSearch(int $idNode, string $word): ?array
+    {
+        $paginationSize = config('elasticblue.pagination', 30);
 
-    public static function nodeSearch(
-        int $idNode,
-        int $idRelationType,
-        string $word,
-        int $page,
-        string $sort
-    ) {
+        $params = [
+            'index' => static::$index,
+            'type' => static::$type,
+            'body' => [
+                "query" => [
+                    "bool" => [
+                        'must' => [
+                            "multi_match" => [
+                                'query' => $word,
+                                'fields' => ['node.name.autocomplete', 'node.formattedName.autocomplete'],
+                            ],
+                        ],
+                        'filter' => [
+                            ['term' => ['idNode' => $idNode]],
+                        ],
+                    ],
+                ],
+                "collapse" => [
+                    "field" => "idRelationType",
+                    "inner_hits" => [
+                        'name' => "relationType",
+                        'size' => $paginationSize,
+                    ],
+                ],
+            ],
+        ];
+
+        $result = Es::search($params);
+
+
+        return ["count" => $result['hits']['total'], 'results' => $result['hits']['hits']];
+    }
+
+    public static function nodeRelationTypeSearch(int $idNode, int $idRelationType, string $word, int $page): ?array
+    {
         $paginationSize = config('elasticblue.pagination', 30);
 
         $params = [
@@ -38,7 +69,7 @@ class ElasticRelation extends ElasticBlueModel
                         'must' => [
                             "multi_match" => [
                                 'query' => $word,
-                                'fields' => ['node.name.autocomplete', 'node.formattedName.autocomplete']
+                                'fields' => ['node.name.autocomplete', 'node.formattedName.autocomplete'],
                             ],
                         ],
                         'filter' => [
@@ -65,7 +96,7 @@ class ElasticRelation extends ElasticBlueModel
      * @param int $idRelationType
      * @param Relation[] $relations
      */
-    public static function bulkCreate(int $idNode, int $idRelationType, array $relations)
+    public static function bulkCreate(int $idNode, int $idRelationType, array $relations): void
     {
         if (sizeof($relations) > 0) {
             $params = ['body' => []];
@@ -94,7 +125,8 @@ class ElasticRelation extends ElasticBlueModel
         }
     }
 
-    public static function pagination(int $idNode, int $idRelationType, int $page, string $orderBy, string $sort)
+    public static function pagination(int $idNode, int $idRelationType, int $page, string $orderBy, string $sort):
+    ?array
     {
         $paginationSize = config('elasticblue.pagination', 30);
 
@@ -124,6 +156,7 @@ class ElasticRelation extends ElasticBlueModel
 
         $result = Es::search($params);
 
+        dump($result);
         if ($result['hits']['total'] <= $page * $paginationSize) { // intrusion check
             return null;
         }
@@ -131,8 +164,10 @@ class ElasticRelation extends ElasticBlueModel
         return ["count" => $result['hits']['total'], 'results' => $result['hits']['hits']];
     }
 
-    public static function deleteAll(int $idNode)
-    {
+    public
+    static function deleteAll(
+        int $idNode
+    ) {
         $params = [
             'index' => static::$index,
             'type' => static::$type,
@@ -143,16 +178,21 @@ class ElasticRelation extends ElasticBlueModel
 
     }
 
-    public function addRelation($idNode, array $relation)
-    {
+    public
+    function addRelation(
+        $idNode,
+        array $relation
+    ) {
         $this->id = $relation['id'];
         $this->idNode = $idNode;
         $this->idRelationType = $relation['id'];
         $this->weight = $relation['weight'];
     }
 
-    public function addNode(SimpleNode $node)
-    {
+    public
+    function addNode(
+        SimpleNode $node
+    ) {
         $this->node = $node;
     }
 }
