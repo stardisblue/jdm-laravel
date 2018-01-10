@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use Illuminate\Http\Request;
 use Meliblue\ElasticBlue\Models\ElasticNode;
 use Meliblue\ElasticBlue\Models\ElasticNodeCache;
 use Meliblue\ElasticBlue\Models\ElasticRelationIn;
@@ -13,9 +14,18 @@ use Meliblue\WordParser;
 
 class NodeController extends Controller
 {
-    public function display(string $word)
+
+    public function search(Request $request)
     {
-        $word = urldecode($word);
+        $query = $request->input('q');
+
+        return $query;
+    }
+
+    public function display(Request $request)
+    {
+        $word = $request->input('word');
+
         $nodeCache = ElasticNodeCache::search(["match" => ['name' => $word]], 1)->getResults();
         $reason = '';
 

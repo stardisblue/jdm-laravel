@@ -11,11 +11,10 @@
 |
 */
 
-Route::get('/node/{word}/card', "AjaxController@card");
+Route::get('/card', "AjaxController@card");
 
 Route::get('/node/{idNode}/relation-type/{idRelationType}/{way}/{page}', 'AjaxController@getNodeRelation')
     ->where([
-        'idNode' => '[0-9]+',
         'idRelationType' => "[0-9]+",
         'way' => "in|out",
         'page' => '[0-9]+',
@@ -25,10 +24,9 @@ Route::get('/node/{idNode}/relation-type/{idRelationType}/{way}/{page}', 'AjaxCo
 Route::get('/node/{idNode}/relation-type/{idRelationType}/{way}/search/{word}/{page}',
     'AjaxController@searchNodeRelation')
     ->where([
-        'idNode' => '[0-9]+',
         'idRelationType' => "[0-9]+",
         'way' => "in|out",
         'page' => '[0-9]+',
     ]);
 
-Route::post('/node/{word}', "AjaxController@ajaxUpdateAndGet");
+Route::get('/node/{idNode}', "AjaxController@ajaxUpdateAndGet");

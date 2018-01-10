@@ -44248,7 +44248,7 @@ var render = function() {
     "a",
     {
       staticClass: "word",
-      attrs: { href: "./" + _vm.word.name.replace(/\//, "%252F") }
+      attrs: { href: "node?word=" + encodeURI(_vm.word.name) }
     },
     [_vm._v(_vm._s(_vm.name()))]
   )

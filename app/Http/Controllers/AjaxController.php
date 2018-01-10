@@ -20,30 +20,9 @@ use Meliblue\WordParser;
 
 class AjaxController extends Controller
 {
-    public static function searchNodeRelation(
-        Request $request,
-        int $idNode,
-        int $idRelationType,
-        string $way,
-        string $word,
-        int $page
-    ) {
-        $sortOrder = $request->input('sort', 'desc');
-
-        if (!in_array($sortOrder, ['asc', 'desc'])) {
-            return null;
-        }
-
-        if ($way === "in") {
-            return ElasticRelationIn::nodeSearch($idNode, $idRelationType, $word, $page, $sortOrder);
-        } elseif ($way === "out") {
-            return ElasticRelationOut::nodeSearch($idNode, $idRelationType, $word, $page, $sortOrder);
-        }
-    }
-
-    public function card(string $word)
+    public function card(Request $request)
     {
-        $word = urldecode($word);
+        $word = $request->input('word');
         // afficher un mot
         $elasticNode = ElasticNode::search(["term" => ['name' => $word]], 1)->getResults();
 
@@ -68,6 +47,27 @@ class AjaxController extends Controller
         return null; // yes :/
     }
 
+    public function searchNodeRelation(
+        Request $request,
+        int $idNode,
+        int $idRelationType,
+        string $way,
+        string $word,
+        int $page
+    ) {
+        $sortOrder = $request->input('sort', 'desc');
+
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            return null;
+        }
+
+        if ($way === "in") {
+            return ElasticRelationIn::nodeSearch($idNode, $idRelationType, $word, $page, $sortOrder);
+        } elseif ($way === "out") {
+            return ElasticRelationOut::nodeSearch($idNode, $idRelationType, $word, $page, $sortOrder);
+        }
+    }
+
     public function getNodeRelation(Request $request, int $idNode, int $idRelationType, string $way, int $page)
     {
         $orderBy = $request->input('orderBy', 'weight');
@@ -89,9 +89,9 @@ class AjaxController extends Controller
         }
     }
 
-    public function ajaxUpdateAndGet(int $wordId)
+    public function ajaxUpdateAndGet(int $idNode)
     {
-        $nodeCache = ElasticNodeCache::get($wordId, ['name']);
+        $nodeCache = ElasticNodeCache::get($idNode, ['name']);
         // mettre à jour le cache
         // recuperer la version mise à jour
         if ($nodeCache === null) {

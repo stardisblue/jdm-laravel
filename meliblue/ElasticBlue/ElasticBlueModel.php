@@ -2,6 +2,7 @@
 
 namespace Meliblue\ElasticBlue;
 
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Meliblue\ElasticBlue\Facade\Es;
 
 class ElasticBlueModel
@@ -39,10 +40,14 @@ class ElasticBlueModel
             '_source' => $fields,
         ];
 
-        $result = Es::get($params);
+        try {
+            $result = Es::get($params);
 
-        return $result['found'] ? $result['_source'] : null;
+        } catch (Missing404Exception $e) {
+            return null;
+        }
 
+        return $result['_source'];
     }
 
     public static function delete($id)

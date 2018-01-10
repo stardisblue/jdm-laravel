@@ -1,5 +1,5 @@
 <template>
-    <a class="word" :href="'./' +word.name.replace(/\//,'%252F')">{{name()}}</a>
+    <a class="word" :href="'node?word=' +encodeURI(word.name)">{{name()}}</a>
 </template>
 
 <script>
