@@ -29,6 +29,7 @@ class ElasticNode extends ElasticBlueModel implements Jsonable
                     "simple_query_string" => [
                         "fields" => ["name", "formattedName"],
                         "query" => $query,
+                        "flags" => "PREFIX|PHRASE",
                     ],
                 ],
                 "from" => $page * $pagination,

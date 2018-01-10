@@ -42,7 +42,7 @@ class AjaxController extends Controller
             return $elasticNode;
         }
 
-        $response = FetchWord::fetch($word, FetchWord::RELATION_NONE);
+        $response = FetchWord::fetchAsync($word, FetchWord::RELATION_NONE)->wait(true);
         $parsed = WordParser::parse($response);
 
         if ($parsed->getCode() !== 404) {

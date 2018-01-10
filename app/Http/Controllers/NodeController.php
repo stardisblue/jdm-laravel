@@ -23,7 +23,7 @@ class NodeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('home')
+            return redirect()->route('home')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -36,7 +36,7 @@ class NodeController extends Controller
             return redirect()->route('node', ['word' => $results[0]['name']]);
         }
 
-        return $results;
+        return view('node.search', ["results" => $results]);
     }
 
     public function display(Request $request)
