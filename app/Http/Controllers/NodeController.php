@@ -32,6 +32,10 @@ class NodeController extends Controller
 
         $results = ElasticNode::nodeSearch($query, $page);
 
+        if ($results === null) {
+            return redirect()->route('node', ['word' => $query]);
+        }
+
         if (sizeof($results) === 1) {
             return redirect()->route('node', ['word' => $results[0]['name']]);
         }
@@ -46,9 +50,8 @@ class NodeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('home')
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->route('home')
+                ->withErrors($validator);
         }
 
         $word = $request->input('word');
@@ -69,6 +72,18 @@ class NodeController extends Controller
             if ($parsed->getCode() === 413) {
                 $response = FetchWord::fetch($word, FetchWord::RELATION_NONE);
                 $parsed = WordParser::parse($response);
+
+                // we get the raw node
+                $rawNode = $parsed->getNode();
+
+                $cleanNode = new CleanNode($rawNode);
+
+                // we extract the node information from it
+                $elasticNode = new ElasticNode();
+                $elasticNode->setNode($cleanNode);
+                $elasticNode->save();
+
+                return redirect()->route('home')->withErrors($reason);
             }
 
             // if the word exists
@@ -94,9 +109,12 @@ class NodeController extends Controller
                 $nodeCache = new ElasticNodeCache();
                 $nodeCache->setNode($cleanNode);
                 $nodeCache->save();
+            } else {
+                return redirect()->route('home')
+                    ->withErrors($reason);
             }
         }
 
-        return view('node.single', ["node" => $nodeCache, "reason" => $reason]);
+        return view('node.single', ["node" => $nodeCache]);
     }
 }
