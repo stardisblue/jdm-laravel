@@ -46,6 +46,8 @@ class ElasticRelation extends ElasticBlueModel
                     ],
                 ],
             ],
+            "filter_path" => ['hits.total', 'hits.hits._source', 'hits.hits.inner_hits'],
+
         ];
 
         $result = Es::search($params);
@@ -78,8 +80,8 @@ class ElasticRelation extends ElasticBlueModel
                         ],
                     ],
                 ],
-
             ],
+            "filter_path" => ['hits.total', 'hits.hits._score', 'hits.hits._source'],
         ];
 
         $result = Es::search($params);
@@ -150,13 +152,12 @@ class ElasticRelation extends ElasticBlueModel
                         ],
                     ],
                 ],
-
             ],
+            "filter_path" => ['hits.total', 'hits.hits._source'],
         ];
 
         $result = Es::search($params);
 
-        dump($result);
         if ($result['hits']['total'] <= $page * $paginationSize) { // intrusion check
             return null;
         }

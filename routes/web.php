@@ -11,13 +11,10 @@
 |
 */
 
-use Meliblue\FetchWord;
-use Meliblue\WordParser;
-
 Route::get("/", function () {
     return view('welcome');
-});
+})->name('home');
 
-Route::get('/search/', 'NodeController@search');
+Route::get('/search/{page?}', 'NodeController@search');
 
-Route::get('/node', 'NodeController@display');
+Route::get('/node', 'NodeController@display')->name('node');

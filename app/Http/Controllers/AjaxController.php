@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
 use Meliblue\ElasticBlue\Models\ElasticNode;
 use Meliblue\ElasticBlue\Models\ElasticNodeCache;
 use Meliblue\ElasticBlue\Models\ElasticRelationIn;
@@ -23,9 +24,19 @@ class AjaxController extends Controller
 {
     public function card(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'word' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('home')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $word = $request->input('word');
         // afficher un mot
-        $elasticNode = ElasticNode::search(["term" => ['name' => $word]], 1)->getResults();
+        $elasticNode = ElasticNode::getNode($word, 1);
 
         if ($elasticNode !== null) { // it's an array so it will be gladly converted to json
             return $elasticNode;
@@ -48,8 +59,36 @@ class AjaxController extends Controller
         return null; // yes :/
     }
 
+    public function autocompleteNode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'q' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('home')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $word = $request->input("q");
+
+
+        return ElasticNode::autocomplete($word, 10);
+    }
+
     public function searchRelationInNode(Request $request, int $idNode)
     {
+        $validator = Validator::make($request->all(), [
+            'q' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('home')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $word = $request->input('q');
 
         $relIn = ElasticRelationIn::nodeSearch($idNode, $word);
@@ -58,8 +97,8 @@ class AjaxController extends Controller
         $collection = collect($relIn['results']);
         $collectOut = collect($relOut['results']);
 
-        $collection = $this->tranformSearchRelations($collection, 'in')->toArray();
-        $collectOut = $this->tranformSearchRelations($collectOut, 'out')->toArray();
+        $collection = AjaxController::tranformSearchRelations($collection, 'in')->toArray();
+        $collectOut = AjaxController::tranformSearchRelations($collectOut, 'out')->toArray();
 
 
         foreach ($collectOut as $key => $value) {
@@ -74,7 +113,7 @@ class AjaxController extends Controller
      * @param string $prefix
      * @return Collection
      */
-    private function tranformSearchRelations(Collection $collection, string $prefix): Collection
+    private static function tranformSearchRelations(Collection $collection, string $prefix): Collection
     {
         return $collection->transform(function ($value) {
             return collect($value['inner_hits']['relationType']['hits']['hits'])
@@ -90,6 +129,15 @@ class AjaxController extends Controller
 
     public function searchRelationInRelationType(Request $request, int $idNode, int $idRelationType, int $page = 0)
     {
+        $validator = Validator::make($request->all(), [
+            'q' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('home')
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         $word = $request->input('q');
 
@@ -115,12 +163,19 @@ class AjaxController extends Controller
 
     public function getNodeRelation(Request $request, int $idNode, int $idRelationType, string $way, int $page = 0)
     {
+        $validator = Validator::make($request->all(), [
+            'orderBy' => ['sometimes ', 'regex:/weight|name/'],
+            'sort' => ['sometimes', 'regex:/asc|desc/'],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('home')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $orderBy = $request->input('orderBy', 'weight');
         $sortOrder = $request->input('sort', 'desc');
-
-        if (!in_array($orderBy, ["weight", "name"]) || !in_array($sortOrder, ['asc', 'desc'])) {
-            return null;
-        }
 
         if ($orderBy === "name") {
             $orderBy = "node.name";

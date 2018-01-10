@@ -27,4 +27,8 @@ Route::get('/node/{idNode}/relation-type/{idRelationType}/search/{page?}',
 
 Route::get('/node/{idNode}/search', 'AjaxController@searchRelationInNode');
 
-Route::get('/node/{idNode}', "AjaxController@ajaxUpdateAndGet");
+Route::get('/node/search', "AjaxController@autocompleteNode");
+
+Route::post('/node/{idNode}', "AjaxController@ajaxUpdateAndGet");
+
+

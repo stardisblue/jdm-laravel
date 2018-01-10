@@ -2,6 +2,7 @@
 
 use Illuminate\Contracts\Support\Jsonable;
 use Meliblue\ElasticBlue\ElasticBlueModel;
+use Meliblue\ElasticBlue\Facade\Es;
 use Meliblue\Models\CardNode;
 
 class ElasticNode extends ElasticBlueModel implements Jsonable
@@ -15,6 +16,74 @@ class ElasticNode extends ElasticBlueModel implements Jsonable
     public $formattedName;
     public $weight;
     public $nodeType;
+
+    public static function nodeSearch($query, $page = 0)
+    {
+        $pagination = config('elasticblue.pagination', 30);
+
+        $params = [
+            'index' => static::$index,
+            'type' => static::$type,
+            'body' => [
+                "query" => [
+                    "simple_query_string" => [
+                        "fields" => ["name", "formattedName"],
+                        "query" => $query,
+                    ],
+                ],
+                "from" => $page * $pagination,
+                "size" => $pagination,
+            ],
+            "filter_path" => ['hits.total', 'hits.hits._source'],
+        ];
+
+        $result = Es::search($params);
+
+
+        if ($result['hits']['total'] === 0 || $result['hits']['total'] <= $page * $pagination) { // intrusion check
+            return null;
+        }
+
+        return collect($result['hits']['hits'])->transform(function ($value) {
+            return $value['_source'];
+        })->toArray();
+    }
+
+    public static function autocomplete(string $word, int $size = 10)
+    {
+        $params = [
+            'index' => static::$index,
+            'type' => static::$type,
+            'body' => [
+                "query" => [
+                    "multi_match" => [
+                        'query' => $word,
+                        'fields' => ['name.autocomplete', 'formattedName.autocomplete'],
+                    ],
+                ],
+                "size" => $size,
+            ],
+            "filter_path" => ['hits.total', 'hits.hits._source'],
+        ];
+
+        $result = Es::search($params);
+
+        return ["total" => $result['hits']['total'], 'results' => $result['hits']['hits']];
+    }
+
+    public static function getNode(string $word, int $size = null, $type = null, $index = null)
+    {
+        return static::search([
+            "bool" => [
+                "should" => [
+                    ["term" => ['name' => $word]],
+                    ["term" => ['formattedName' => $word]],
+                ],
+            ],
+        ], $size, $type, $index);
+
+
+    }
 
     /**
      * @param CardNode $node

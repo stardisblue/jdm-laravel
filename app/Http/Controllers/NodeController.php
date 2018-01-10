@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Meliblue\ElasticBlue\Models\ElasticNode;
 use Meliblue\ElasticBlue\Models\ElasticNodeCache;
 use Meliblue\ElasticBlue\Models\ElasticRelationIn;
@@ -15,18 +16,44 @@ use Meliblue\WordParser;
 class NodeController extends Controller
 {
 
-    public function search(Request $request)
+    public function search(Request $request, int $page = 0)
     {
+        $validator = Validator::make($request->all(), [
+            'q' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('home')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $query = $request->input('q');
 
-        return $query;
+        $results = ElasticNode::nodeSearch($query, $page);
+
+        if (sizeof($results) === 1) {
+            return redirect()->route('node', ['word' => $results[0]['name']]);
+        }
+
+        return $results;
     }
 
     public function display(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'word' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('home')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $word = $request->input('word');
 
-        $nodeCache = ElasticNodeCache::search(["match" => ['name' => $word]], 1)->getResults();
+        $nodeCache = ElasticNodeCache::getNode($word, 1);
         $reason = '';
 
         // if the word isn't in our database
