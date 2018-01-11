@@ -9,7 +9,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" href="/css/app.css">
     <!-- Styles -->
     <style>
         html, body {
@@ -19,6 +19,10 @@
             font-weight: 100;
             height: 100vh;
             margin: 0;
+        }
+
+        input {
+            font-weight: 600;
         }
 
         .full-height {
@@ -33,12 +37,6 @@
 
         .position-ref {
             position: relative;
-        }
-
-        .top-right {
-            position: absolute;
-            right: 10px;
-            top: 18px;
         }
 
         .content {
@@ -62,24 +60,29 @@
         .m-b-md {
             margin-bottom: 30px;
         }
+
+        .fireworks {
+            position: absolute;
+        }
+
     </style>
 </head>
 <body>
+<canvas class="fireworks"></canvas>
 <div class="flex-center position-ref full-height">
-    @if (Route::has('login'))
-        <div class="top-right links">
-            @auth
-                <a href="{{ url('/home') }}">Home</a>
-            @else
-                    <a href="{{ route('login') }}">Login</a>
-                    <a href="{{ route('register') }}">Register</a>
-            @endauth
-        </div>
-    @endif
-
-    <div class="content">
-        <div class="title m-b-md">
-            Laravel
+    <div class="content container-fluid">
+        <div class="row title m-b-md">
+            Jeux de Mots
+            <div class="searchbar col-sm-6 col-sm-offset-3">
+                <form action="/search">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Rechercher">
+                        <span class="input-group-btn"><button class="btn btn-default" type="button"><i
+                                        class="glyphicon glyphicon-search"></i></button>
+                    </span>
+                    </div><!-- /input-group -->
+                </form>
+            </div>
         </div>
 
         <div class="links">
@@ -91,5 +94,7 @@
         </div>
     </div>
 </div>
+<script src="/js/anime.min.js"></script>
+<script src="/js/poum.js"></script>
 </body>
 </html>

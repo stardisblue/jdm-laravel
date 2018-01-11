@@ -99,7 +99,7 @@ class NodeController extends Controller
                 $nodeCache->save();
             } else {
                 return redirect()->route('home')
-                    ->withErrors($reason);
+                    ->withErrors(['reason' => $reason, 'word' => $word]);
             }
         }
 

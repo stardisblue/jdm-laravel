@@ -1,10 +1,21 @@
 <template>
     <div class="container">
         <div class="row" style="margin-top:100px">
-            <h2>{{getName}} :
-                <!--<small v-once="" v-html="getPos"></small>  -->
-            </h2>
-
+            <h2>{{getName}} </h2>
+            <ul id="part-of-speech" class="list-inline">
+                <li v-for="item in getPos">
+                    <word :word="item.node"></word>
+                </li>
+            </ul>
+            <div id="semantic-refinement lead">
+                Peux signifier :
+                <ul class="list-inline">
+                    <li v-for="item in getSemRefin.out">
+                        <word :word="item.node"></word>
+                    </li>
+                </ul>
+            </div>
+            <h3>Description</h3>
             <div id="description" v-html="compiledMarkdown"></div>
             <hr/>
             <div class="col-sm-9">
@@ -29,6 +40,7 @@
     import _ from "lodash";
     import RelationType from "./RelationType.vue"
     import Sidebar from "./Sidebar.vue"
+    import Word from "./Word.vue"
 
     export default {
         mounted() {
@@ -38,7 +50,8 @@
 
         components: {
             "relation-type": RelationType,
-            "sidebar": Sidebar
+            "sidebar": Sidebar,
+            "word": Word
         },
 
         props: ["node"],
@@ -55,8 +68,15 @@
             getPos: function () {
                 return _.find(this.node.relationTypes, function (value) {
                     return value.id === 4
-                })
+                }).relations.out
             },
+
+            getSemRefin: function () {
+                return _.find(this.node.relationTypes, function (value) {
+                    return value.id === 1
+                }).relations
+            },
+
 
             getRelationTypes: function () {
                 return _.map(this.node.relationTypes, function (value) {
@@ -67,3 +87,10 @@
 
     }
 </script>
+
+<style lang="sass">
+    #part-of-speech, #semantic-refinement
+
+        margin-left: 3em
+        border-left: 2px gray solid
+</style>

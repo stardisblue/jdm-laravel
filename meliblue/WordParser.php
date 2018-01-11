@@ -59,6 +59,7 @@ class WordParser
         $node = new RawNode();
         $node->setDescription($description);
 
+
         while ($line !== false) {
             if ($line === null) {
                 $line = strtok($separator);
@@ -74,9 +75,11 @@ class WordParser
                     'name' => WordParser::trim($array[2]),
                 ]);
             } elseif ($type === 'e') {
-                if (filter_var($array[3], FILTER_VALIDATE_INT) === false) {
-                    $array[2] = $array[2].';'.array_splice($array, 3, 1)[0];
+                $index = 2;
+                while (substr($array[$index], -1, 1) !== "'") {
+                    $index++;
                 }
+                $array[2] .= ";".implode(';', array_splice($array, 3, $index - 2));
 
                 $entity = new SimpleNode();
                 $entity->setId($array[1])
