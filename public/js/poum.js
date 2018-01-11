@@ -51,7 +51,7 @@ function createCircle(x,y) {
     var p = {};
     p.x = x;
     p.y = y;
-    p.color = '#FFF';
+    p.color = '#2b2b2b';
     p.radius = 0.1;
     p.alpha = .5;
     p.lineWidth = 6;
@@ -123,8 +123,8 @@ var centerY = window.innerHeight / 2;
 
 function autoClick() {
     animateParticules(
-        anime.random(centerX-200, centerX+200),
-        anime.random(centerY-100, centerY+100)
+        anime.random(centerX-(centerX/2), centerX+(centerX/2)),
+        anime.random(centerY-(centerY/3), centerY-20)
     );
     anime({duration: 700}).finished.then(autoClick);
 }
