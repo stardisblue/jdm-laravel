@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Meliblue\ElasticBlue\Models\ElasticNode;
 use Meliblue\ElasticBlue\Models\ElasticNodeCache;
 use Meliblue\ElasticBlue\Models\ElasticRelationIn;
@@ -18,15 +17,9 @@ class NodeController extends Controller
 
     public function search(Request $request, int $page = 0)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'q' => 'required|string',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('home')
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $query = $request->input('q');
 
@@ -45,14 +38,9 @@ class NodeController extends Controller
 
     public function display(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'word' => 'required|string',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('home')
-                ->withErrors($validator);
-        }
 
         $word = $request->input('word');
 

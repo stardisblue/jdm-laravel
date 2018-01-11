@@ -12,7 +12,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
 use Meliblue\ElasticBlue\Models\ElasticNode;
 use Meliblue\ElasticBlue\Models\ElasticNodeCache;
 use Meliblue\ElasticBlue\Models\ElasticRelationIn;
@@ -25,15 +24,9 @@ class AjaxController extends Controller
 {
     public function card(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'word' => 'required|string',
         ]);
-
-        if ($validator->fails()) {
-            return redirect('home')
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $word = $request->input('word');
         // afficher un mot
@@ -54,23 +47,16 @@ class AjaxController extends Controller
             $createdNode->save();
 
             return $createdNode;
-
         }
 
-        return response("", Response::HTTP_NO_CONTENT); // yes :/
+        return response("", Response::HTTP_NOT_FOUND); // yes :/
     }
 
     public function autocompleteNode(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'q' => 'required|string',
         ]);
-
-        if ($validator->fails()) {
-            return redirect('home')
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $word = $request->input("q");
 
@@ -80,15 +66,9 @@ class AjaxController extends Controller
 
     public function searchRelationInNode(Request $request, int $idNode)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'q' => 'required|string',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('home')
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $word = $request->input('q');
 
@@ -96,7 +76,7 @@ class AjaxController extends Controller
         $relOut = ElasticRelationOut::nodeSearch($idNode, $word);
 
         if ($relOut === null && $relIn === null) {
-            return response('', Response::HTTP_NO_CONTENT);
+            return response('', Response::HTTP_NOT_FOUND);
         }
 
         $collection = collect($relIn['results']);
@@ -134,15 +114,9 @@ class AjaxController extends Controller
 
     public function searchRelationInRelationType(Request $request, int $idNode, int $idRelationType, int $page = 0)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'q' => 'required|string',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('home')
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $word = $request->input('q');
 
@@ -168,16 +142,10 @@ class AjaxController extends Controller
 
     public function getNodeRelation(Request $request, int $idNode, int $idRelationType, string $way, int $page = 0)
     {
-        $validator = Validator::make($request->all(), [
-            'orderBy' => ['sometimes ', 'regex:/weight|name/'],
-            'sort' => ['sometimes', 'regex:/asc|desc/'],
+        $request->validate([
+            'orderBy' => 'filled|in:weight,name',
+            'sort' => 'filled|in:asc,desc',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('home')
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $orderBy = $request->input('orderBy', 'weight');
         $sortOrder = $request->input('sort', 'desc');
@@ -189,11 +157,11 @@ class AjaxController extends Controller
         if ($way === "in") {
             $relIn = ElasticRelationIn::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
 
-            return $relIn === null ? response('', Response::HTTP_NO_CONTENT) : $relIn;
+            return $relIn === null ? response('', Response::HTTP_NOT_FOUND) : $relIn;
         } elseif ($way === "out") {
             $relOut = ElasticRelationOut::pagination($idNode, $idRelationType, $page, $orderBy, $sortOrder);
 
-            return $relOut === null ? response('', Response::HTTP_NO_CONTENT) : $relOut;
+            return $relOut === null ? response('', Response::HTTP_NOT_FOUND) : $relOut;
         }
     }
 
@@ -203,7 +171,7 @@ class AjaxController extends Controller
         // mettre à jour le cache
         // recuperer la version mise à jour
         if ($nodeCache === null) {
-            return response('', Response::HTTP_NO_CONTENT);
+            return response('', Response::HTTP_NOT_FOUND);
         }
         // we fetch it from jeuxdemot
         $response = FetchWord::fetch($nodeCache['name']);
@@ -243,7 +211,6 @@ class AjaxController extends Controller
             return $nodeCache;
         }
 
-        return response('', Response::HTTP_NO_CONTENT);
-
+        return response('', Response::HTTP_NOT_FOUND);
     }
 }
