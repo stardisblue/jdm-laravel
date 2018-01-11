@@ -1,9 +1,13 @@
 <template>
     <div class="container">
-        <div class="row" style="margin-top:100px">
-            <h2>{{getName}} :
-                <!--<small v-once="" v-html="getPos"></small>  -->
-            </h2>
+        <div v-if="error" class="error">
+            {{ error }}
+        </div>
+
+        <div v-if="node" class="row">
+            <h2>{{getName}}</h2>
+            <pos :pos="getPos"></pos>
+            <sem-refin :semRefin="getSemRefin"></sem-refin>
 
             <div id="description" v-html="compiledMarkdown"></div>
             <hr/>
@@ -27,21 +31,56 @@
 <script>
     import * as marked from "marked";
     import _ from "lodash";
+    import axios from "axios"
+
     import RelationType from "./RelationType.vue"
     import Sidebar from "./Sidebar.vue"
+    import PartOfSpeech from "./PartOfSpeech.vue"
+    import SemanticRefinement from "./SemanticRefinement.vue"
 
     export default {
         mounted() {
-            console.log('Node ' + this.node.name + ' mounted');
+            console.log('Node mounted');
         },
 
+        data() {
+            return {
+                node: null,
+                error: null
+            }
+        },
 
         components: {
             "relation-type": RelationType,
-            "sidebar": Sidebar
+            "pos": PartOfSpeech,
+            "sidebar": Sidebar,
+            "sem-refin": SemanticRefinement
         },
 
-        props: ["node"],
+        beforeRouteEnter(to, from, next) {
+            axios.get('/node', {params: to.query}).then(function (response) {
+                console.log(response);
+
+                next(vm => vm.node = response.data);
+            }).catch(function (error) {
+                console.log(error);
+                next(vm => vm.error = error.response.data);
+            });
+        },
+        // quand la route change et que ce composant est déjà rendu,
+        // la logique est un peu différente
+        beforeRouteUpdate(to, from, next) {
+            this.node = null;
+            console.log('salut');
+            axios.get('/node', {params: to.query}).then(function (response) {
+                console.log(response);
+                this.node = response.data;
+                next()
+            }.bind(this)).catch(function (error) {
+                console.log(error);
+                next(vm => vm.error = error.response.data);
+            })
+        },
 
         computed: {
             getName: function () {
@@ -55,7 +94,13 @@
             getPos: function () {
                 return _.find(this.node.relationTypes, function (value) {
                     return value.id === 4
-                })
+                }).relations.out
+            },
+
+            getSemRefin: function () {
+                return _.find(this.node.relationTypes, function (value) {
+                    return value.id === 1
+                }).relations
             },
 
             getRelationTypes: function () {
@@ -67,3 +112,6 @@
 
     }
 </script>
+
+<style lang="sass">
+</style>

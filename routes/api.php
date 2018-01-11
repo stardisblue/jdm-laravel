@@ -30,5 +30,3 @@ Route::get('/node/{idNode}/search', 'AjaxController@searchRelationInNode');
 Route::get('/node/search', "AjaxController@autocompleteNode");
 
 Route::post('/node/{idNode}', "AjaxController@ajaxUpdateAndGet");
-
-

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Response;
 use Meliblue\ElasticBlue\Models\ElasticNode;
 use Meliblue\ElasticBlue\Models\ElasticNodeCache;
 use Meliblue\ElasticBlue\Models\ElasticRelationIn;
@@ -18,15 +18,9 @@ class NodeController extends Controller
 
     public function search(Request $request, int $page = 0)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'q' => 'required|string',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('home')
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $query = $request->input('q');
 
@@ -45,19 +39,13 @@ class NodeController extends Controller
 
     public function display(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'word' => 'required|string',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('home')
-                ->withErrors($validator);
-        }
 
         $word = $request->input('word');
 
         $nodeCache = ElasticNodeCache::getNode($word, 1);
-        $reason = '';
 
         // if the word isn't in our database
         if ($nodeCache === null) {
@@ -83,7 +71,7 @@ class NodeController extends Controller
                 $elasticNode->setNode($cleanNode);
                 $elasticNode->save();
 
-                return redirect()->route('home')->withErrors($reason);
+                return response("$reason", Response::HTTP_NOT_FOUND);
             }
 
             // if the word exists
@@ -110,11 +98,10 @@ class NodeController extends Controller
                 $nodeCache->setNode($cleanNode);
                 $nodeCache->save();
             } else {
-                return redirect()->route('home')
-                    ->withErrors($reason);
+                return response("$reason", Response::HTTP_NOT_FOUND);
             }
         }
 
-        return view('node.single', ["node" => $nodeCache]);
+        return $nodeCache;
     }
 }
