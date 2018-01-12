@@ -1,16 +1,17 @@
 <template>
     <div id="home">
         <canvas class="fireworks"></canvas>
-        <div class="flex-center position-ref full-height">
 
+        <div v-if="errors" id="errors" class="alert alert-danger content" role="alert">
+            {{errors}}
+        </div>
+        <div class="flex-center position-ref full-height">
             <div class="content container-fluid">
                 <div class="row title m-b-md">
                     Jeux de Mots
-                    <div v-if="errors">{{errors}}</div>
                     <div class="searchbar col-sm-6 col-sm-offset-3">
                         <form action="/search">
                             <div class="input-group">
-
                                 <input type="text" name="q" v-model="query" class="form-control"
                                        placeholder="Rechercher">
                                 <span class="input-group-btn"><button class="btn btn-default"
@@ -19,14 +20,6 @@
                             </div><!-- /input-group -->
                         </form>
                     </div>
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
             </div>
         </div>
@@ -85,21 +78,21 @@
         font-size: 84px;
     }
 
-    .links > a {
-        color: #636b6f;
-        padding: 0 25px;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: .1rem;
-        text-decoration: none;
-        text-transform: uppercase;
-    }
-
     .m-b-md {
         margin-bottom: 30px;
     }
 
     .fireworks {
         position: absolute;
+    }
+
+    #errors {
+        width: 100%;
+        position: absolute;
+        color: #636b6f;
+        font-weight: 600;
+        letter-spacing: .1rem;
+        text-decoration: none;
+        text-transform: uppercase;
     }
 </style>

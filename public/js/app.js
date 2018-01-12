@@ -45602,7 +45602,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\nhtml, body {\n    background-color: #fff;\n    color: #636b6f;\n    font-family: 'Raleway', sans-serif;\n    font-weight: 100;\n    height: 100vh;\n    margin: 0;\n}\ninput {\n    font-weight: 600;\n}\n.full-height {\n    height: 100vh;\n}\n.flex-center {\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n.position-ref {\n    position: relative;\n}\n.content {\n    text-align: center;\n}\n.title {\n    font-size: 84px;\n}\n.links > a {\n    color: #636b6f;\n    padding: 0 25px;\n    font-size: 12px;\n    font-weight: 600;\n    letter-spacing: .1rem;\n    text-decoration: none;\n    text-transform: uppercase;\n}\n.m-b-md {\n    margin-bottom: 30px;\n}\n.fireworks {\n    position: absolute;\n}\n", ""]);
+exports.push([module.i, "\nhtml, body {\n    background-color: #fff;\n    color: #636b6f;\n    font-family: 'Raleway', sans-serif;\n    font-weight: 100;\n    height: 100vh;\n    margin: 0;\n}\ninput {\n    font-weight: 600;\n}\n.full-height {\n    height: 100vh;\n}\n.flex-center {\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n.position-ref {\n    position: relative;\n}\n.content {\n    text-align: center;\n}\n.title {\n    font-size: 84px;\n}\n.m-b-md {\n    margin-bottom: 30px;\n}\n.fireworks {\n    position: absolute;\n}\n#errors {\n    width: 100%;\n    position: absolute;\n    color: #636b6f;\n    font-weight: 600;\n    letter-spacing: .1rem;\n    text-decoration: none;\n    text-transform: uppercase;\n}\n", ""]);
 
 // exports
 
@@ -45613,13 +45613,6 @@ exports.push([module.i, "\nhtml, body {\n    background-color: #fff;\n    color:
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -45863,12 +45856,21 @@ var render = function() {
   return _c("div", { attrs: { id: "home" } }, [
     _c("canvas", { staticClass: "fireworks" }),
     _vm._v(" "),
+    _vm.errors
+      ? _c(
+          "div",
+          {
+            staticClass: "alert alert-danger content",
+            attrs: { id: "errors", role: "alert" }
+          },
+          [_vm._v("\n        " + _vm._s(_vm.errors) + "\n    ")]
+        )
+      : _vm._e(),
+    _vm._v(" "),
     _c("div", { staticClass: "flex-center position-ref full-height" }, [
       _c("div", { staticClass: "content container-fluid" }, [
         _c("div", { staticClass: "row title m-b-md" }, [
           _vm._v("\n                Jeux de Mots\n                "),
-          _vm.errors ? _c("div", [_vm._v(_vm._s(_vm.errors))]) : _vm._e(),
-          _vm._v(" "),
           _c("div", { staticClass: "searchbar col-sm-6 col-sm-offset-3" }, [
             _c("form", { attrs: { action: "/search" } }, [
               _c("div", { staticClass: "input-group" }, [
@@ -45898,9 +45900,7 @@ var render = function() {
               ])
             ])
           ])
-        ]),
-        _vm._v(" "),
-        _vm._m(1)
+        ])
       ])
     ])
   ])
@@ -45916,32 +45916,6 @@ var staticRenderFns = [
         { staticClass: "btn btn-default", attrs: { type: "submit" } },
         [_c("i", { staticClass: "glyphicon glyphicon-search" })]
       )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "links" }, [
-      _c("a", { attrs: { href: "https://laravel.com/docs" } }, [
-        _vm._v("Documentation")
-      ]),
-      _vm._v(" "),
-      _c("a", { attrs: { href: "https://laracasts.com" } }, [
-        _vm._v("Laracasts")
-      ]),
-      _vm._v(" "),
-      _c("a", { attrs: { href: "https://laravel-news.com" } }, [
-        _vm._v("News")
-      ]),
-      _vm._v(" "),
-      _c("a", { attrs: { href: "https://forge.laravel.com" } }, [
-        _vm._v("Forge")
-      ]),
-      _vm._v(" "),
-      _c("a", { attrs: { href: "https://github.com/laravel/laravel" } }, [
-        _vm._v("GitHub")
-      ])
     ])
   }
 ]
