@@ -45,7 +45,6 @@ class NodeController extends Controller
         $word = $request->input('word');
 
         $nodeCache = ElasticNodeCache::getNode($word, 1);
-        $reason = '';
 
         // if the word isn't in our database
         if ($nodeCache === null) {
@@ -71,7 +70,7 @@ class NodeController extends Controller
                 $elasticNode->setNode($cleanNode);
                 $elasticNode->save();
 
-                return redirect()->route('home')->withErrors($reason);
+                return redirect()->route('home')->withErrors(['reason' => $reason, 'word' => $word]);
             }
 
             // if the word exists

@@ -25,7 +25,7 @@ class WordParser
 
         if ($line === false) { // no content
             return $wrapper->setCode(404)
-                ->setReason("word does not exist");
+                ->setReason("NOT_EXIST");
         }
 
         // YES !! we are in code
@@ -79,7 +79,9 @@ class WordParser
                 while (substr($array[$index], -1, 1) !== "'") {
                     $index++;
                 }
-                $array[2] .= ";".implode(';', array_splice($array, 3, $index - 2));
+                if ($index !== 2) {
+                    $array[2] .= ";".implode(';', array_splice($array, 3, $index - 2));
+                }
 
                 $entity = new SimpleNode();
                 $entity->setId($array[1])
