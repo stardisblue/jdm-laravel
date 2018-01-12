@@ -1,5 +1,5 @@
 <template>
-    <a class="word" :href="'node?word=' +encodeURI(word.name)">{{name()}}</a>
+    <a class="word" :href="'node?word=' +word.name">{{name()}}</a>
 </template>
 
 <script>
@@ -7,7 +7,7 @@
 
     export default {
         mounted() {
-            // console.log('Word mounted : ' + this.word.name);
+            //console.log('Word mounted : ');
         },
 
         methods: {

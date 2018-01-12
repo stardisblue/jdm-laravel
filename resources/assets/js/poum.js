@@ -1,3 +1,5 @@
+import anime from "animejs"
+
 window.human = false;
 
 var canvasEl = document.querySelector('.fireworks');
@@ -31,14 +33,14 @@ function setParticuleDirection(p) {
     }
 }
 
-function createParticule(x,y) {
+function createParticule(x, y) {
     var p = {};
     p.x = x;
     p.y = y;
     p.color = colors[anime.random(0, colors.length - 1)];
     p.radius = anime.random(16, 32);
     p.endPos = setParticuleDirection(p);
-    p.draw = function() {
+    p.draw = function () {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI, true);
         ctx.fillStyle = p.color;
@@ -47,7 +49,7 @@ function createParticule(x,y) {
     return p;
 }
 
-function createCircle(x,y) {
+function createCircle(x, y) {
     var p = {};
     p.x = x;
     p.y = y;
@@ -55,7 +57,7 @@ function createCircle(x,y) {
     p.radius = 0.1;
     p.alpha = .5;
     p.lineWidth = 6;
-    p.draw = function() {
+    p.draw = function () {
         ctx.globalAlpha = p.alpha;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI, true);
@@ -81,8 +83,12 @@ function animateParticules(x, y) {
     }
     anime.timeline().add({
         targets: particules,
-        x: function(p) { return p.endPos.x; },
-        y: function(p) { return p.endPos.y; },
+        x: function (p) {
+            return p.endPos.x;
+        },
+        y: function (p) {
+            return p.endPos.y;
+        },
         radius: 0.1,
         duration: anime.random(2000, 3300),
         easing: 'easeOutExpo',
@@ -106,12 +112,12 @@ function animateParticules(x, y) {
 
 var render = anime({
     duration: Infinity,
-    update: function() {
+    update: function () {
         ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
     }
 });
 
-document.addEventListener(tap, function(e) {
+document.addEventListener(tap, function (e) {
     window.human = true;
     render.play();
     updateCoords(e);
@@ -123,8 +129,8 @@ var centerY = window.innerHeight / 2;
 
 function autoClick() {
     animateParticules(
-        anime.random(centerX-(centerX/2), centerX+(centerX/2)),
-        anime.random(centerY-(centerY/3), centerY-20)
+        anime.random(centerX - (centerX / 2), centerX + (centerX / 2)),
+        anime.random(centerY - (centerY / 3), centerY - 20)
     );
     anime({duration: 700}).finished.then(autoClick);
 }

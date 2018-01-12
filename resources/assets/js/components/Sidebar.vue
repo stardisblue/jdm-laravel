@@ -55,7 +55,6 @@
             window.removeEventListener('resize', this.manageBindByClientWidth);
         },
 
-
         methods: {
             bind() {
                 this.updateOffsetTop();
@@ -72,7 +71,7 @@
                 window.removeEventListener('scroll', this.events.scroll.scrollSpy);
             },
 
-            manageBindByClientWidth: function () {
+            manageBindByClientWidth() {
                 if (document.body.clientWidth < 768) {
                     if (this.binded) {
                         console.log("unbinding");
@@ -86,7 +85,7 @@
                 }
             },
 
-            updateOffsetTop: function () {
+            updateOffsetTop() {
                 this.sections = _.map(this.relationTypes, function (value) {
                     let element = document.getElementById(value.id);
                     let sidebarElement = document.getElementById("navlink-" + value.id);

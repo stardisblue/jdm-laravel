@@ -11,5 +11,13 @@
 <body style="position:relative">
 <node :node="{{json_encode($node)}}"></node>
 <script src="/js/app.js"></script>
+<script>
+    const app = new Vue({
+        el: 'node',
+        components: {
+            "node": Node
+        }
+    });
+</script>
 </body>
 </html>

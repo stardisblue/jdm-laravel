@@ -1,5 +1,4 @@
 
-window._ = require('lodash');
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -9,6 +8,7 @@ window._ = require('lodash');
 
 try {
     window.$ = window.jQuery = require('jquery');
+    window._ = require('lodash');
 
     require('bootstrap-sass');
 } catch (e) {}
