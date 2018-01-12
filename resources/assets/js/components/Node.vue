@@ -4,16 +4,16 @@
             <div class="col-sm-12">
                 <div id="title" class="h2">{{getName}} </div>
                 <div v-if="getPos" id="part-of-speech" class="list-inline">
-                    <word v-for="item in getPos" :word="item.node"></word>
+                    <word v-for="item in getPos" :key="item.id" :word="item.node"></word>
                 </div>
                 <div v-if="getSemRefin" id="semantic-refinement">
                     <div v-if="getSemRefin.out.length > 0">
                         Voulez-vous dire ?
-                        <word v-for="item in getSemRefin.out" :word="item.node"></word>
+                        <word v-for="item in getSemRefin.out" :key="item.id" :word="item.node"></word>
                     </div>
                     <div v-if="getSemRefin.in.length > 0">
                         Est généralisé par
-                        <word v-for="item in getSemRefin.in" :word="item.node"></word>
+                        <word v-for="item in getSemRefin.in" :key="item.id"  :word="item.node"></word>
                     </div>
                 </div>
 
@@ -44,8 +44,6 @@
 
 <script>
     import * as marked from "marked";
-    import _ from "lodash";
-    import axios from "axios";
 
     import RelationType from "./RelationType.vue"
     import Sidebar from "./Sidebar.vue"

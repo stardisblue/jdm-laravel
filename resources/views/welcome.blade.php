@@ -19,7 +19,7 @@
 <script>
     const app = new Vue({
         el: 'home',
-        components:{
+        components: {
             "home": Home
         }
     });

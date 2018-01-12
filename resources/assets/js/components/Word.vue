@@ -3,8 +3,6 @@
 </template>
 
 <script>
-    import _ from "lodash"
-
     export default {
         mounted() {
             //console.log('Word mounted : ');
