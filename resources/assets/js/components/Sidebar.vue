@@ -12,7 +12,12 @@
 <script>
     export default {
 
-        props: ["relationTypes"],
+        props: {
+            relationTypes: {
+                type: Array,
+                required: true,
+            }
+        },
 
         data: function () {
             return {
@@ -85,10 +90,9 @@
 
             updateOffsetTop() {
                 this.sections = _.map(this.relationTypes, function (value) {
-                    let element = document.getElementById(value.id);
                     let sidebarElement = document.getElementById("navlink-" + value.id);
                     return {
-                        offsetTop: element.offsetTop + element.offsetParent.offsetTop,
+                        offsetTop: value.offsetTop,
                         sidebarOffsetTop: sidebarElement.offsetParent.offsetTop,
                         id: value.id
                     }

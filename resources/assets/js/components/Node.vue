@@ -13,7 +13,7 @@
                     </div>
                     <div v-if="getSemRefin.in.length > 0">
                         Est généralisé par
-                        <word v-for="item in getSemRefin.in" :key="item.id"  :word="item.node"></word>
+                        <word v-for="item in getSemRefin.in" :key="item.id" :word="item.node"></word>
                     </div>
                 </div>
 
@@ -25,9 +25,16 @@
             </div>
         </div>
         <hr/>
-
         <div class="row">
-
+            <div class="col-sm-12">
+                <div class="inner-addon left-addon">
+                    <i class="glyphicon glyphicon-search"></i>
+                    <input type="text" v-model="search" class="form-control"
+                           placeholder="Rechercher une relation liée">
+                </div>
+            </div><!-- /input-group -->
+        </div>
+        <div class="row">
             <div class="col-sm-9">
                 <relation-type v-once="v-once"
                                v-for="relationType in node.relationTypes"
@@ -36,7 +43,7 @@
                                :relationType="relationType"></relation-type>
             </div>
             <div class="col-sm-3 hidden-xs">
-                <sidebar :relationTypes="getRelationTypes"></sidebar>
+                <sidebar v-if="relationTypes" :relationTypes="relationTypes"></sidebar>
             </div>
         </div>
     </div>
@@ -52,12 +59,20 @@
     export default {
         mounted() {
             console.log('Node ' + this.node.name + ' mounted');
+            this.updateOffsetTop()
         },
 
         components: {
             "relation-type": RelationType,
             "sidebar": Sidebar,
             "word": Word
+        },
+
+        data() {
+            return {
+                search: "",
+                relationTypes: null
+            }
         },
 
         props: {
@@ -67,6 +82,18 @@
             }
         },
 
+        methods: {
+            updateOffsetTop() {
+                this.relationTypes = _.map(this.node.relationTypes, function (value) {
+                    let element = document.getElementById(value.id);
+                    return {
+                        id: value.id,
+                        name: value.name,
+                        offsetTop: element.offsetTop + element.offsetParent.offsetTop,
+                    };
+                });
+            }
+        },
         computed: {
             getName: function () {
                 return this.node.formattedName ? this.node.formattedName : this.node.name;
@@ -90,12 +117,6 @@
 
                 return result === undefined ? null : result.relations;
             },
-
-            getRelationTypes: function () {
-                return _.map(this.node.relationTypes, function (value) {
-                    return {id: value.id, name: value.name};
-                });
-            }
         },
 
     }
@@ -116,4 +137,27 @@
     #part-of-speech, #title
         display: inline-block
 
+    /* enable absolute positioning */
+    .inner-addon
+        position: relative
+
+
+        /* style icon */
+        .glyphicon
+          position: absolute
+          padding: 10px
+          pointer-events: none
+
+
+    /* align icon */
+    .left-addon
+        .glyphicon
+            left:  0
+        input
+            padding-left:  30px
+    .right-addon
+        .glyphicon
+            right: 0
+        input
+            padding-right: 30px
 </style>

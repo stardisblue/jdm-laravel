@@ -10,7 +10,9 @@
             </li>
         </ul>
         <ul class="list-inline relation-out">
-            <li v-for="relation in relationType.relations.out"><word :word="relation.node"></word></li>
+            <li v-for="relation in relationType.relations.out">
+                <word :word="relation.node"></word>
+            </li>
         </ul>
     </div>
 </template>
@@ -46,6 +48,15 @@
             }
         },
 
-        props: ["id", "relationType"]
+        props: {
+            id: {
+                type: Number,
+                required: true,
+            },
+            relationType: {
+                type: Object,
+                required: true,
+            }
+        },
     }
 </script>
