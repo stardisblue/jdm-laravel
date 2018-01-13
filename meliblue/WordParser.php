@@ -92,6 +92,9 @@ class WordParser
 
                 $node->addSimpleNode($entity);
             } elseif ($type === 'rt') {
+                if($array[1] === ""){
+                    continue; // lol ptdr c'est quoi ca ! https://github.com/stardisblue/jdm-laravel/issues/19
+                }
                 $relationType = new RelationType();
                 $relationType->setId($array[1])
                     ->setCode($array[2])
