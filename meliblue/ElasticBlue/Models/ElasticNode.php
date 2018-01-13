@@ -64,12 +64,22 @@ class ElasticNode extends ElasticBlueModel implements Jsonable
                 ],
                 "size" => $size,
             ],
+            "_source" => ["name", "formattedName"],
             "filter_path" => ['hits.total', 'hits.hits._source'],
         ];
 
         $result = Es::search($params);
 
-        return ["total" => $result['hits']['total'], 'results' => $result['hits']['hits']];
+        if ($result['hits']['total'] === 0) { // intrusion check
+            return null;
+        }
+
+        return [
+            "total" => $result['hits']['total'],
+            'results' => collect($result['hits']['hits'])->transform(function ($value) {
+                return $value['_source'];
+            })->toArray(),
+        ];
     }
 
     public static function getNode(string $word, int $size = null, $type = null, $index = null)

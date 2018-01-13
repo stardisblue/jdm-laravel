@@ -60,8 +60,9 @@ class AjaxController extends Controller
 
         $word = $request->input("q");
 
+        $results = ElasticNode::autocomplete($word, 10);
 
-        return ElasticNode::autocomplete($word, 10);
+        return $results === null ? response('', Response::HTTP_NOT_FOUND) : $results;
     }
 
     public function searchRelationInNode(Request $request, int $idNode)

@@ -43297,7 +43297,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n#part-of-speech {\n  margin-left: 1em;\n  border-left: 2px gray solid;\n}\n#part-of-speech a, #semantic-refinement a {\n  padding-left: 1em;\n}\n#part-of-speech, #title {\n  display: inline-block;\n}\n\n/* enable absolute positioning */\n.inner-addon {\n  position: relative;\n  /* style icon */\n}\n.inner-addon .glyphicon {\n    position: absolute;\n    padding: 10px;\n    pointer-events: none;\n}\n\n/* align icon */\n.left-addon .glyphicon {\n  left: 0;\n}\n.left-addon input {\n  padding-left: 30px;\n}\n.right-addon .glyphicon {\n  right: 0;\n}\n.right-addon input {\n  padding-right: 30px;\n}\n", ""]);
+exports.push([module.i, "\n#part-of-speech {\n  margin-left: 1em;\n  border-left: 2px gray solid;\n}\n#part-of-speech a, #semantic-refinement a {\n  padding-left: 1em;\n}\n#part-of-speech, #title {\n  display: inline-block;\n}\n\n/* enable absolute positioning */\n.inner-addon {\n  position: relative;\n  /* style icon */\n}\n.inner-addon .glyphicon {\n    position: absolute;\n    padding: 10px;\n    pointer-events: none;\n}\n\n/* align icon */\n.left-addon .glyphicon {\n  left: 0;\n}\n.left-addon input {\n  padding-left: 30px;\n}\n.right-addon .glyphicon {\n  right: 0;\n}\n.right-addon input {\n  padding-right: 30px;\n}\nbody {\n  padding-top: 50px;\n}\n", ""]);
 
 // exports
 
@@ -43349,6 +43349,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Sidebar_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Sidebar_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Word_vue__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Word_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Word_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Autocomplete_vue__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Autocomplete_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__Autocomplete_vue__);
 //
 //
 //
@@ -43400,6 +43402,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -43408,22 +43429,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        console.log('Node ' + this.node.name + ' mounted');
-        this.updateOffsetTop();
-    },
-
-
-    components: {
-        "relation-type": __WEBPACK_IMPORTED_MODULE_1__RelationType_vue___default.a,
-        "sidebar": __WEBPACK_IMPORTED_MODULE_2__Sidebar_vue___default.a,
-        "word": __WEBPACK_IMPORTED_MODULE_3__Word_vue___default.a
-    },
-
     data: function data() {
         return {
             search: "",
-            relationTypes: null
+            relationTypes: null,
+            displayName: false,
+            currentRelationType: -1,
+            events: {
+                scroller: null
+            }
         };
     },
 
@@ -43436,17 +43450,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+        handleScroll: function handleScroll() {
+            var scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            this.displayName = scrollPosition > 50;
+            this.currentRelationType = _.findLastIndex(this.relationTypes, function (element) {
+                return element.offsetTop <= scrollPosition;
+            });
+            if (this.currentRelationType !== -1) {
+                history.pushState(null, null, '#rt' + this.currentRelationType);
+            }
+        },
         updateOffsetTop: function updateOffsetTop() {
-            this.relationTypes = _.map(this.node.relationTypes, function (value) {
-                var element = document.getElementById(value.id);
+            this.relationTypes = _.map(this.node.relationTypes, function (value, index) {
+                var element = document.getElementById('rt' + index);
                 return {
-                    id: value.id,
                     name: value.name,
+                    index: index,
                     offsetTop: element.offsetTop + element.offsetParent.offsetTop
                 };
             });
         }
     },
+
     computed: {
         getName: function getName() {
             return this.node.formattedName ? this.node.formattedName : this.node.name;
@@ -43470,8 +43495,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             return result === undefined ? null : result.relations;
         }
-    }
+    },
 
+    created: function created() {
+        this.events.scroller = _.throttle(this.handleScroll, 100);
+
+        $(function () {
+            $('[data-toggle="popover"]').popover();
+        });
+
+        window.addEventListener('scroll', this.events.scroller);
+        window.addEventListener('resize', this.events.scroller);
+        console.log("created");
+    },
+    mounted: function mounted() {
+        console.log('Node ' + this.node.name + ' mounted');
+
+        this.updateOffsetTop();
+    },
+    destroyed: function destroyed() {
+        window.removeEventListener('scroll', this.events.scroller);
+    },
+
+
+    components: {
+        "relation-type": __WEBPACK_IMPORTED_MODULE_1__RelationType_vue___default.a,
+        "sidebar": __WEBPACK_IMPORTED_MODULE_2__Sidebar_vue___default.a,
+        "word": __WEBPACK_IMPORTED_MODULE_3__Word_vue___default.a,
+        "autocomplete": __WEBPACK_IMPORTED_MODULE_4__Autocomplete_vue___default.a
+    }
 });
 
 /***/ }),
@@ -44806,6 +44858,10 @@ if (true) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(88)
+}
 var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(49)
@@ -44814,7 +44870,7 @@ var __vue_template__ = __webpack_require__(52)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = null
+var __vue_styles__ = injectStyle
 /* scopeId */
 var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
@@ -44875,10 +44931,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        relationType: {
+            type: Object,
+            required: true
+        },
+        index: {
+            type: Number,
+            required: true
+        }
+    },
+
+    data: function data() {
+        return {
+            relationsIn: null,
+            relationsOut: null
+        };
+    },
+    created: function created() {
+        this.relationsIn = this.relationType.relations.in;
+        this.relationsOut = this.relationType.relations.out;
+    },
     mounted: function mounted() {
         console.log('RelationType ' + this.relationType.name + ' mounted');
     },
@@ -44886,6 +44979,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     components: {
         "word": __WEBPACK_IMPORTED_MODULE_0__Word_vue___default.a
+    },
+
+    watch: {
+        relationTypes: function relationTypes() {
+            this.relationsIn = this.relationType.relations.in;
+            this.relationsOut = this.relationType.relations.out;
+        }
     },
 
     methods: {
@@ -44911,18 +45011,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.relationType.relations.out = _.orderBy(this.relationType.relations.out, ['node.name'], [order]);
         }
-    },
-
-    props: {
-        id: {
-            type: Number,
-            required: true
-        },
-        relationType: {
-            type: Object,
-            required: true
-        }
     }
+
 });
 
 /***/ }),
@@ -44935,20 +45025,50 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        //console.log('Word mounted : ');
+
+    props: {
+        word: {
+            type: Object,
+            required: true
+        },
+        id: {
+            type: Number,
+            required: true
+        }
+    },
+
+    data: function data() {
+        return {
+            displayCard: null
+        };
     },
 
 
     methods: {
         name: function name() {
             return this.word.formattedName !== null ? this.word.formattedName : this.word.name;
+        },
+        onMouseOver: function onMouseOver() {
+            var _this = this;
+
+            console.log('enter');
+            this.displayCard = _.debounce(function () {
+                return _this.$emit('card', { id: _this.id });
+            }, 500);
+            this.displayCard();
+        },
+        onMouseLeave: function onMouseLeave() {
+            console.log('elave');
+            this.displayCard.cancel();
         }
     },
 
-    props: ["word"]
+    mounted: function mounted() {
+        //console.log('Word mounted : ');
+    }
 });
 
 /***/ }),
@@ -44961,7 +45081,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "a",
-    { staticClass: "word", attrs: { href: "node?word=" + _vm.word.name } },
+    {
+      staticClass: "word",
+      attrs: { id: "n" + _vm.id, href: "node?word=" + _vm.word.name },
+      on: { mouseover: _vm.onMouseOver, mouseleave: _vm.onMouseLeave }
+    },
     [_vm._v(_vm._s(_vm.name()))]
   )
 }
@@ -44983,34 +45107,97 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "relation-type", attrs: { id: _vm.id } }, [
+  return _c("div", { staticClass: "relation-type" }, [
+    _c("a", { staticClass: "anchor", attrs: { id: "rt" + _vm.index } }),
+    _vm._v(" "),
     _c("div", { staticClass: "relation-type-header" }, [
-      _c("h3", { attrs: { title: _vm.relationType.description } }, [
-        _vm._v(_vm._s(_vm.relationType.name))
-      ]),
+      _c(
+        "div",
+        { staticClass: "h3", attrs: { title: _vm.relationType.description } },
+        [_vm._v(_vm._s(_vm.relationType.name) + "\n        ")]
+      ),
       _vm._v("\n        recherche, filtres closing button\n    ")
     ]),
     _vm._v(" "),
     _c("hr"),
     _vm._v(" "),
-    _c(
-      "ul",
-      { staticClass: "list-inline relations-in" },
-      _vm._l(_vm.relationType.relations.in, function(relation) {
-        return _c("li", [_c("word", { attrs: { word: relation.node } })], 1)
-      })
-    ),
+    _vm.relationsIn.length > 0
+      ? _c("div", { staticClass: "relations-in" }, [
+          _c("p", [_vm._v("Relations Entrantes")]),
+          _vm._v(" "),
+          _c(
+            "ul",
+            { staticClass: "list-inline" },
+            [
+              _vm._l(_vm.relationsIn, function(relation) {
+                return _c(
+                  "li",
+                  [
+                    _c("word", {
+                      attrs: { id: relation.id, word: relation.node }
+                    })
+                  ],
+                  1
+                )
+              }),
+              _vm._v(" "),
+              _vm._m(0)
+            ],
+            2
+          )
+        ])
+      : _vm._e(),
     _vm._v(" "),
-    _c(
-      "ul",
-      { staticClass: "list-inline relation-out" },
-      _vm._l(_vm.relationType.relations.out, function(relation) {
-        return _c("li", [_c("word", { attrs: { word: relation.node } })], 1)
-      })
-    )
+    _vm.relationsOut.length > 0
+      ? _c("div", { staticClass: "relations-out" }, [
+          _c("p", [_vm._v("Relations Sortantes")]),
+          _vm._v(" "),
+          _c(
+            "ul",
+            { staticClass: "list-inline" },
+            [
+              _vm._l(_vm.relationsOut, function(relation) {
+                return _c(
+                  "li",
+                  [
+                    _c("word", {
+                      attrs: { id: relation.id, word: relation.node }
+                    })
+                  ],
+                  1
+                )
+              }),
+              _vm._v(" "),
+              _vm._m(1)
+            ],
+            2
+          )
+        ])
+      : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c("button", { staticClass: "btn btn-xs btn-default" }, [
+        _vm._v(">voir plus...")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c("button", { staticClass: "btn btn-xs btn-default" }, [
+        _vm._v(">voir plus...")
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -45106,7 +45293,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* sidebar */\n.bs-docs-sidebar {\n    padding-left: 20px;\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n\n/* all links */\n.bs-docs-sidebar .nav > li > a {\n    color: #999;\n    border-left: 2px solid transparent;\n    padding: 4px 20px;\n    font-size: 13px;\n    font-weight: 400;\n}\n\n/* nested links */\n.bs-docs-sidebar .nav .nav > li > a {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 30px;\n    font-size: 12px;\n}\n\n/* active & hover links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > li > a:hover,\n.bs-docs-sidebar .nav > li > a:focus {\n    color: #563d7c;\n    text-decoration: none;\n    background-color: transparent;\n    border-left-color: #563d7c;\n}\n\n/* all active links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > .active:hover > a,\n.bs-docs-sidebar .nav > .active:focus > a {\n    font-weight: 700;\n}\n\n/* nested active links */\n.bs-docs-sidebar .nav .nav > .active > a,\n.bs-docs-sidebar .nav .nav > .active:hover > a,\n.bs-docs-sidebar .nav .nav > .active:focus > a {\n    font-weight: 500;\n}\n\n/* hide inactive nested list */\n.bs-docs-sidebar .nav ul.nav {\n    display: none;\n}\n\n/* show active nested list */\n.bs-docs-sidebar .nav > .active > ul.nav {\n    display: block;\n}\n\n/* back to top*/\n.back-to-top {\n    display: block;\n    padding: 4px 10px;\n    margin-top: 10px;\n    margin-left: 10px;\n    font-size: 12px;\n    font-weight: 500;\n    color: #999;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* sidebar */\n.bs-docs-sidebar {\n    padding-left: 20px;\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n\n/* all links */\n.bs-docs-sidebar .nav > li > a {\n    color: #999;\n    border-left: 2px solid transparent;\n    padding: 4px 20px;\n    font-size: 13px;\n    font-weight: 400;\n}\n\n/* nested links */\n.bs-docs-sidebar .nav .nav > li > a {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 30px;\n    font-size: 12px;\n}\n\n/* active & hover links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > li > a:hover,\n.bs-docs-sidebar .nav > li > a:focus {\n    color: #563d7c;\n    text-decoration: none;\n    background-color: transparent;\n    border-left-color: #563d7c;\n}\n\n/* all active links */\n.bs-docs-sidebar .nav > .active > a,\n.bs-docs-sidebar .nav > .active:hover > a,\n.bs-docs-sidebar .nav > .active:focus > a {\n    font-weight: 700;\n}\n\n/* nested active links */\n.bs-docs-sidebar .nav .nav > .active > a,\n.bs-docs-sidebar .nav .nav > .active:hover > a,\n.bs-docs-sidebar .nav .nav > .active:focus > a {\n    font-weight: 500;\n}\n\n/* hide inactive nested list */\n.bs-docs-sidebar .nav ul.nav {\n    display: none;\n}\n\n/* show active nested list */\n.bs-docs-sidebar .nav > .active > ul.nav {\n    display: block;\n}\n\n/* back to top*/\n.back-to-top {\n    display: block;\n    padding: 4px 10px;\n    margin-top: 10px;\n    margin-left: 10px;\n    font-size: 12px;\n    font-weight: 500;\n    color: #999;\n}\n", ""]);
 
 // exports
 
@@ -45128,6 +45315,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
@@ -45135,61 +45328,66 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         relationTypes: {
             type: Array,
             required: true
+        },
+        activeIndex: {
+            type: Number,
+            required: true
         }
     },
 
     data: function data() {
         return {
-            activeId: null,
             sections: [],
             sidebarTop: 0,
             sidebarSideScroll: false,
-
+            sidebarOffsetHeight: 0,
             // boolean telling if the events are bound to a eventlistener
             binded: false,
 
             // function to add or remove from eventlistener
             events: {
                 resize: {
-                    offsetTop: null,
-                    scrollSpy: null
-                },
-                scroll: {
-                    scrollSpy: null
+                    offsetTop: null
                 }
-            }
+            },
+            research: "",
+            filteredRelationTypes: []
         };
     },
 
-    mounted: function mounted() {
-        console.log('Sidebar mounted');
+    watch: {
+        activeIndex: function activeIndex() {
+            if (this.activeIndex === -1) {
+                return;
+            }
+            var active = _.nth(this.sections, this.activeIndex);
+            if (this.sidebarSideScroll) {
+                var clientHeight = document.body.clientHeight - 50;
+                var proportion = (active.sidebarOffsetTop - clientHeight / 2) / (this.sidebarOffsetHeight - clientHeight / 2);
+                var top = (clientHeight - this.sidebarOffsetHeight) * proportion;
 
-        this.events.resize.offsetTop = _.throttle(this.updateOffsetTop, 200);
-        this.events.resize.scrollSpy = _.throttle(this.scrollSpy, 200);
-        this.events.scroll.scrollSpy = _.throttle(this.scrollSpy, 100);
+                this.sidebarTop = (top < 0 ? top - 100 * proportion : 0) + 50;
+            } else {
+                this.sidebarTop = 50;
+            }
+        },
 
-        this.manageBindByClientWidth();
-        window.addEventListener('resize', this.manageBindByClientWidth);
+        research: _.debounce(function () {
+            var _this = this;
+
+            this.filteredRelationTypes = _.filter(this.relationTypes, function (value) {
+                return _.includes(value.name, _this.research);
+            });
+        }, 200)
     },
-    destroyed: function destroyed() {
-        this.unbind();
-        window.removeEventListener('resize', this.manageBindByClientWidth);
-    },
-
 
     methods: {
         bind: function bind() {
             this.updateOffsetTop();
-            this.scrollSpy();
-
             window.addEventListener('resize', this.events.resize.offsetTop);
-            window.addEventListener('resize', this.events.resize.scrollSpy);
-            window.addEventListener('scroll', this.events.scroll.scrollSpy);
         },
         unbind: function unbind() {
             window.removeEventListener('resize', this.events.resize.offsetTop);
-            window.removeEventListener('resize', this.events.resize.scrollSpy);
-            window.removeEventListener('scroll', this.events.scroll.scrollSpy);
         },
         manageBindByClientWidth: function manageBindByClientWidth() {
             if (document.body.clientWidth < 768) {
@@ -45205,12 +45403,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         updateOffsetTop: function updateOffsetTop() {
-            this.sections = _.map(this.relationTypes, function (value) {
-                var sidebarElement = document.getElementById("navlink-" + value.id);
+            this.sections = _.map(this.relationTypes, function (value, index) {
+                var sidebarElement = document.getElementById("navlink-" + index);
                 return {
-                    offsetTop: value.offsetTop,
-                    sidebarOffsetTop: sidebarElement.offsetParent.offsetTop,
-                    id: value.id
+                    sidebarOffsetTop: sidebarElement.offsetParent.offsetTop
                 };
             });
 
@@ -45220,38 +45416,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             sidebar.removeData('bs.affix').removeClass('affix affix-top affix-bottom');
             sidebar.affix({
                 offset: {
-                    top: sidebar[0].parentElement.offsetTop
+                    top: sidebar[0].parentElement.offsetTop - 50
                 }
             });
 
+            this.sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
             this.sidebarSideScroll = sidebar.height() > document.body.clientHeight;
-        },
-
-
-        scrollSpy: function scrollSpy() {
-            var scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
-
-            var active = _.findLast(this.sections, function (element) {
-                return element.offsetTop <= scrollPosition;
-            });
-
-            if (active !== undefined) {
-                this.activeId = active.id;
-
-                var sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
-
-                if (this.sidebarSideScroll) {
-                    var proportion = (active.sidebarOffsetTop - document.body.clientHeight / 2) / (sidebarOffsetHeight - document.body.clientHeight / 2);
-                    var top = (document.body.clientHeight - sidebarOffsetHeight) * proportion;
-
-                    this.sidebarTop = top < 0 ? top - 100 * proportion : 0;
-                } else {
-                    this.sidebarTop = 0;
-                }
-            } else {
-                this.activeId = null;
-            }
         }
+    },
+
+    created: function created() {
+        this.events.resize.offsetTop = _.throttle(this.updateOffsetTop, 200);
+        window.addEventListener('resize', this.manageBindByClientWidth);
+        this.filteredRelationTypes = this.relationTypes;
+    },
+    mounted: function mounted() {
+        //console.log('Sidebar mounted');
+        this.manageBindByClientWidth();
+    },
+    destroyed: function destroyed() {
+        this.unbind();
+        window.removeEventListener('resize', this.manageBindByClientWidth);
     }
 });
 
@@ -45271,23 +45456,52 @@ var render = function() {
       attrs: { id: "sidebar" }
     },
     [
+      _c("div", { staticClass: "inner-addon left-addon" }, [
+        _c("i", { staticClass: "glyphicon glyphicon-search" }),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.research,
+              expression: "research"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { type: "text", placeholder: "Filter" },
+          domProps: { value: _vm.research },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.research = $event.target.value
+            }
+          }
+        })
+      ]),
+      _vm._v(" "),
       _c(
         "ul",
         { staticClass: "nav nav-stacked" },
-        _vm._l(_vm.relationTypes, function(value) {
-          return _c("li", { class: { active: _vm.activeId == value.id } }, [
-            _c(
-              "a",
-              {
-                attrs: {
-                  id: "navlink-" + value.id,
-                  href: "#" + value.id,
-                  click: _vm.scrollSpy
-                }
-              },
-              [_vm._v(_vm._s(value.name))]
-            )
-          ])
+        _vm._l(_vm.filteredRelationTypes, function(value) {
+          return _c(
+            "li",
+            { class: { active: _vm.activeIndex == value.index } },
+            [
+              _c(
+                "a",
+                {
+                  attrs: {
+                    id: "navlink-" + value.index,
+                    href: "#rt" + value.index
+                  }
+                },
+                [_vm._v(_vm._s(value.name))]
+              )
+            ]
+          )
         })
       ),
       _vm._v(" "),
@@ -45315,124 +45529,161 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-12" }, [
-        _c("div", { staticClass: "h2", attrs: { id: "title" } }, [
-          _vm._v(_vm._s(_vm.getName) + " ")
-        ]),
+  return _c("div", [
+    _c("nav", { staticClass: "navbar navbar-default navbar-fixed-top" }, [
+      _c("div", { staticClass: "container-fluid" }, [
+        _vm._m(0),
         _vm._v(" "),
-        _vm.getPos
-          ? _c(
-              "div",
-              { staticClass: "list-inline", attrs: { id: "part-of-speech" } },
-              _vm._l(_vm.getPos, function(item) {
-                return _c("word", { key: item.id, attrs: { word: item.node } })
-              })
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.getSemRefin
-          ? _c("div", { attrs: { id: "semantic-refinement" } }, [
-              _vm.getSemRefin.out.length > 0
-                ? _c(
-                    "div",
-                    [
-                      _vm._v(
-                        "\n                    Voulez-vous dire ?\n                    "
-                      ),
-                      _vm._l(_vm.getSemRefin.out, function(item) {
-                        return _c("word", {
-                          key: item.id,
-                          attrs: { word: item.node }
-                        })
-                      })
-                    ],
-                    2
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.getSemRefin.in.length > 0
-                ? _c(
-                    "div",
-                    [
-                      _vm._v(
-                        "\n                    Est généralisé par\n                    "
-                      ),
-                      _vm._l(_vm.getSemRefin.in, function(item) {
-                        return _c("word", {
-                          key: item.id,
-                          attrs: { word: item.node }
-                        })
-                      })
-                    ],
-                    2
-                  )
-                : _vm._e()
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.compiledMarkdown
-          ? _c("div", [
-              _c("h3", [_vm._v("Description")]),
-              _vm._v(" "),
-              _c("div", {
-                attrs: { id: "description" },
-                domProps: { innerHTML: _vm._s(_vm.compiledMarkdown) }
-              })
-            ])
-          : _vm._e()
-      ])
-    ]),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-12" }, [
-        _c("div", { staticClass: "inner-addon left-addon" }, [
-          _c("i", { staticClass: "glyphicon glyphicon-search" }),
+        _c("ul", { staticClass: "nav navbar-nav" }, [
+          _vm.displayName
+            ? _c("li", { staticClass: "active" }, [
+                _c("a", { attrs: { href: "#" } }, [_vm._v(_vm._s(_vm.getName))])
+              ])
+            : _vm._e(),
           _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.search,
-                expression: "search"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "text",
-              placeholder: "Rechercher une relation liée"
-            },
-            domProps: { value: _vm.search },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.search = $event.target.value
-              }
-            }
-          })
+          _vm._m(1)
         ])
       ])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-9" }, _vm._m(0)),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "col-sm-3 hidden-xs" },
-        [
-          _vm.relationTypes
-            ? _c("sidebar", { attrs: { relationTypes: _vm.relationTypes } })
+    _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-sm-12" }, [
+          _c("div", { staticClass: "h2", attrs: { id: "title" } }, [
+            _vm._v(_vm._s(_vm.getName) + " ")
+          ]),
+          _vm._v(" "),
+          _vm.getPos
+            ? _c(
+                "div",
+                { staticClass: "list-inline", attrs: { id: "part-of-speech" } },
+                _vm._l(_vm.getPos, function(item) {
+                  return _c("word", {
+                    key: item.id,
+                    attrs: { id: item.id, word: item.node }
+                  })
+                })
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.getSemRefin
+            ? _c("div", { attrs: { id: "semantic-refinement" } }, [
+                _vm.getSemRefin.out.length > 0
+                  ? _c(
+                      "div",
+                      [
+                        _vm._v(
+                          "\n                        Voulez-vous dire ?\n                        "
+                        ),
+                        _vm._l(_vm.getSemRefin.out, function(item) {
+                          return _c("word", {
+                            key: item.id,
+                            attrs: { id: item.id, word: item.node }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.getSemRefin.in.length > 0
+                  ? _c(
+                      "div",
+                      [
+                        _vm._v(
+                          "\n                        Est généralisé par\n                        "
+                        ),
+                        _vm._l(_vm.getSemRefin.in, function(item) {
+                          return _c("word", {
+                            key: item.id,
+                            attrs: { id: item.id, word: item.node }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  : _vm._e()
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.compiledMarkdown
+            ? _c("div", [
+                _c("h3", [_vm._v("Description")]),
+                _vm._v(" "),
+                _c("div", {
+                  attrs: { id: "description" },
+                  domProps: { innerHTML: _vm._s(_vm.compiledMarkdown) }
+                })
+              ])
             : _vm._e()
-        ],
-        1
-      )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-sm-12" }, [
+          _c("div", { staticClass: "inner-addon left-addon" }, [
+            _c("i", { staticClass: "glyphicon glyphicon-search" }),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search,
+                  expression: "search"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "text",
+                placeholder: "Afficher seulement les relations contenant:"
+              },
+              domProps: { value: _vm.search },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.search = $event.target.value
+                }
+              }
+            })
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c(
+          "div",
+          { staticClass: "col-sm-9" },
+          _vm._l(_vm.node.relationTypes, function(relationType, index) {
+            return _c("relation-type", {
+              key: index,
+              attrs: { index: index, relationType: relationType }
+            })
+          })
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-sm-3 hidden-xs" },
+          [
+            _vm.relationTypes
+              ? _c("sidebar", {
+                  attrs: {
+                    relationTypes: _vm.relationTypes,
+                    activeIndex: _vm.currentRelationType
+                  }
+                })
+              : _vm._e()
+          ],
+          1
+        )
+      ])
     ])
   ])
 }
@@ -45441,12 +45692,22 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _vm._l(_vm.node.relationTypes, function(relationType) {
-      return _c("relation-type", {
-        key: relationType.id,
-        attrs: { id: relationType.id, relationType: relationType }
-      })
-    })
+    return _c("div", { staticClass: "navbar-header" }, [
+      _c(
+        "a",
+        {
+          staticClass: "navbar-brand",
+          attrs: { href: "/", title: "Jeux De Mots" }
+        },
+        [_vm._v("\n                    JDM\n                ")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Link")])])
   }
 ]
 render._withStripped = true
@@ -46007,6 +46268,270 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(86)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(82)
+/* template */
+var __vue_template__ = __webpack_require__(83)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\Autocomplete.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-f52e4a42", Component.options)
+  } else {
+    hotAPI.reload("data-v-f52e4a42", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 82 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            search: "",
+            results: null,
+            error: false
+        };
+    },
+
+    props: {
+        url: {
+            type: String
+        }
+    },
+
+    watch: {
+        search: function search(newVal) {
+            this.error = false;
+            this.fetch();
+        }
+    },
+
+    methods: {
+        fetch: _.debounce(function () {
+            axios.get(this.url, { params: { q: this.search } }).then(function (response) {
+                this.results = response.data.results;
+            }.bind(this)).catch(function (error) {
+                this.results = null;
+                this.error = true;
+                return; // catched
+            }.bind(this));
+        })
+    }
+});
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "inner-addon left-addon" }, [
+    _c("i", { staticClass: "glyphicon glyphicon-search" }),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.search,
+          expression: "search"
+        }
+      ],
+      staticClass: "form-control",
+      attrs: { type: "text", placeholder: "Rechercher une relation liée" },
+      domProps: { value: _vm.search },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.search = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
+    _vm.results || _vm.error
+      ? _c(
+          "ul",
+          { staticClass: "autocomplete-list" },
+          [
+            _vm._l(_vm.results, function(item) {
+              return _c("li", [
+                _c("a", { attrs: { href: "" } }, [
+                  _vm._v(
+                    _vm._s(item.formattedName ? item.formattedName : item.name)
+                  )
+                ])
+              ])
+            }),
+            _vm._v(" "),
+            _vm.error
+              ? _c("li", [
+                  _c("a", { attrs: { href: "" } }, [_vm._v("Aucun mot trouvé")])
+                ])
+              : _vm._e()
+          ],
+          2
+        )
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-f52e4a42", module.exports)
+  }
+}
+
+/***/ }),
+/* 84 */,
+/* 85 */,
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(87);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("2bf46c42", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-f52e4a42\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Autocomplete.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-f52e4a42\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js?indentedSyntax!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Autocomplete.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.autocomplete-list {\n  position: absolute;\n  top: 100%;\n  left: 0;\n  z-index: 1000;\n  float: left;\n  min-width: 160px;\n  padding: 5px 0;\n  margin: 2px 0 0;\n  list-style: none;\n  font-size: 14px;\n  text-align: left;\n  background-color: #fff;\n  border: 1px solid #ccc;\n  border: 1px solid rgba(0, 0, 0, 0.15);\n  border-radius: 4px;\n  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);\n  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);\n  background-clip: padding-box;\n}\n.autocomplete-list > li > a {\n    display: block;\n    padding: 3px 20px;\n    clear: both;\n    font-weight: normal;\n    line-height: 1.6;\n    color: #333333;\n    white-space: nowrap;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(89);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("0cac3b08", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-285fb966\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./RelationType.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-285fb966\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./RelationType.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.relations-in > ul {\n    border-left: 2px blue solid;\n    padding-left: 1em;\n}\n.relations-out > ul {\n    border-left: 2px green solid;\n    padding-left: 1em;\n}\na.anchor {\n    display: block;\n    position: relative;\n    top: -70px;\n    visibility: hidden;\n}\n", ""]);
+
+// exports
+
 
 /***/ })
 /******/ ]);

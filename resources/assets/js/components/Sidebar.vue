@@ -1,12 +1,18 @@
 <template>
     <nav id="sidebar" class="bs-docs-sidebar" :style="{top : this.sidebarTop +'px'}">
+        <div class="inner-addon left-addon">
+            <i class="glyphicon glyphicon-search"></i>
+            <input type="text" class="form-control" v-model="research" placeholder="Filter">
+        </div>
         <ul class="nav nav-stacked">
-            <li v-for="value in relationTypes" :class="{active : activeId == value.id}">
-                <a :id="'navlink-'+value.id" :href="'#'+value.id" :click="scrollSpy">{{value.name}}</a>
+            <li v-for="(value) in filteredRelationTypes" :class="{active : activeIndex == value.index}">
+                <a :id="'navlink-'+ value.index" :href="'#rt'+value.index">{{value.name}}</a>
             </li>
         </ul>
+
         <a href="#" class="back-to-top">Back to top</a>
     </nav>
+
 </template>
 
 <script>
@@ -16,16 +22,19 @@
             relationTypes: {
                 type: Array,
                 required: true,
+            },
+            activeIndex: {
+                type: Number,
+                required: true,
             }
         },
 
         data: function () {
             return {
-                activeId: null,
                 sections: [],
                 sidebarTop: 0,
                 sidebarSideScroll: false,
-
+                sidebarOffsetHeight: 0,
                 // boolean telling if the events are bound to a eventlistener
                 binded: false,
 
@@ -33,45 +42,46 @@
                 events: {
                     resize: {
                         offsetTop: null,
-                        scrollSpy: null,
                     },
-                    scroll: {
-                        scrollSpy: null,
-                    }
-                }
+                },
+                research: "",
+                filteredRelationTypes: []
             }
         },
 
-        mounted() {
-            console.log('Sidebar mounted');
+        watch: {
+            activeIndex: function () {
+                if (this.activeIndex === -1) {
+                    return;
+                }
+                const active = _.nth(this.sections, this.activeIndex);
+                if (this.sidebarSideScroll) {
+                    const clientHeight = document.body.clientHeight - 50;
+                    const proportion = (active.sidebarOffsetTop - (clientHeight / 2)) /
+                        (this.sidebarOffsetHeight - (clientHeight / 2));
+                    const top = ((clientHeight - this.sidebarOffsetHeight ) * proportion);
 
-            this.events.resize.offsetTop = _.throttle(this.updateOffsetTop, 200);
-            this.events.resize.scrollSpy = _.throttle(this.scrollSpy, 200);
-            this.events.scroll.scrollSpy = _.throttle(this.scrollSpy, 100);
+                    this.sidebarTop = ( top < 0 ? top - (100 * proportion) : 0) + 50;
+                } else {
+                    this.sidebarTop = 50;
+                }
+            },
 
-            this.manageBindByClientWidth();
-            window.addEventListener('resize', this.manageBindByClientWidth);
-        },
-
-        destroyed() {
-            this.unbind();
-            window.removeEventListener('resize', this.manageBindByClientWidth);
+            research: _.debounce(function () {
+                this.filteredRelationTypes = _.filter(this.relationTypes, (value) => {
+                    return _.includes(value.name, this.research);
+                })
+            }, 200)
         },
 
         methods: {
             bind() {
                 this.updateOffsetTop();
-                this.scrollSpy();
-
                 window.addEventListener('resize', this.events.resize.offsetTop);
-                window.addEventListener('resize', this.events.resize.scrollSpy);
-                window.addEventListener('scroll', this.events.scroll.scrollSpy);
             },
 
             unbind() {
                 window.removeEventListener('resize', this.events.resize.offsetTop);
-                window.removeEventListener('resize', this.events.resize.scrollSpy);
-                window.removeEventListener('scroll', this.events.scroll.scrollSpy);
             },
 
             manageBindByClientWidth() {
@@ -89,15 +99,12 @@
             },
 
             updateOffsetTop() {
-                this.sections = _.map(this.relationTypes, function (value) {
-                    let sidebarElement = document.getElementById("navlink-" + value.id);
+                this.sections = _.map(this.relationTypes, function (value, index) {
+                    let sidebarElement = document.getElementById("navlink-" + index);
                     return {
-                        offsetTop: value.offsetTop,
                         sidebarOffsetTop: sidebarElement.offsetParent.offsetTop,
-                        id: value.id
                     }
                 });
-
 
                 let sidebar = $("#sidebar");
                 // affix system
@@ -105,39 +112,31 @@
                 sidebar.removeData('bs.affix').removeClass('affix affix-top affix-bottom');
                 sidebar.affix({
                     offset: {
-                        top: sidebar[0].parentElement.offsetTop,
+                        top: sidebar[0].parentElement.offsetTop - 50,
                     }
                 });
 
+                this.sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
                 this.sidebarSideScroll = sidebar.height() > document.body.clientHeight
             },
-
-            scrollSpy: function () {
-                let scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
-
-                let active = _.findLast(this.sections, element => element.offsetTop <= scrollPosition);
-
-                if (active !== undefined) {
-                    this.activeId = active.id;
-
-                    let sidebarOffsetHeight = document.getElementById('sidebar').offsetHeight;
-
-                    if (this.sidebarSideScroll) {
-                        let proportion = (active.sidebarOffsetTop - (document.body.clientHeight / 2)) /
-                            (sidebarOffsetHeight - (document.body.clientHeight / 2));
-                        let top = (document.body.clientHeight - sidebarOffsetHeight ) * proportion;
-
-                        this.sidebarTop = top < 0 ? top - (100 * proportion) : 0;
-                    } else {
-                        this.sidebarTop = 0;
-                    }
-
-                } else {
-                    this.activeId = null;
-                }
-
-            }
         },
+
+        created() {
+            this.events.resize.offsetTop = _.throttle(this.updateOffsetTop, 200);
+            window.addEventListener('resize', this.manageBindByClientWidth);
+            this.filteredRelationTypes = this.relationTypes;
+        },
+
+        mounted() {
+            //console.log('Sidebar mounted');
+            this.manageBindByClientWidth();
+        },
+
+        destroyed() {
+            this.unbind();
+            window.removeEventListener('resize', this.manageBindByClientWidth);
+        },
+
     }
 </script>
 <style>

@@ -1,49 +1,67 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12">
-                <div id="title" class="h2">{{getName}} </div>
-                <div v-if="getPos" id="part-of-speech" class="list-inline">
-                    <word v-for="item in getPos" :key="item.id" :word="item.node"></word>
+    <div>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/" title="Jeux De Mots">
+                        JDM
+                    </a>
                 </div>
-                <div v-if="getSemRefin" id="semantic-refinement">
-                    <div v-if="getSemRefin.out.length > 0">
-                        Voulez-vous dire ?
-                        <word v-for="item in getSemRefin.out" :key="item.id" :word="item.node"></word>
-                    </div>
-                    <div v-if="getSemRefin.in.length > 0">
-                        Est généralisé par
-                        <word v-for="item in getSemRefin.in" :key="item.id" :word="item.node"></word>
-                    </div>
-                </div>
-
-                <div v-if="compiledMarkdown">
-                    <h3>Description</h3>
-                    <div id="description" v-html="compiledMarkdown"></div>
-                </div>
-
+                <ul class="nav navbar-nav">
+                    <li v-if="displayName" class="active"><a href="#">{{getName}}</a></li>
+                    <li><a href="#">Link</a></li>
+                </ul>
             </div>
-        </div>
-        <hr/>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="inner-addon left-addon">
-                    <i class="glyphicon glyphicon-search"></i>
-                    <input type="text" v-model="search" class="form-control"
-                           placeholder="Rechercher une relation liée">
+        </nav>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="title" class="h2">{{getName}} </div>
+                    <div v-if="getPos" id="part-of-speech" class="list-inline">
+                        <word v-for="item in getPos" :key="item.id" :id="item.id" :word="item.node"></word>
+                    </div>
+                    <div v-if="getSemRefin" id="semantic-refinement">
+                        <div v-if="getSemRefin.out.length > 0">
+                            Voulez-vous dire ?
+                            <word v-for="item in getSemRefin.out" :key="item.id" :id="item.id" :word="item.node"></word>
+                        </div>
+                        <div v-if="getSemRefin.in.length > 0">
+                            Est généralisé par
+                            <word v-for="item in getSemRefin.in" :key="item.id" :id="item.id" :word="item.node"></word>
+                        </div>
+                    </div>
+
+                    <div v-if="compiledMarkdown">
+                        <h3>Description</h3>
+                        <div id="description" v-html="compiledMarkdown"></div>
+                    </div>
+
                 </div>
-            </div><!-- /input-group -->
-        </div>
-        <div class="row">
-            <div class="col-sm-9">
-                <relation-type v-once="v-once"
-                               v-for="relationType in node.relationTypes"
-                               :key="relationType.id"
-                               :id="relationType.id"
-                               :relationType="relationType"></relation-type>
             </div>
-            <div class="col-sm-3 hidden-xs">
-                <sidebar v-if="relationTypes" :relationTypes="relationTypes"></sidebar>
+            <hr/>
+            <!-- search-input -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text" v-model="search" class="form-control"
+                               placeholder="Afficher seulement les relations contenant:">
+                    </div>
+                </div><!-- /input-group -->
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-sm-9">
+                    <relation-type v-for="(relationType, index) in node.relationTypes"
+                                   :key="index"
+                                   :index="index"
+                                   :relationType="relationType"></relation-type>
+                </div>
+                <div class="col-sm-3 hidden-xs">
+                    <sidebar v-if="relationTypes" :relationTypes="relationTypes"
+                             :activeIndex="currentRelationType"></sidebar>
+                </div>
             </div>
         </div>
     </div>
@@ -55,23 +73,18 @@
     import RelationType from "./RelationType.vue"
     import Sidebar from "./Sidebar.vue"
     import Word from "./Word.vue"
+    import Autocomplete from "./Autocomplete.vue"
 
     export default {
-        mounted() {
-            console.log('Node ' + this.node.name + ' mounted');
-            this.updateOffsetTop()
-        },
-
-        components: {
-            "relation-type": RelationType,
-            "sidebar": Sidebar,
-            "word": Word
-        },
-
         data() {
             return {
                 search: "",
-                relationTypes: null
+                relationTypes: null,
+                displayName: false,
+                currentRelationType: -1,
+                events: {
+                    scroller: null
+                }
             }
         },
 
@@ -83,17 +96,27 @@
         },
 
         methods: {
+            handleScroll() {
+                let scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+                this.displayName = scrollPosition > 50;
+                this.currentRelationType = _.findLastIndex(this.relationTypes, element => element.offsetTop <= scrollPosition);
+                if (this.currentRelationType !== -1) {
+                    history.pushState(null, null, '#rt' + this.currentRelationType);
+                }
+            },
+
             updateOffsetTop() {
-                this.relationTypes = _.map(this.node.relationTypes, function (value) {
-                    let element = document.getElementById(value.id);
+                this.relationTypes = _.map(this.node.relationTypes, function (value, index) {
+                    let element = document.getElementById('rt' + index);
                     return {
-                        id: value.id,
                         name: value.name,
+                        index: index,
                         offsetTop: element.offsetTop + element.offsetParent.offsetTop,
                     };
                 });
             }
         },
+
         computed: {
             getName: function () {
                 return this.node.formattedName ? this.node.formattedName : this.node.name;
@@ -119,6 +142,34 @@
             },
         },
 
+        created() {
+            this.events.scroller = _.throttle(this.handleScroll, 100);
+
+            $(function () {
+                $('[data-toggle="popover"]').popover()
+            })
+
+            window.addEventListener('scroll', this.events.scroller);
+            window.addEventListener('resize', this.events.scroller);
+            console.log("created");
+        },
+
+        mounted() {
+            console.log('Node ' + this.node.name + ' mounted');
+
+            this.updateOffsetTop()
+        },
+
+        destroyed() {
+            window.removeEventListener('scroll', this.events.scroller);
+        },
+
+        components: {
+            "relation-type": RelationType,
+            "sidebar": Sidebar,
+            "word": Word,
+            "autocomplete": Autocomplete,
+        },
     }
 </script>
 
@@ -160,4 +211,7 @@
             right: 0
         input
             padding-right: 30px
+
+    body
+        padding-top: 50px // yay it's the fault of the fixed header
 </style>
