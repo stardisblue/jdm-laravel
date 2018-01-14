@@ -183,10 +183,6 @@
         created() {
             this.events.scroller = _.throttle(this.handleScroll, 100);
 
-            $(function () {
-                $('[data-toggle="popover"]').popover()
-            })
-
             window.addEventListener('scroll', this.events.scroller);
             window.addEventListener('resize', this.events.scroller);
             console.log("created");
