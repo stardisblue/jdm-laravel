@@ -1,5 +1,5 @@
 <template>
-    <a :id="'n'+id" class="word" :href="'node?word=' +word.name" @mouseover="onMouseOver" @mouseleave="onMouseLeave">{{
+    <a :id="xmlId" class="word" :href="'node?word=' +word.name" @mouseover="onMouseOver" @mouseleave="onMouseLeave">{{
         name()}}</a>
 </template>
 
@@ -14,6 +14,10 @@
             id: {
                 type: Number,
                 required: true,
+            },
+            prefix: {
+                type: String,
+                default: "r"
             }
         },
 
@@ -29,17 +33,23 @@
             },
 
             onMouseOver() {
-                console.log('enter')
-                this.displayCard = _.debounce(() => this.$emit('card', {id: this.id})
-                    , 500);
+                this.displayCard = _.debounce(() => {
+                    this.$emit('card', {word: this.word.name, xmlId: this.xmlId})
+                }, 500);
                 this.displayCard();
             },
 
             onMouseLeave() {
-                console.log('elave')
                 this.displayCard.cancel()
+                this.$emit('uncard')
             }
 
+        },
+
+        computed: {
+            xmlId() {
+                return this.prefix + this.id;
+            }
         },
 
         mounted() {

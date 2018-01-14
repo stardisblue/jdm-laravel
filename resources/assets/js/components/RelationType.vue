@@ -6,12 +6,12 @@
             </div>
             recherche, filtres closing button
         </div>
-        <hr/>
         <div v-if="relationsIn.length > 0" class="relations-in">
             <p>Relations Entrantes</p>
             <ul class="list-inline">
                 <li v-for="relation in relationsIn">
-                    <word :id="relation.id" :word="relation.node"></word>
+                    <word v-on:card="displayCard" v-on:uncard="destroyCard" :id="relation.id"
+                          :word="relation.node"></word>
                 </li>
                 <li>
                     <button class="btn btn-xs btn-default">>voir plus...</button>
@@ -22,14 +22,15 @@
             <p>Relations Sortantes</p>
             <ul class="list-inline">
                 <li v-for="relation in relationsOut">
-                    <word :id="relation.id" :word="relation.node"></word>
+                    <word v-on:card="displayCard" v-on:uncard="destroyCard" :id="relation.id"
+                          :word="relation.node"></word>
                 </li>
                 <li>
                     <button class="btn btn-xs btn-default">>voir plus...</button>
                 </li>
             </ul>
         </div>
-
+        <hr/>
     </div>
 </template>
 
@@ -76,6 +77,14 @@
         },
 
         methods: {
+            displayCard(value) {
+                this.$emit("card", value);//parent delegation
+            },
+
+            destroyCard() {
+                this.$emit("uncard");//parent delegation
+            },
+
             inOrderByWeight: function (order = "desc") {
                 this.relationType.relations['in'] = _.orderBy(this.relationType.relations.in, ['weight', 'node.name'],
                     [order, 'asc']);

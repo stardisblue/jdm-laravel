@@ -19,16 +19,24 @@
                 <div class="col-sm-12">
                     <div id="title" class="h2">{{getName}} </div>
                     <div v-if="getPos" id="part-of-speech" class="list-inline">
-                        <word v-for="item in getPos" :key="item.id" :id="item.id" :word="item.node"></word>
+                        <word prefix="pr" v-on:card="displayCard" v-on:uncard="destroyCard" v-for="item in getPos"
+                              :key="item.id" :id="item.id"
+                              :word="item.node"></word>
                     </div>
                     <div v-if="getSemRefin" id="semantic-refinement">
                         <div v-if="getSemRefin.out.length > 0">
                             Voulez-vous dire ?
-                            <word v-for="item in getSemRefin.out" :key="item.id" :id="item.id" :word="item.node"></word>
+                            <word prefix="sr" v-on:card="displayCard" v-on:uncard="destroyCard"
+                                  v-for="item in getSemRefin.out" :key="item.id"
+                                  :id="item.id"
+                                  :word="item.node"></word>
                         </div>
                         <div v-if="getSemRefin.in.length > 0">
                             Est généralisé par
-                            <word v-for="item in getSemRefin.in" :key="item.id" :id="item.id" :word="item.node"></word>
+                            <word prefix="sr" v-on:card="displayCard" v-on:uncard="destroyCard"
+                                  v-for="item in getSemRefin.in" :key="item.id"
+                                  :id="item.id"
+                                  :word="item.node"></word>
                         </div>
                     </div>
 
@@ -53,7 +61,9 @@
             <hr/>
             <div class="row">
                 <div class="col-sm-9">
-                    <relation-type v-for="(relationType, index) in node.relationTypes"
+                    <relation-type v-on:card="displayCard" v-on:uncard="destroyCard" v-for="(relationType, index)
+                     in
+                    node.relationTypes"
                                    :key="index"
                                    :index="index"
                                    :relationType="relationType"></relation-type>
@@ -84,7 +94,8 @@
                 currentRelationType: -1,
                 events: {
                     scroller: null
-                }
+                },
+                lastPopover: null
             }
         },
 
@@ -96,6 +107,33 @@
         },
 
         methods: {
+            displayCard(value) {
+                this.lastPopover = $("#" + value.xmlId);
+
+                axios.get('/api/card', {params: {word: value.word}})
+                    .then((response) => {
+                        if (this.lastPopover) {
+                            const node = response.data;
+                            const formattedName = node.formattedName ? node.formattedName : node.name;
+                            this.lastPopover.popover({
+                                title: formattedName,
+                                content: _.truncate(node.description, {
+                                    length: 100
+                                }),
+                                placement: "auto"
+                            });
+                            this.lastPopover.popover("show")
+                        }
+                    })
+            },
+
+            destroyCard() {
+                if (this.lastPopover !== null) {
+                    this.lastPopover.popover('destroy');
+                    this.lastPopover = null;
+                }
+            },
+
             handleScroll() {
                 let scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
                 this.displayName = scrollPosition > 50;
