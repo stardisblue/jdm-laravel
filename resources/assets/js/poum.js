@@ -4,7 +4,7 @@ window.human = false;
 
 var canvasEl = document.querySelector('.fireworks');
 var ctx = canvasEl.getContext('2d');
-var numberOfParticules = 30;
+var numberOfParticules = 40;
 var pointerX = 0;
 var pointerY = 0;
 var tap = ('ontouchstart' in window || navigator.msMaxTouchPoints) ? 'touchstart' : 'mousedown';
@@ -90,7 +90,7 @@ function animateParticules(x, y) {
             return p.endPos.y;
         },
         radius: 0.1,
-        duration: anime.random(2000, 3300),
+        duration: anime.random(2500, 3600),
         easing: 'easeOutExpo',
         update: renderParticule
     })
@@ -101,9 +101,9 @@ function animateParticules(x, y) {
             alpha: {
                 value: 0,
                 easing: 'linear',
-                duration: anime.random(800, 1000),
+                duration: anime.random(1000, 1500),
             },
-            duration: anime.random(2000, 3300),
+            duration: anime.random(2500, 3600),
             easing: 'easeOutExpo',
             update: renderParticule,
             offset: 0
@@ -132,7 +132,7 @@ function autoClick() {
         anime.random(centerX - (centerX / 2), centerX + (centerX / 2)),
         anime.random(centerY - (centerY / 3), centerY - 20)
     );
-    anime({duration: 700}).finished.then(autoClick);
+    anime({duration: 1500}).finished.then(autoClick);
 }
 
 autoClick();

@@ -1,5 +1,5 @@
 <template>
-    <nav id="sidebar" class="bs-docs-sidebar" :style="{top : this.sidebarTop +'px'}">
+    <nav id="sidebar" class="bs-docs-sidebar sticky-top" :style="{top : this.sidebarTop +'px'}">
         <div class="inner-addon left-addon">
             <i class="glyphicon glyphicon-search"></i>
             <input type="text" class="form-control" v-model="research" placeholder="Filter">

@@ -164,7 +164,12 @@ class ElasticRelation extends ElasticBlueModel
             return null;
         }
 
-        return ["count" => $result['hits']['total'], 'results' => $result['hits']['hits']];
+        return [
+            "count" => $result['hits']['total'],
+            'results' => collect($result['hits']['hits'])->transform(function ($value) {
+                return $value['_source'];
+            })->toArray(),
+        ];
     }
 
     public

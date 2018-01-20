@@ -11,6 +11,12 @@
                 type: Object,
                 required: true,
             },
+
+            weight: {
+                type: Number,
+                default: 0
+            },
+
             id: {
                 type: Number,
                 required: true,
@@ -34,7 +40,7 @@
 
             onMouseOver() {
                 this.displayCard = _.debounce(() => {
-                    this.$emit('card', {word: this.word.name, xmlId: this.xmlId})
+                    this.$emit('card', {word: this.word.name, xmlId: this.xmlId, weight: this.weight})
                 }, 500);
                 this.displayCard();
             },

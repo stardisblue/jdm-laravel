@@ -61,12 +61,11 @@
             <hr/>
             <div class="row">
                 <div class="col-sm-9">
-                    <relation-type v-on:card="displayCard" v-on:uncard="destroyCard" v-for="(relationType, index)
-                     in
-                    node.relationTypes"
+                    <relation-type @card="displayCard" @uncard="destroyCard" @updateOffsetTop="updateOffsetTop"
+                                   v-for="(relationType, index) in node.relationTypes"
                                    :key="index"
                                    :index="index"
-                                   :relationType="relationType"></relation-type>
+                                   :relationType="relationType" :nodeId="node.id"></relation-type>
                 </div>
                 <div class="col-sm-3 hidden-xs">
                     <sidebar v-if="relationTypes" :relationTypes="relationTypes"
@@ -115,13 +114,17 @@
                         if (this.lastPopover) {
                             const node = response.data;
                             const formattedName = node.formattedName ? node.formattedName : node.name;
+
                             this.lastPopover.popover({
-                                title: formattedName,
-                                content: _.truncate(node.description, {
-                                    length: 100
+                                title: "<span class='glyphicon glyphicon-info-sign'></span> " + formattedName,
+                                content: "<span class='glyphicon glyphicon-stats'></span> <i>node weight: " + node.weight + "</i><br/><span class='glyphicon glyphicon-link'></span> <i>relation weight : " + value.weight + "</i>" +
+                                _.truncate(marked(node.description, {breaks: true, sanitize: true}), {
+                                    length: 150
                                 }),
-                                placement: "auto"
+                                trigger: 'manual',
+                                placement: "auto", html: true
                             });
+
                             this.lastPopover.popover("show")
                         }
                     })
@@ -140,6 +143,7 @@
                 this.currentRelationType = _.findLastIndex(this.relationTypes, element => element.offsetTop <= scrollPosition);
                 if (this.currentRelationType !== -1) {
                     history.pushState(null, null, '#rt' + this.currentRelationType);
+                    // works only on recent browser but we don't care :D
                 }
             },
 
