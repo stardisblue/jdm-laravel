@@ -60,20 +60,19 @@ class ElasticNode extends ElasticBlueModel implements Jsonable
             'body' => [
                 "query" => [
                     "regexp" => [
-                        "name" => $query
-                    ]
+                        "name" => $query,
+                    ],
                 ],
                 "from" => $page * $pagination,
                 "size" => $pagination,
             ],
             "filter_path" => ['hits.total', 'hits.hits._source'],
         ];
-        try{
+        try {
             $result = Es::search($params);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return null;
-    }
-
+        }
 
 
         if ($result['hits']['total'] === 0 || $result['hits']['total'] <= $page * $pagination) { // intrusion check
@@ -84,6 +83,7 @@ class ElasticNode extends ElasticBlueModel implements Jsonable
             return $value['_source'];
         })->toArray();
     }
+
     public static function autocomplete(string $word, int $size = 10)
     {
         $params = [
