@@ -134,18 +134,27 @@ class ElasticRelation extends ElasticBlueModel
     {
         $paginationSize = config('elasticblue.pagination', 30);
 
+        $sortOrder = [
+            [$orderBy => ['order' => $sort]], // default sort :)
+        ];
+        if ($orderBy === 'node.name') {
+            $sortOrder[] = ['weight' => ['order' => 'desc']];    // fallback value 1
+            $sortOrder[] = 'id';                                 // fallback value 2
+        } elseif ($orderBy === 'weight') {
+            $sortOrder[] = 'id';                                 // fallback value : fuck it
+        } else {
+            $sortOrder[] = ['node.name' => ['order' => 'asc']];  // fallback value 1
+            $sortOrder[] = ['weight' => ['order' => 'desc']];    // fallback value 2
+            $sortOrder[] = 'id';                                 // fallback value 3
+        }
+
         $params = [
             'index' => static::$index,
             'type' => static::$type,
             'body' => [
                 'from' => $page * $paginationSize,
                 'size' => $paginationSize,
-                'sort' => [
-                    [$orderBy => ['order' => $sort]],
-                    ['weight' => ['order' => 'desc']],  // fallback value
-                    ['node.name' => ['order' => 'asc']],// fallback value 2
-                    'id',                               // fallback value 3
-                ],
+                'sort' => $sortOrder,
                 "query" => [
                     "bool" => [
                         'filter' => [

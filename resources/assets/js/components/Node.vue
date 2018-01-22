@@ -9,7 +9,6 @@
                 </div>
                 <ul class="nav navbar-nav">
                     <li v-if="displayName" class="active"><a href="#">{{getName}}</a></li>
-                    <li><a href="#">Link</a></li>
                 </ul>
             </div>
         </nav>
@@ -17,13 +16,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <div id="title" class="h2">{{getName}} </div>
-                    <div v-if="getPos" id="part-of-speech" class="list-inline">
-                        <word prefix="pr" v-on:card="displayCard" v-on:uncard="destroyCard" v-for="item in getPos"
+                    <div id="title" class="h2">{{getName}} </div> <!-- Titre -->
+                    <div v-if="getPos" id="part-of-speech" class="list-inline"> <!-- Part of speech -->
+                        <word prefix="pr" v-on:card="displayCard" v-on:uncard="destroyCard" v-for="item in
+                        getPos"
                               :key="item.id" :id="item.id"
                               :word="item.node"></word>
                     </div>
-                    <div v-if="getSemRefin" id="semantic-refinement">
+                    <div v-if="getSemRefin" id="semantic-refinement"> <!-- Raffinements sémantiques -->
                         <div v-if="getSemRefin.out.length > 0">
                             Voulez-vous dire ?
                             <word prefix="sr" v-on:card="displayCard" v-on:uncard="destroyCard"
@@ -38,10 +38,10 @@
                                   :id="item.id"
                                   :word="item.node"></word>
                         </div>
-                    </div>
+                    </div> <!--  /Raffinements sémantiques -->
 
-                    <div v-if="compiledMarkdown">
-                        <h3>Description</h3>
+                    <div v-if="compiledMarkdown"> <!-- Description -->
+                        <h3>&raquo; Description</h3>
                         <div id="description" v-html="compiledMarkdown"></div>
                     </div>
 
@@ -102,6 +102,16 @@
             node: {
                 type: Object,
                 required: true,
+            },
+            heritedSearch: {
+                type: String,
+                default: "",
+            }
+        },
+
+        watch: {
+            heritedSearch: function () {
+                this.search = this.heritedSearch;
             }
         },
 
@@ -142,7 +152,7 @@
                 this.displayName = scrollPosition > 50;
                 this.currentRelationType = _.findLastIndex(this.relationTypes, element => element.offsetTop <= scrollPosition);
                 if (this.currentRelationType !== -1) {
-                    history.pushState(null, null, '#rt' + this.currentRelationType);
+                    history.replaceState(null, null, '#rt' + this.currentRelationType);
                     // works only on recent browser but we don't care :D
                 }
             },
@@ -186,7 +196,6 @@
 
         created() {
             this.events.scroller = _.throttle(this.handleScroll, 100);
-
             window.addEventListener('scroll', this.events.scroller);
             window.addEventListener('resize', this.events.scroller);
             console.log("created");
@@ -252,4 +261,12 @@
 
     body
         padding-top: 50px // yay it's the fault of the fixed header
+
+
+    .tags > li
+        background-color: #dff2ff
+        padding: 0 3px
+        margin-right: 5px
+        margin-bottom: 3px
+
 </style>

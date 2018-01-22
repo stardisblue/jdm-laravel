@@ -69,12 +69,16 @@ class RelationType
 
     public function sortRelationsByWeight()
     {
-        usort($this->relations['in'], function ($first, $second) {
-            return $second->weight - $first->weight;
-        });
 
-        usort($this->relations['out'], function ($first, $second) {
-            return $second->weight - $first->weight;
-        });
+        $func = function ($first, $second) {
+            $weight = $second->weight - $first->weight;
+
+            return $weight !== 0 ? $weight : $second->id - $first->id;
+        };
+
+        usort($this->relations['in'], $func);
+
+        usort($this->relations['out'], $func);
     }
 }
+

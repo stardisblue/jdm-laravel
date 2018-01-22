@@ -43407,7 +43407,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n#part-of-speech {\n  margin-left: 1em;\n  border-left: 2px gray solid;\n}\n#part-of-speech a, #semantic-refinement a {\n  padding-left: 1em;\n}\n#part-of-speech, #title {\n  display: inline-block;\n}\n\n/* enable absolute positioning */\n.inner-addon {\n  position: relative;\n  /* style icon */\n}\n.inner-addon .glyphicon {\n    position: absolute;\n    padding: 10px;\n    pointer-events: none;\n}\n\n/* align icon */\n.left-addon .glyphicon {\n  left: 0;\n}\n.left-addon input {\n  padding-left: 30px;\n}\n.right-addon .glyphicon {\n  right: 0;\n}\n.right-addon input {\n  padding-right: 30px;\n}\nbody {\n  padding-top: 50px;\n}\n", ""]);
+exports.push([module.i, "\n#part-of-speech {\n  margin-left: 1em;\n  border-left: 2px gray solid;\n}\n#part-of-speech a, #semantic-refinement a {\n  padding-left: 1em;\n}\n#part-of-speech, #title {\n  display: inline-block;\n}\n\n/* enable absolute positioning */\n.inner-addon {\n  position: relative;\n  /* style icon */\n}\n.inner-addon .glyphicon {\n    position: absolute;\n    padding: 10px;\n    pointer-events: none;\n}\n\n/* align icon */\n.left-addon .glyphicon {\n  left: 0;\n}\n.left-addon input {\n  padding-left: 30px;\n}\n.right-addon .glyphicon {\n  right: 0;\n}\n.right-addon input {\n  padding-right: 30px;\n}\nbody {\n  padding-top: 50px;\n}\n.tags > li {\n  background-color: #dff2ff;\n  padding: 0 3px;\n  margin-right: 5px;\n  margin-bottom: 3px;\n}\n", ""]);
 
 // exports
 
@@ -43566,6 +43566,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         node: {
             type: Object,
             required: true
+        },
+        heritedSearch: {
+            type: String,
+            default: ""
+        }
+    },
+
+    watch: {
+        heritedSearch: function heritedSearch() {
+            this.search = this.heritedSearch;
         }
     },
 
@@ -43606,7 +43616,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return element.offsetTop <= scrollPosition;
             });
             if (this.currentRelationType !== -1) {
-                history.pushState(null, null, '#rt' + this.currentRelationType);
+                history.replaceState(null, null, '#rt' + this.currentRelationType);
                 // works only on recent browser but we don't care :D
             }
         },
@@ -43649,7 +43659,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     created: function created() {
         this.events.scroller = _.throttle(this.handleScroll, 100);
-
         window.addEventListener('scroll', this.events.scroller);
         window.addEventListener('resize', this.events.scroller);
         console.log("created");
@@ -45085,7 +45094,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n.relations-in > ul {\n    border-left: 2px blue solid;\n    padding-left: 1em;\n}\n.relations-out > ul {\n    border-left: 2px green solid;\n    padding-left: 1em;\n}\na.anchor {\n    display: block;\n    position: relative;\n    top: -70px;\n    visibility: hidden;\n}\n", ""]);
+exports.push([module.i, "\n.relation-type-header h3 a {\n    float: left;\n    padding-right: 4px;\n    padding-top: 4px;\n    margin-left: -16px;\n    line-height: 1;\n}\n.relation-type-header h3 a i {\n    font-size: 14px;\n    visibility: hidden;\n}\n.relation-type-header h3:hover a i {\n    visibility: visible;\n}\n.relation-type hr {\n    margin-bottom: 0;\n}\n.relation-type-header {\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n}\n.relation-type-header h3 {\n    -webkit-box-flex: 1;\n        -ms-flex-positive: 1;\n            flex-grow: 1;\n}\n.relation-type-header button span.glyphicon {\n    line-height: 1.6;\n}\n.definition:before {\n    content: \"\\BB   \";\n    font-weight: bold;\n}\n.relations-in > ul {\n    border-left: 2px blue solid;\n    padding-left: 1em;\n}\n.relations-out > ul {\n    border-left: 2px green solid;\n    padding-left: 1em;\n}\na.anchor {\n    display: block;\n    position: relative;\n    top: -50px;\n    visibility: hidden;\n}\n\n", ""]);
 
 // exports
 
@@ -45098,6 +45107,44 @@ exports.push([module.i, "\n.relations-in > ul {\n    border-left: 2px blue solid
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Word_vue__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Word_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Word_vue__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -45159,6 +45206,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
+            search: "",
+            order: "weight",
+            sortBy: 'desc',
             inbound: {
                 rels: null,
                 page: 1,
@@ -45192,6 +45242,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         relationTypes: function relationTypes() {
             this.inbound.rels = this.relationType.relations.in;
             this.outbound.rels = this.relationType.relations.out;
+        },
+        order: function order() {
+            console.log(this.order);
+
+            this.resetPageIn();
+            this.resetPageOut();
+        },
+        sortBy: function sortBy() {
+            console.log(this.sortBy);
+
+            this.resetPageIn();
+            this.resetPageOut();
         }
     },
 
@@ -45204,49 +45266,84 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //parent delegation
             this.$emit("uncard");
         },
-        nextPageIn: function nextPageIn() {
+        resetPageIn: function resetPageIn() {
             var _this = this;
+
+            var url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/in';
+
+            axios.get(url, { params: { orderBy: this.order, sort: this.sortBy } }).then(function (response) {
+                _this.inbound.page = 1;
+                _this.inbound.rels = response.data.results;
+
+                if (_this.inbound.rels.length === response.data.count) {
+                    _this.inbound.next = false;
+                }
+
+                _this.$emit('updateOffsetTop');
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        resetPageOut: function resetPageOut() {
+            var _this2 = this;
+
+            var url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/out';
+            axios.get(url, { params: { orderBy: this.order, sort: this.sortBy } }).then(function (response) {
+                _this2.outbound.page = 1;
+                _this2.outbound.rels = response.data.results;
+
+                if (_this2.outbound.rels.length === response.data.count) {
+                    _this2.outbound.next = false;
+                }
+
+                _this2.$emit('updateOffsetTop');
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        nextPageIn: function nextPageIn() {
+            var _this3 = this;
 
             if (this.inbound.next) {
                 // failsafe
                 this.inbound.loading = true;
                 var url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/in/' + this.inbound.page;
-                axios.get(url).then(function (response) {
-                    _this.inbound.page++;
-                    _this.inbound.rels = _.concat(_this.inbound.rels, response.data.results);
+                axios.get(url, { params: { orderBy: this.order, sort: this.sortBy } }).then(function (response) {
+                    _this3.inbound.page++;
+                    _this3.inbound.rels = _.concat(_this3.inbound.rels, response.data.results);
 
-                    if (_this.inbound.rels.length === response.data.count) {
-                        _this.inbound.next = false;
+                    if (_this3.inbound.rels.length === response.data.count) {
+                        _this3.inbound.next = false;
                     }
-                    _this.inbound.loading = false;
+                    _this3.inbound.loading = false;
 
-                    _this.$emit('updateOffsetTop');
+                    _this3.$emit('updateOffsetTop');
                 }).catch(function (error) {
                     console.log(error);
-                    _this.inbound.loading = false;
+                    _this3.inbound.loading = false;
                 });
             }
         },
         nextPageOut: function nextPageOut() {
-            var _this2 = this;
+            var _this4 = this;
 
             if (this.outbound.next) {
                 // failsafe
                 this.outbound.loading = true;
                 var url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/out/' + this.outbound.page;
-                axios.get(url).then(function (response) {
-                    _this2.outbound.page++;
-                    _this2.outbound.rels = _.concat(_this2.outbound.rels, response.data.results);
+                axios.get(url, { params: { orderBy: this.order, sort: this.sortBy } }).then(function (response) {
+                    _this4.outbound.page++;
+                    _this4.outbound.rels = _.concat(_this4.outbound.rels, response.data.results);
 
-                    if (_this2.outbound.rels.length === response.data.count) {
-                        _this2.outbound.next = false;
+                    if (_this4.outbound.rels.length === response.data.count) {
+                        _this4.outbound.next = false;
                     }
-                    _this2.outbound.loading = false;
+                    _this4.outbound.loading = false;
 
-                    _this2.$emit('updateOffsetTop');
+                    _this4.$emit('updateOffsetTop');
                 }).catch(function (error) {
                     console.log(error);
-                    _this2.outbound.loading = false;
+                    _this4.outbound.loading = false;
                 });
             }
         }
@@ -45365,21 +45462,146 @@ var render = function() {
     _c("a", { staticClass: "anchor", attrs: { id: "rt" + _vm.index } }),
     _vm._v(" "),
     _c("div", { staticClass: "relation-type-header" }, [
-      _c(
-        "div",
-        { staticClass: "h3", attrs: { title: _vm.relationType.description } },
-        [_vm._v(_vm._s(_vm.relationType.name) + "\n        ")]
-      ),
-      _vm._v("\n        recherche, filtres closing button\n    ")
+      _c("h3", [
+        _c("a", { attrs: { href: "#rt" + _vm.index } }, [
+          _c("i", { staticClass: "glyphicon glyphicon-link" })
+        ]),
+        _vm._v("\n            " + _vm._s(_vm.relationType.name))
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "btn-group" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default dropdown-toggle",
+            attrs: {
+              type: "button",
+              "data-toggle": "dropdown",
+              "aria-haspopup": "true",
+              "aria-expanded": "false"
+            }
+          },
+          [
+            _c("span", { staticClass: "glyphicon glyphicon-filter" }),
+            _vm._v(" "),
+            _vm.order === "weight" ? _c("span", [_vm._v("Poids")]) : _vm._e(),
+            _vm._v(" "),
+            _vm.order === "name" ? _c("span", [_vm._v("Nom")]) : _vm._e(),
+            _vm._v(" "),
+            _c("span", { staticClass: "caret" })
+          ]
+        ),
+        _vm._v(" "),
+        _c("ul", { staticClass: "dropdown-menu" }, [
+          _c("li", { class: { active: _vm.order === "weight" } }, [
+            _c(
+              "a",
+              {
+                on: {
+                  click: function($event) {
+                    _vm.order = "weight"
+                  }
+                }
+              },
+              [_vm._v("\n                    Poids")]
+            )
+          ]),
+          _vm._v(" "),
+          _c("li", { class: { active: _vm.order === "name" } }, [
+            _c(
+              "a",
+              {
+                on: {
+                  click: function($event) {
+                    _vm.order = "name"
+                  }
+                }
+              },
+              [_vm._v("Nom\n                ")]
+            )
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "btn-group" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default",
+            class: { active: this.sortBy === "asc" },
+            attrs: { type: "button", disabled: _vm.sortBy === "asc" },
+            on: {
+              click: function($event) {
+                _vm.sortBy = "asc"
+              }
+            }
+          },
+          [
+            _c("span", {
+              staticClass: "glyphicon glyphicon-sort-by-attributes"
+            })
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default",
+            class: { active: this.sortBy === "desc" },
+            attrs: { type: "button", disabled: _vm.sortBy === "desc" },
+            on: {
+              click: function($event) {
+                _vm.sortBy = "desc"
+              }
+            }
+          },
+          [
+            _c("span", {
+              staticClass: "glyphicon glyphicon-sort-by-attributes-alt"
+            })
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: " inner-addon left-addon" }, [
+        _c("i", { staticClass: "glyphicon glyphicon-search" }),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.search,
+              expression: "search"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { type: "text", placeholder: "Rechercher" },
+          domProps: { value: _vm.search },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.search = $event.target.value
+            }
+          }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+    _c("p", { staticClass: "definition" }, [
+      _c("b", [_vm._v("Définition :")]),
+      _vm._v(_vm._s(_vm.relationType.description))
     ]),
     _vm._v(" "),
     _vm.inbound.rels.length > 0
       ? _c("div", { staticClass: "relations-in" }, [
-          _c("p", [_vm._v("Relations Entrantes")]),
+          _vm._m(0),
           _vm._v(" "),
           _c(
             "ul",
-            { staticClass: "list-inline" },
+            { staticClass: "list-inline tags" },
             [
               _vm._l(_vm.inbound.rels, function(relation) {
                 return _c(
@@ -45423,11 +45645,11 @@ var render = function() {
     _vm._v(" "),
     _vm.outbound.rels.length > 0
       ? _c("div", { staticClass: "relations-out" }, [
-          _c("p", [_vm._v("Relations Sortantes")]),
+          _vm._m(1),
           _vm._v(" "),
           _c(
             "ul",
-            { staticClass: "list-inline" },
+            { staticClass: "list-inline tags" },
             [
               _vm._l(_vm.outbound.rels, function(relation) {
                 return _c(
@@ -45472,7 +45694,20 @@ var render = function() {
     _c("hr")
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [_c("u", [_vm._v("Relations Entrantes")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [_c("u", [_vm._v("Relations Sortantes")])])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -46027,9 +46262,7 @@ var render = function() {
             ? _c("li", { staticClass: "active" }, [
                 _c("a", { attrs: { href: "#" } }, [_vm._v(_vm._s(_vm.getName))])
               ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm._m(1)
+            : _vm._e()
         ])
       ])
     ]),
@@ -46113,7 +46346,7 @@ var render = function() {
           _vm._v(" "),
           _vm.compiledMarkdown
             ? _c("div", [
-                _c("h3", [_vm._v("Description")]),
+                _c("h3", [_vm._v("» Description")]),
                 _vm._v(" "),
                 _c("div", {
                   attrs: { id: "description" },
@@ -46216,12 +46449,6 @@ var staticRenderFns = [
         [_vm._v("\n                    JDM\n                ")]
       )
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Link")])])
   }
 ]
 render._withStripped = true
