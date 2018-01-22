@@ -24,8 +24,11 @@ class NodeController extends Controller
         $query = $request->input('q');
 
         $results = ElasticNode::nodeSearch($query, $page);
-
         if ($results === null) {
+            $results = ElasticNode::nodeRegexpSearch($query, $page);
+            if ($results != null) {
+                return view('node.search', ["results" => $results]);
+            }
             return redirect()->route('node', ['word' => $query]);
         }
 

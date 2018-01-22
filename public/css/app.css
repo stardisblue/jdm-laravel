@@ -2036,6 +2036,7 @@ pre code {
 
 .container-fluid {
   margin-right: auto;
+  margin-top: -220px;
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
@@ -5268,7 +5269,7 @@ tbody.collapse.in {
   position: relative;
   min-height: 50px;
   margin-bottom: 22px;
-  border: 1px solid transparent;
+  border: 0px solid transparent;
 }
 
 .navbar:before,
