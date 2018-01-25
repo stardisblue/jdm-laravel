@@ -24,18 +24,21 @@
         </ul>
     </div>
 </nav>
+<div class="container">
+    <div class="text-center col-md-4 col-md-offset-4">
+        <h2 style="margin-top: 100px; margin-bottom: -15px;">{{count($results)}} correspondances :</h2>
 
-<h2 style="margin-top: 100px; margin-bottom: -15px;">{{count($results)}} correspondances :</h2>
+        <div class="row">
+                <hr>
+                <ul class="list-inline">
+                    @foreach($results as $result)
+                        <li><a href="{{route('node',['word' => $result['name']]) }}"> {{ $result['name'] }} </a></li>
+                    @endforeach
+                </ul>
+                <hr>
 
-<div class="row">
-    <div class="col-sm-6">
-        <hr>
-        <ul>
-        @foreach($results as $result)
-        <li><a href="{{route('node',['word' => $result['name']]) }}"> {{ $result['name'] }} </a></li>
-            @endforeach
-        </ul>
-        <hr>
+        </div>
+
     </div>
 </div>
 
