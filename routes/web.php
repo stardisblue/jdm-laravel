@@ -11,9 +11,7 @@
 |
 */
 
-Route::get("/", function () {
-    return view('welcome');
-})->name('home');
+Route::get("/", 'Controller@home')->name('home');
 
 Route::get('/search/{page?}', 'NodeController@search');
 
