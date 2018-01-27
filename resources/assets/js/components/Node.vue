@@ -16,7 +16,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <div id="title" class="h2">{{getName}} </div> <!-- Titre -->
+                    <div id="title" class="h2">{{getName}}</div> <!-- Titre -->
                     <div v-if="getPos" id="part-of-speech" class="list-inline"> <!-- Part of speech -->
                         <word prefix="pr" v-on:card="displayCard" v-on:uncard="destroyCard" v-for="item in
                         getPos"
@@ -46,17 +46,6 @@
                     </div>
 
                 </div>
-            </div>
-            <hr/>
-            <!-- search-input -->
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="inner-addon left-addon">
-                        <i class="glyphicon glyphicon-search"></i>
-                        <input type="text" v-model="search" class="form-control"
-                               placeholder="Afficher seulement les relations contenant:">
-                    </div>
-                </div><!-- /input-group -->
             </div>
             <hr/>
             <div class="row">
@@ -94,7 +83,7 @@
                 events: {
                     scroller: null
                 },
-                lastPopover: null
+                lastPopover: null,
             }
         },
 
@@ -103,16 +92,6 @@
                 type: Object,
                 required: true,
             },
-            heritedSearch: {
-                type: String,
-                default: "",
-            }
-        },
-
-        watch: {
-            heritedSearch: function () {
-                this.search = this.heritedSearch;
-            }
         },
 
         methods: {
@@ -158,6 +137,7 @@
             },
 
             updateOffsetTop() {
+                console.log("updateOffsetTop")
                 this.relationTypes = _.map(this.node.relationTypes, function (value, index) {
                     let element = document.getElementById('rt' + index);
                     return {
@@ -166,7 +146,9 @@
                         offsetTop: element.offsetTop + element.offsetParent.offsetTop,
                     };
                 });
-            }
+
+
+            },
         },
 
         computed: {

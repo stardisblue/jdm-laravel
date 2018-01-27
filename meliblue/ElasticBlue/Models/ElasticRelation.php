@@ -58,7 +58,7 @@ class ElasticRelation extends ElasticBlueModel
         return ["total" => $result['hits']['total'], 'results' => $result['hits']['hits']];
     }
 
-    public static function nodeRelationTypeSearch(int $idNode, int $idRelationType, string $word, int $page): ?array
+    public static function nodeRelationTypeSearch(int $idNode, int $idRelationType, string $word, int $page)
     {
         $paginationSize = config('elasticblue.pagination', 30);
 
@@ -184,7 +184,8 @@ class ElasticRelation extends ElasticBlueModel
     public
     static function deleteAll(
         int $idNode
-    ) {
+    )
+    {
         $params = [
             'index' => static::$index,
             'type' => static::$type,
@@ -199,7 +200,8 @@ class ElasticRelation extends ElasticBlueModel
     function addRelation(
         $idNode,
         array $relation
-    ) {
+    )
+    {
         $this->id = $relation['id'];
         $this->idNode = $idNode;
         $this->idRelationType = $relation['id'];
@@ -209,7 +211,8 @@ class ElasticRelation extends ElasticBlueModel
     public
     function addNode(
         SimpleNode $node
-    ) {
+    )
+    {
         $this->node = $node;
     }
 }

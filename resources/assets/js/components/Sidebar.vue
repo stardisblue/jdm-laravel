@@ -5,7 +5,7 @@
             <input type="text" class="form-control" v-model="research" placeholder="Filter">
         </div>
         <ul class="nav nav-stacked">
-            <li v-for="(value) in filteredRelationTypes" :class="{active : activeIndex == value.index}">
+            <li v-for="value in filteredRelationTypes" :class="{active : activeIndex === value.index}">
                 <a :id="'navlink-'+ value.index" :href="'#rt'+value.index">{{value.name}}</a>
             </li>
         </ul>
@@ -59,9 +59,9 @@
                     const clientHeight = document.body.clientHeight - 50;
                     const proportion = (active.sidebarOffsetTop - (clientHeight / 2)) /
                         (this.sidebarOffsetHeight - (clientHeight / 2));
-                    const top = ((clientHeight - this.sidebarOffsetHeight ) * proportion);
+                    const top = ((clientHeight - this.sidebarOffsetHeight) * proportion);
 
-                    this.sidebarTop = ( top < 0 ? top - (100 * proportion) : 0) + 50;
+                    this.sidebarTop = (top < 0 ? top - (100 * proportion) : 0) + 50;
                 } else {
                     this.sidebarTop = 50;
                 }
@@ -71,7 +71,7 @@
                 this.filteredRelationTypes = _.filter(this.relationTypes, (value) => {
                     return _.includes(value.name, this.research);
                 })
-            }, 200)
+            }, 200),
         },
 
         methods: {

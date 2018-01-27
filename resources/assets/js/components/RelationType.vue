@@ -37,41 +37,44 @@
 
             <div class=" inner-addon left-addon">
                 <i class="glyphicon glyphicon-search"></i>
-                <input type="text" v-model="search" class="form-control"
+                <input type="text" :value="search" @input="searchWord($event.target.value)" class="form-control"
                        placeholder="Rechercher">
             </div>
         </div>
         <!-- definition -->
-        <p class="definition"><b>Définition :</b>{{relationType.description}}</p>
+        <div class="relation-type-content">
+            <p class="definition"><b>Définition :</b>{{relationType.description}}</p>
 
-        <div v-if="inbound.rels.length > 0" class="relations-in">
-            <p><u>Relations Entrantes</u></p>
-            <ul class="list-inline tags">
-                <li v-for="relation in inbound.rels">
-                    <word :id="relation.id" :word="relation.node" :weight="relation.weight"
-                          @card="displayCard" @uncard="destroyCard"></word>
-                </li>
-                <li v-if="inbound.next">
-                    <button class="btn btn-xs btn-default" @click="nextPageIn" :disabled="inbound.loading">&gt;
-                        voir plus...
-                    </button>
-                </li>
-            </ul>
+            <div v-if="inbound.rels.length > 0" class="relations-in">
+                <p><u>Relations Entrantes</u></p>
+                <ul class="list-inline tags">
+                    <li v-for="relation in inbound.rels">
+                        <word :id="relation.id" :word="relation.node" :weight="relation.weight"
+                              @card="displayCard" @uncard="destroyCard"></word>
+                    </li>
+                    <li v-if="inbound.next">
+                        <button class="btn btn-xs btn-default" @click="nextPageIn" :disabled="inbound.loading">&gt;
+                            voir plus...
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div v-if="outbound.rels.length > 0" class="relations-out">
+                <p><u>Relations Sortantes</u></p>
+                <ul class="list-inline tags">
+                    <li v-for="relation in outbound.rels">
+                        <word :id="relation.id" :word="relation.node" :weight="relation.weight"
+                              @card="displayCard" @uncard="destroyCard"></word>
+                    </li>
+                    <li v-if="outbound.next">
+                        <button class="btn btn-xs btn-default" @click="nextPageOut" :disabled="outbound.loading">&gt;
+                            voir plus...
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div v-if="outbound.rels.length > 0" class="relations-out">
-            <p><u>Relations Sortantes</u></p>
-            <ul class="list-inline tags">
-                <li v-for="relation in outbound.rels">
-                    <word :id="relation.id" :word="relation.node" :weight="relation.weight"
-                          @card="displayCard" @uncard="destroyCard"></word>
-                </li>
-                <li v-if="outbound.next">
-                    <button class="btn btn-xs btn-default" @click="nextPageOut" :disabled="outbound.loading">&gt;
-                        voir plus...
-                    </button>
-                </li>
-            </ul>
-        </div>
+
         <hr/>
     </div>
 </template>
@@ -92,7 +95,7 @@
             nodeId: {
                 type: Number,
                 required: true,
-            }
+            },
         },
 
         data() {
@@ -120,7 +123,6 @@
             this.inbound.next = this.inbound.rels.length === 30;
             this.outbound.rels = this.relationType.relations.out;
             this.outbound.next = this.outbound.rels.length === 30
-
         },
 
         mounted() {
@@ -132,22 +134,22 @@
         },
 
         watch: {
+            heritedSearch: function (value) {
+                this.search = value
+            },
             relationTypes: function () {
                 this.inbound.rels = this.relationType.relations.in;
-                this.outbound.rels = this.relationType.relations.out
+                this.outbound.rels = this.relationType.relations.out;
             },
-            order: function () {
-                console.log(this.order)
 
+            order: function () {
                 this.resetPageIn();
                 this.resetPageOut();
             },
             sortBy: function () {
-                console.log(this.sortBy)
-
                 this.resetPageIn();
                 this.resetPageOut();
-            }
+            },
         },
 
         methods: {
@@ -159,9 +161,35 @@
                 this.$emit("uncard");
             },
 
-            resetPageIn() {
-                const url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/in';
+            searchWord: _.debounce(function (search) {
+                this.search = search;
+                if (search === "") {
+                    this.resetPageIn();
+                    this.resetPageOut()
+                } else {
+                    const url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/search/';
+                    console.log(url);
 
+                    axios.get(url, {params: {q: search}})
+                        .then((response) => {
+                            this.inbound.page = 1;
+                            this.inbound.rels = response.data.in;
+                            this.inbound.next = false;
+                            this.outbound.page = 1;
+                            this.outbound.rels = response.data.out;
+                            this.outbound.next = false;
+
+                            this.$emit('updateOffsetTop')
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+
+                }
+            }, 300),
+
+            resetPageIn() {
+                const url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/in/';
                 axios.get(url, {params: {orderBy: this.order, sort: this.sortBy}})
                     .then((response) => {
                         this.inbound.page = 1;
@@ -179,7 +207,7 @@
             },
 
             resetPageOut() {
-                const url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/out';
+                const url = '/api/node/' + this.nodeId + '/relation-type/' + this.relationType.id + '/out/';
                 axios.get(url, {params: {orderBy: this.order, sort: this.sortBy}})
                     .then((response) => {
                         this.outbound.page = 1;
