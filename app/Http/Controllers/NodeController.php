@@ -100,8 +100,7 @@ class NodeController extends Controller
                 $nodeCache->setNode($cleanNode);
                 $nodeCache->save();
             } else {
-                return redirect()->route('home')
-                    ->withErrors(['reason' => $reason, 'word' => $word]);
+                return redirect()->route('home')->withErrors(['reason' => $reason, 'word' => $word]);
             }
         }
 

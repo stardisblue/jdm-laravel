@@ -17,11 +17,14 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div id="title" class="h2">{{getName}}</div> <!-- Titre -->
-                    <div v-if="getPos" id="part-of-speech" class="list-inline"> <!-- Part of speech -->
-                        <word prefix="pr" v-on:card="displayCard" v-on:uncard="destroyCard" v-for="item in
-                        getPos"
-                              :key="item.id" :id="item.id"
-                              :word="item.node"></word>
+                    <div id="part-of-speech">
+                        <ul v-if="getPos" class="list-inline"> <!-- Part of speech -->
+                            <li v-for="item in getPos">
+                                <word prefix="pr" v-on:card="displayCard" v-on:uncard="destroyCard"
+                                      :key="item.id" :id="item.id"
+                                      :word="item.node"></word>
+                            </li>
+                        </ul>
                     </div>
                     <div v-if="getSemRefin" id="semantic-refinement"> <!-- Raffinements sémantiques -->
                         <div v-if="getSemRefin.out.length > 0">
@@ -207,6 +210,10 @@
     #part-of-speech
         margin-left: 1em
         border-left: 2px gray solid
+
+        .list-inline
+            margin-bottom: 0
+
 
 
     #part-of-speech, #semantic-refinement

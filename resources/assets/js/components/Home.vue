@@ -18,7 +18,40 @@
                                                                       type="submit">
                                 <i class="glyphicon glyphicon-search"></i></button></span>
                             </div><!-- /input-group -->
+                            <a class="h6" data-toggle="modal" href="#myModal">Aide <i
+                                    class="glyphicon glyphicon-question-sign"></i></a></li>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Aide</h4>
+                    </div>
+                    <div class="modal-body" style="font-weight:bold ">
+                        <p>2 types de recherches sont possibles :<br/></p>
+                        <ul>
+                            <li><u>Recherche exacte</u> en tapant le mot complet. Exemple : <b style="color: #3097D1;">chat</b>
+                            </li>
+                            <li><u>Recherche approximative</u> en préfixant le mot d'un <b
+                                    style="color: #3097D1;">.*</b>ou en
+                                le rajoutant à la fin
+                                <br/>Exemple : <b style="color: #3097D1;">.*chat</b> retournera achat et <b
+                                        style="color: #3097D1;">chat.*</b> retournera chaton
+                            </li>
+                        </ul>
+                        <p><b>Ps:</b> il est également possible d'utiliser des expressions régulières plus complèxes !
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                     </div>
                 </div>
             </div>
@@ -27,7 +60,7 @@
 </template>
 <script>
     function init() {
-        require('../poum.js') // adding poum
+       require('../poum.js') // adding poum
     }
 
     export default {
@@ -36,8 +69,13 @@
             init();
         },
 
+        data: function () {
+            return {
+                query: ""
+            }
+        },
+
         props: {
-            query: {type: String},
             errors: {type: String}
         },
     }
@@ -94,5 +132,9 @@
         letter-spacing: .1rem;
         text-decoration: none;
         text-transform: uppercase;
+    }
+
+    #myModal {
+        color: black;
     }
 </style>

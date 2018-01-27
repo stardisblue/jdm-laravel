@@ -42540,7 +42540,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "\n#part-of-speech {\n  margin-left: 1em;\n  border-left: 2px gray solid;\n}\n#part-of-speech a, #semantic-refinement a {\n  padding-left: 1em;\n}\n#part-of-speech, #title {\n  display: inline-block;\n}\n\n/* enable absolute positioning */\n.inner-addon {\n  position: relative;\n  /* style icon */\n}\n.inner-addon .glyphicon {\n    position: absolute;\n    padding: 10px;\n    pointer-events: none;\n}\n\n/* align icon */\n.left-addon .glyphicon {\n  left: 0;\n}\n.left-addon input {\n  padding-left: 30px;\n}\n.right-addon .glyphicon {\n  right: 0;\n}\n.right-addon input {\n  padding-right: 30px;\n}\nbody {\n  padding-top: 50px;\n}\n.tags > li {\n  background-color: #dff2ff;\n  padding: 0 3px;\n  margin-right: 5px;\n  margin-bottom: 3px;\n}\n", ""]);
+exports.push([module.i, "\n#part-of-speech {\n  margin-left: 1em;\n  border-left: 2px gray solid;\n}\n#part-of-speech .list-inline {\n    margin-bottom: 0;\n}\n#part-of-speech a, #semantic-refinement a {\n  padding-left: 1em;\n}\n#part-of-speech, #title {\n  display: inline-block;\n}\n\n/* enable absolute positioning */\n.inner-addon {\n  position: relative;\n  /* style icon */\n}\n.inner-addon .glyphicon {\n    position: absolute;\n    padding: 10px;\n    pointer-events: none;\n}\n\n/* align icon */\n.left-addon .glyphicon {\n  left: 0;\n}\n.left-addon input {\n  padding-left: 30px;\n}\n.right-addon .glyphicon {\n  right: 0;\n}\n.right-addon input {\n  padding-right: 30px;\n}\nbody {\n  padding-top: 50px;\n}\n.tags > li {\n  background-color: #dff2ff;\n  padding: 0 3px;\n  margin-right: 5px;\n  margin-bottom: 3px;\n}\n", ""]);
 
 // exports
 
@@ -42594,6 +42594,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Word_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Word_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Autocomplete_vue__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Autocomplete_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__Autocomplete_vue__);
+//
+//
+//
 //
 //
 //
@@ -45377,19 +45380,27 @@ var render = function() {
             _vm._v(_vm._s(_vm.getName))
           ]),
           _vm._v(" "),
-          _vm.getPos
-            ? _c(
-                "div",
-                { staticClass: "list-inline", attrs: { id: "part-of-speech" } },
-                _vm._l(_vm.getPos, function(item) {
-                  return _c("word", {
-                    key: item.id,
-                    attrs: { prefix: "pr", id: item.id, word: item.node },
-                    on: { card: _vm.displayCard, uncard: _vm.destroyCard }
+          _c("div", { attrs: { id: "part-of-speech" } }, [
+            _vm.getPos
+              ? _c(
+                  "ul",
+                  { staticClass: "list-inline" },
+                  _vm._l(_vm.getPos, function(item) {
+                    return _c(
+                      "li",
+                      [
+                        _c("word", {
+                          key: item.id,
+                          attrs: { prefix: "pr", id: item.id, word: item.node },
+                          on: { card: _vm.displayCard, uncard: _vm.destroyCard }
+                        })
+                      ],
+                      1
+                    )
                   })
-                })
-              )
-            : _vm._e(),
+                )
+              : _vm._e()
+          ]),
           _vm._v(" "),
           _vm.getSemRefin
             ? _c("div", { attrs: { id: "semantic-refinement" } }, [
@@ -45748,7 +45759,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "\nhtml, body {\n    background-color: #fff;\n    color: #636b6f;\n    font-family: 'Raleway', sans-serif;\n    font-weight: 100;\n    height: 100vh;\n    margin: 0;\n}\ninput {\n    font-weight: 600;\n}\n.full-height {\n    height: 100vh;\n}\n.flex-center {\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n.position-ref {\n    position: relative;\n}\n.content {\n    text-align: center;\n}\n.title {\n    font-size: 84px;\n}\n.m-b-md {\n    margin-bottom: 30px;\n}\n.fireworks {\n    position: absolute;\n}\n#errors {\n    width: 100%;\n    position: absolute;\n    color: #636b6f;\n    font-weight: 600;\n    letter-spacing: .1rem;\n    text-decoration: none;\n    text-transform: uppercase;\n}\n", ""]);
+exports.push([module.i, "\nhtml, body {\n    background-color: #fff;\n    color: #636b6f;\n    font-family: 'Raleway', sans-serif;\n    font-weight: 100;\n    height: 100vh;\n    margin: 0;\n}\ninput {\n    font-weight: 600;\n}\n.full-height {\n    height: 100vh;\n}\n.flex-center {\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n.position-ref {\n    position: relative;\n}\n.content {\n    text-align: center;\n}\n.title {\n    font-size: 84px;\n}\n.m-b-md {\n    margin-bottom: 30px;\n}\n.fireworks {\n    position: absolute;\n}\n#errors {\n    width: 100%;\n    position: absolute;\n    color: #636b6f;\n    font-weight: 600;\n    letter-spacing: .1rem;\n    text-decoration: none;\n    text-transform: uppercase;\n}\n#myModal {\n    color: black;\n}\n", ""]);
 
 // exports
 
@@ -45759,6 +45770,39 @@ exports.push([module.i, "\nhtml, body {\n    background-color: #fff;\n    color:
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -45798,8 +45842,13 @@ function init() {
     },
 
 
+    data: function data() {
+        return {
+            query: ""
+        };
+    },
+
     props: {
-        query: { type: String },
         errors: { type: String }
     }
 });
@@ -46043,12 +46092,16 @@ var render = function() {
                 }),
                 _vm._v(" "),
                 _vm._m(0)
-              ])
+              ]),
+              _vm._v(" "),
+              _vm._m(1)
             ])
           ])
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _vm._m(2)
   ])
 }
 var staticRenderFns = [
@@ -46063,6 +46116,112 @@ var staticRenderFns = [
         [_c("i", { staticClass: "glyphicon glyphicon-search" })]
       )
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "h6",
+        attrs: { "data-toggle": "modal", href: "#myModal" }
+      },
+      [
+        _vm._v("Aide "),
+        _c("i", { staticClass: "glyphicon glyphicon-question-sign" })
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "modal fade", attrs: { id: "myModal", role: "dialog" } },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: { type: "button", "data-dismiss": "modal" }
+                },
+                [_vm._v("×")]
+              ),
+              _vm._v(" "),
+              _c("h4", { staticClass: "modal-title" }, [_vm._v("Aide")])
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "modal-body",
+                staticStyle: { "font-weight": "bold" }
+              },
+              [
+                _c("p", [
+                  _vm._v("2 types de recherches sont possibles :"),
+                  _c("br")
+                ]),
+                _vm._v(" "),
+                _c("ul", [
+                  _c("li", [
+                    _c("u", [_vm._v("Recherche exacte")]),
+                    _vm._v(" en tapant le mot complet. Exemple : "),
+                    _c("b", { staticStyle: { color: "#3097D1" } }, [
+                      _vm._v("chat")
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("li", [
+                    _c("u", [_vm._v("Recherche approximative")]),
+                    _vm._v(" en préfixant le mot d'un "),
+                    _c("b", { staticStyle: { color: "#3097D1" } }, [
+                      _vm._v(".*")
+                    ]),
+                    _vm._v(
+                      "ou en\n                            le rajoutant à la fin\n                            "
+                    ),
+                    _c("br"),
+                    _vm._v("Exemple : "),
+                    _c("b", { staticStyle: { color: "#3097D1" } }, [
+                      _vm._v(".*chat")
+                    ]),
+                    _vm._v(" retournera achat et "),
+                    _c("b", { staticStyle: { color: "#3097D1" } }, [
+                      _vm._v("chat.*")
+                    ]),
+                    _vm._v(" retournera chaton\n                        ")
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("p", [
+                  _c("b", [_vm._v("Ps:")]),
+                  _vm._v(
+                    " il est également possible d'utiliser des expressions régulières plus complèxes !\n                    "
+                  )
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-footer" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default",
+                  attrs: { type: "button", "data-dismiss": "modal" }
+                },
+                [_vm._v("Fermer")]
+              )
+            ])
+          ])
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
