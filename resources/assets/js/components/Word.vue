@@ -35,7 +35,7 @@
 
         methods: {
             name() {
-                return this.word.formattedName !== null ? this.word.formattedName : this.word.name;
+                return this.word.formattedName ? this.word.formattedName : this.word.name;
             },
 
             onMouseOver() {
